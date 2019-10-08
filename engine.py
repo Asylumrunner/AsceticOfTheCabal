@@ -6,6 +6,7 @@ from render_functions import render_all, clear_all
 from game_map import GameMap
 from fov_functions import initialize_fov, recompute_fov
 from game_states import GameStates
+from components.fighter import Fighter
 
 def main():
     screen_width = 80
@@ -30,7 +31,8 @@ def main():
         'light_ground': libtcod.Color(200, 180, 50)
     }
 
-    player = Entity(int(screen_width/2), int(screen_height/2), '@', libtcod.white, "Player", True)
+    fighter_component = Fighter(hp=30, defense=2, power=5)
+    player = Entity(int(screen_width/2), int(screen_height/2), '@', libtcod.white, "Player", True, fighter_component)
     entities = [player]
 
     libtcod.console_set_custom_font('spritesheet.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
@@ -87,8 +89,8 @@ def main():
 
         if game_state == GameStates.ENEMY_TURN:
             for entity in entities:
-                if entity != player:
-                    print("The " + entity.name + " is just crankin' it, non-stop")
+                if entity.ai:
+                    entity.ai.take_turn(player, fov_map, game_map, entities)
             game_state = GameStates.PLAYERS_TURN
 
 if __name__ == '__main__':
