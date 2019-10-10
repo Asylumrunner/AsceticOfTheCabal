@@ -1,4 +1,6 @@
 import math
+import tcod as libtcod
+
 
 class Entity:
     
@@ -38,6 +40,32 @@ class Entity:
         dy = other.y - self.y
 
         return math.sqrt(dx ** 2 + dy ** 2)
+
+    def move_astar(self, target, entities, game_map):
+        fov_map = libtcod.map.Map(game_map.width, game_map.height)
+
+        for y1 in range(game_map.height):
+            for x1 in range(game_map.width):
+                libtcod.map_set_properties(fov_map, x1, y1, not game_map.tiles[x1][y1].block_sight, not game_map.tiles[x1][y1].blocked)
+            
+        for entity in entities:
+            if entity.blocks and entity != self and entity != target:
+                libtcod.map_set_properties(fov_map, entity.x, entity.y, True, False)
+        
+        my_path = libtcod.path_new_using_map(fov_map, 1.41)
+
+        libtcod.path_compute(my_path, self.x, self.y, target.x, target.y)
+
+        if not libtcod.path_is_empty(my_path) and libtcod.path_size(my_path) < 25:
+            x, y = libtcod.path_walk(my_path, True)
+            if x or y:
+                self.x = x
+                self.y = y
+        
+        else:
+            self.move_towards(target.x, target.y, game_map, entities)
+        
+        libtcod.path_delete(my_path)
 
 def get_blocking_entities_at_location(entities, destination_x, destination_y):
     for entity in entities:
