@@ -2,7 +2,7 @@ import tcod as libtcod
 
 from entity import Entity, get_blocking_entities_at_location
 from input_handler import handle_keys
-from render_functions import render_all, clear_all
+from render_functions import render_all, clear_all, RenderOrder
 from game_map import GameMap
 from fov_functions import initialize_fov, recompute_fov
 from game_states import GameStates
@@ -33,7 +33,7 @@ def main():
     }
 
     fighter_component = Fighter(hp=30, defense=2, power=5)
-    player = Entity(int(screen_width/2), int(screen_height/2), '@', libtcod.white, "Player", True, fighter_component)
+    player = Entity(int(screen_width/2), int(screen_height/2), '@', libtcod.white, "Player", True, RenderOrder.ACTOR, fighter_component)
     entities = [player]
 
     libtcod.console_set_custom_font('spritesheet.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
@@ -56,7 +56,7 @@ def main():
 
         if fov_recompute:
             recompute_fov(fov_map, player.x, player.y, fov_radius, fov_light_walls, fov_algorithm)
-        render_all(con, entities, game_map, fov_map, fov_recompute, screen_width, screen_height, colors)
+        render_all(con, entities, player, game_map, fov_map, fov_recompute, screen_width, screen_height, colors)
         fov_recompute = False
         libtcod.console_flush()
 
