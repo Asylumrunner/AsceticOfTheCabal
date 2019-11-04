@@ -1,4 +1,5 @@
 import tcod as libtcod
+import game_constants
 
 def initialize_fov(game_map):
     fov_map = libtcod.map.Map(game_map.width, game_map.height)
@@ -9,5 +10,5 @@ def initialize_fov(game_map):
             fov_map.walkable[y][x] = not game_map.tiles[x][y].blocked
     return fov_map
 
-def recompute_fov(fov_map, x, y, radius, light_walls=True, algorithm=0):
-    fov_map.compute_fov(x, y, radius, light_walls, algorithm)
+def recompute_fov(fov_map, x, y):
+    fov_map.compute_fov(x, y, game_constants.fov_radius, game_constants.fov_light_walls, game_constants.fov_algorithm)

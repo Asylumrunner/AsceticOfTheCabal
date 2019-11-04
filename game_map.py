@@ -6,28 +6,30 @@ from random import randint
 from components.ai import BasicMonster
 from components.fighter import Fighter
 from render_functions import RenderOrder
+import game_constants
 
 class GameMap:
-    def __init__(self, width, height):
-        self.width = width
-        self.height = height
+    def __init__(self, message_log):
+        self.width = game_constants.map_width
+        self.height = game_constants.map_height
         self.tiles = self.initialize_tiles()
+        self.log = message_log
 
     def initialize_tiles(self):
         tiles = [[Tile(True) for y in range(self.height)] for x in range(self.width)]
 
         return tiles
 
-    def make_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height, player, entities, max_monsters_per_room):
+    def make_map(self, player, entities):
         rooms = []
         num_rooms = 0
 
-        for r in range(max_rooms):
-            w = randint(room_min_size, room_max_size)
-            h = randint(room_min_size, room_max_size)
+        for r in range(game_constants.max_rooms):
+            w = randint(game_constants.room_min_size, game_constants.room_max_size)
+            h = randint(game_constants.room_min_size, game_constants.room_max_size)
 
-            x = randint(0, map_width - w - 1)
-            y = randint(0, map_height - h - 1)
+            x = randint(0, game_constants.map_width - w - 1)
+            y = randint(0, game_constants.map_height - h - 1)
             new_room = Rect(x, y, w, h)
 
             for other_room in rooms:
@@ -48,7 +50,7 @@ class GameMap:
                     else:
                         self.create_v_tunnel(prev_y, new_y, prev_x)
                         self.create_h_tunnel(prev_x, new_x, new_y)
-                self.place_entities(new_room, entities, max_monsters_per_room)
+                self.place_entities(new_room, entities)
                 rooms.append(new_room)
                 num_rooms += 1
         
@@ -75,8 +77,15 @@ class GameMap:
             self.tiles[x][y].blocked = False
             self.tiles[x][y].block_sight = False
 
-    def place_entities(self, room, entities, max_monsters_per_room):
-        number_of_monsters = randint(0, max_monsters_per_room)
+    def spawn_character(self, x, y, name):
+        monster_data = game_constants.npcs[name]
+        fighter_component = Fighter(hp = monster_data['hp'], defense = monster_data['defense'], power = monster_data['power'])
+        ai_component = BasicMonster()
+        return Entity(x, y, monster_data['icon'], monster_data['color'], monster_data['name'], 
+                blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component, message_log=self.log)
+
+    def place_entities(self, room, entities):
+        number_of_monsters = randint(0, game_constants.max_monsters_per_room)
 
         for i in range(number_of_monsters):
             x = randint(room.x1 + 1, room.x2 -1)
@@ -84,13 +93,7 @@ class GameMap:
 
             if not any([entity for entity in entities if entity.x == x and entity.y == y]):
                 if randint(0, 100) < 80:
-                    fighter_component = Fighter(hp=10, defense=0, power=3)
-                    ai_component = BasicMonster()
-                    monster = Entity(x, y, 'o', libtcod.desaturated_green, 'Orc', blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
+                    entities.append(self.spawn_character(x, y, 'Orc'))
                 else:
-                    fighter_component = Fighter(hp=16, defense=1, power=4)
-                    ai_component = BasicMonster()
-                    monster = Entity(x, y, 'T', libtcod.darker_green, "Troll", blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
-                
-                entities.append(monster)
+                    entities.append(self.spawn_character(x, y, 'Troll'))
 
