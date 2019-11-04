@@ -110,7 +110,7 @@ def main():
             for entity in entities:
                 if entity.ai:
                     entity.ai.take_turn(player, fov_map, game_map, entities)
-                    dead_entities = [entity for entity in entities if not entity.fighter.isAlive()]
+                    dead_entities = [entity for entity in entities if not entity.fighter.isAlive() and entity.char != '%']
                     if dead_entities:
                         for dead_entity in dead_entities:
                             dead_entity.fighter.die()
