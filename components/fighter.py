@@ -10,13 +10,7 @@ class Fighter:
         self.power = power
     
     def take_damage(self, damage):
-        results = []
         self.hp -= damage
-
-        if self.hp <= 0:
-            results.append({'dead': self.owner})
-        
-        return results
     
     def attack(self, target):
         damage = self.power - target.fighter.defense
@@ -27,7 +21,7 @@ class Fighter:
             self.owner.log.add_message(Message('Get absolutely rekt, {0}, {1}\'s armor is too strong and repels your attack'.format(self.owner.name.capitalize(), target.name.capitalize()), libtcod.white))
 
     def isAlive(self):
-        return self.hp >= 0
+        return self.hp > 0
 
     def die(self):
         self.owner.log.add_message(Message('{0} is dead!'.format(self.owner.name.capitalize()), libtcod.orange))

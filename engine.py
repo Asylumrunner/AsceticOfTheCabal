@@ -88,7 +88,6 @@ def main():
                     player.move(dx, dy)
                     fov_recompute = True
                 game_state = GameStates.ENEMY_TURN
-            print("MOVED")
             
         # Exit the game
         if exit:
@@ -116,9 +115,7 @@ def main():
                             dead_entity.fighter.die()
                             if dead_entity == player:
                                 game_state = GameStates.PLAYER_DEAD
-            if game_state == GameStates.PLAYER_DEAD:
-                break
-            else:
+            if game_state != GameStates.PLAYER_DEAD:
                 game_state = GameStates.PLAYERS_TURN
 
 if __name__ == '__main__':
