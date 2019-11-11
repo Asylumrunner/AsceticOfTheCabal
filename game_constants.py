@@ -11,6 +11,8 @@ message_x = bar_width + 2
 message_width = screen_width - bar_width - 2
 message_height = panel_height - 1
 
+inventory_width = 50
+
 map_width = 80
 map_height = 43
 
@@ -23,6 +25,7 @@ fov_light_walls = True
 fov_radius = 10
 
 max_monsters_per_room = 3
+max_items_per_room = 1
 
 colors = {
     'dark_wall': libtcod.Color(0, 0, 100),
@@ -47,5 +50,13 @@ npcs = {
         'hp': 16,
         'defense': 1,
         'power': 4
+    }
+}
+
+items = {
+    'Healing Potion': {
+        'icon': '!',
+        'color': libtcod.violet,
+        'name': 'Healing Potion'
     }
 }

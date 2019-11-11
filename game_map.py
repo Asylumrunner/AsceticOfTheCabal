@@ -5,6 +5,7 @@ from rect import Rect
 from random import randint
 from components.ai import BasicMonster
 from components.fighter import Fighter
+from components.item import Item
 from render_functions import RenderOrder
 import game_constants
 
@@ -82,7 +83,11 @@ class GameMap:
         fighter_component = Fighter(hp = monster_data['hp'], defense = monster_data['defense'], power = monster_data['power'])
         ai_component = BasicMonster()
         return Entity(x, y, monster_data['icon'], monster_data['color'], monster_data['name'], 
-                blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component, message_log=self.log)
+                blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component, item=None, inventory=None, message_log=self.log)
+
+    def spawn_item(self, x, y, name):
+        item_data = game_constants.items[name]
+        return Entity(x, y, item_data['icon'], item_data['color'], item_data['name'], blocks=False, render_order=RenderOrder.ITEM, fighter=None, ai=None, item=Item(), inventory=None, message_log=self.log)
 
     def place_entities(self, room, entities):
         number_of_monsters = randint(0, game_constants.max_monsters_per_room)
@@ -96,4 +101,12 @@ class GameMap:
                     entities.append(self.spawn_character(x, y, 'Orc'))
                 else:
                     entities.append(self.spawn_character(x, y, 'Troll'))
+        
+        number_of_items = randint(0, game_constants.max_items_per_room)
 
+        for i in range(number_of_items):
+            x = randint(room.x1 + 1, room.x2 -1)
+            y = randint(room.y1 + 1, room.y2 -1)
+
+            if not any([entity for entity in entities if entity.x == x and entity.y == y]):
+                entities.append(self.spawn_item(x, y, "Healing Potion"))

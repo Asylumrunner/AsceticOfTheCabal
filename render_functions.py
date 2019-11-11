@@ -1,5 +1,7 @@
 import tcod as libtcod
 from enum import Enum
+from game_states import GameStates
+from menus import inventory_menu
 import game_constants
 
 class RenderOrder(Enum):
@@ -30,7 +32,7 @@ def render_bar(panel, x, y, total_width, name, value, maximum, bar_color, back_c
 
     
 
-def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, message_log, mouse):
+def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, message_log, mouse, game_state):
     if fov_recompute:
         for y in range(game_map.height):
             for x in range(game_map.width):
@@ -67,6 +69,9 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
     libtcod.console_print_ex(panel, 1, 0, libtcod.BKGND_NONE, libtcod.LEFT, get_names_under_mouse(mouse, entities, fov_map))
     libtcod.console_blit(con, 0, 0, game_constants.screen_width, game_constants.screen_height, 0, 0, 0)
     libtcod.console_blit(panel, 0, 0, game_constants.screen_width, game_constants.panel_height, 0, 0, game_constants.panel_y)
+
+    if game_state == GameStates.INVENTORY_OPEN:
+        inventory_menu(con, "Press the indicated key to use item", player.inventory)
 
 def clear_all(con, entities):
     for entity in entities:
