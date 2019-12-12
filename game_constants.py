@@ -57,6 +57,11 @@ items = {
     'Healing Potion': {
         'icon': '!',
         'color': libtcod.violet,
-        'name': 'Healing Potion'
+        'name': 'Healing Potion',
+        'uses': 1,
+        'functions': ['heal'],
+        'kwargs': {
+            'amount': 30
+        }
     }
 }

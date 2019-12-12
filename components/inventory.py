@@ -12,3 +12,10 @@ class Inventory:
         else:
             self.items.append(item)
             self.owner.log.add_message(Message("Picked up {0}".format(item.name), libtcod.green))
+    
+    def remove_item(self, item):
+        try:
+            self.items.remove(item)
+            self.owner.log.add_message(Message("{0} broke!".format(item.name), libtcod.red))
+        except:
+            print("Item not found")

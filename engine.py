@@ -83,10 +83,11 @@ class Engine():
             clear_all(self.con, self.entities)
 
             # Interpret the input into a game action
-            action = handle_keys(self.key)
+            action = handle_keys(self.key, self.game_state)
             move = action.get('move')
             grab = action.get('grab')
             exit = action.get('exit')
+            inventory_item = action.get('inventory_item')
             show_inventory = action.get('inventory')
             fullscreen = action.get('fullscreen')
 
@@ -118,6 +119,11 @@ class Engine():
             elif show_inventory:
                 self.previous_game_state = self.game_state
                 self.game_state = GameStates.INVENTORY_OPEN
+
+            elif inventory_item is not None and self.previous_game_state != GameStates.PLAYER_DEAD and inventory_item < len(self.player.inventory.items):
+                item_entity = self.player.inventory.items[inventory_item]
+                if item_entity.item.use(self.player):
+                    self.player.inventory.remove_item(item_entity)
                 
             # Exit the game
             if exit and self.game_state == GameStates.INVENTORY_OPEN:

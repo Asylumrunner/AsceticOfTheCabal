@@ -1,6 +1,17 @@
 import tcod as libtcod
+from game_states import GameStates
 
-def handle_keys(key):
+def handle_keys(key, game_state):
+    if game_state == GameStates.PLAYERS_TURN:
+        return handle_player_turn_key(key)
+    elif game_state == GameStates.PLAYER_DEAD:
+        return handle_player_dead_key(key)
+    elif game_state == GameStates.INVENTORY_OPEN:
+        return handle_player_inv_key(key)
+    
+    return {}
+
+def handle_player_turn_key(key):
     key_char = chr(key.c)
     if key.vk == libtcod.KEY_UP or key_char == 'k':
         return {'move': (0, -1)}
@@ -32,5 +43,34 @@ def handle_keys(key):
         return {'exit': True}
     
     return {}
+
+def handle_player_dead_key(key):
+    key_char = chr(key.c)
+
+    if key_char == 'i':
+        return {'inventory': True}
+    
+    if key.vk == libtcod.KEY_ENTER and key.lalt:
+        return {'fullscreen': True}
+
+    elif key.vk == libtcod.KEY_ESCAPE:
+        return {'exit': True}
+    
+    return {}
+
+def handle_player_inv_key(key):
+    index = key.c - ord('a')
+
+    if index >= 0:
+        return {'inventory_item': index}
+
+    if key.vk == libtcod.KEY_ENTER and key.lalt:
+        return {'fullscreen': True}
+
+    elif key.vk == libtcod.KEY_ESCAPE:
+        return {'exit': True}
+    
+    return {}
+    
 
     
