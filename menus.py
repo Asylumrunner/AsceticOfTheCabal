@@ -32,3 +32,14 @@ def inventory_menu(con, header, inventory):
         options = [item.name for item in inventory.items]
     
     menu(con, header, options, game_constants.inventory_width)
+
+def main_menu(con, background_image):
+    libtcod.image_blit_2x(background_image, 0, 0, 0)
+
+    libtcod.console_set_default_foreground(0, libtcod.light_yellow)
+    libtcod.console_print_ex(0, int(game_constants.screen_width/2), int(game_constants.screen_height/2) - 4,
+        libtcod.BKGND_NONE, libtcod.CENTER, "ASCETIC OF THE CABAL")
+    libtcod.console_print_ex(0, int(game_constants.screen_width/2), int(game_constants.screen_height/2) - 4,
+        libtcod.BKGND_NONE, libtcod.CENTER, "DEATH IS A GIFT TO THE PENITENT")
+
+    menu(con, '', ['New Game', 'Continue', 'Quit'], 24)   

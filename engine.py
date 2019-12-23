@@ -8,7 +8,9 @@ from fov_functions import initialize_fov, recompute_fov
 from game_states import GameStates
 from components.inventory import Inventory
 from components.fighter import Fighter
+from menus import main_menu
 from game_messages import MessageLog
+from save import save_game, load_game
 import game_constants
 
 class Engine():
@@ -64,6 +66,28 @@ class Engine():
     def send_invalid_action_message(self):
         self.message_log.add_message(Message("Can't do that here"), libtcod.red)
 
+    def start_screen(self):
+        show_main_menu = True
+
+        while show_main_menu:
+            libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS | libtcod.EVENT_MOUSE, self.key, self.mouse)
+            main_menu(self.con, game_constants.main_menu_background_image)
+
+            libtcod.console_flush()
+
+            action = handle_keys(self.key, GameStates.MAIN_MENU)
+            game_type = action.get('game_start')
+            exit_game = action.get('exit')
+
+            if exit_game:
+                return False
+            elif game_type == 'from_scratch':
+                return True
+            elif game_type == 'from_save':
+                self.player, self.entities, self.game_map, self.message_log, self.game_state = load_game()
+                self.fov_map = initialize_fov(self.game_map)
+                return True
+
     def main(self):
         # Game Loop
         while self.game_running:
@@ -87,6 +111,7 @@ class Engine():
             move = action.get('move')
             grab = action.get('grab')
             exit = action.get('exit')
+            save = action.get('save')
             inventory_item = action.get('inventory_item')
             show_inventory = action.get('inventory')
             fullscreen = action.get('fullscreen')
@@ -124,6 +149,9 @@ class Engine():
                 item_entity = self.player.inventory.items[inventory_item]
                 if item_entity.item.use(self.player):
                     self.player.inventory.remove_item(item_entity)
+            
+            elif save:
+                save_game(self.player, self.entities, self.game_map, self.message_log, self.game_state)
                 
             # Exit the game
             if exit and self.game_state == GameStates.INVENTORY_OPEN:
@@ -150,4 +178,5 @@ class Engine():
 
 if __name__ == '__main__':
     engine = Engine()
-    engine.main()
+    if engine.start_screen():
+        engine.main()

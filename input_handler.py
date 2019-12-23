@@ -8,7 +8,8 @@ def handle_keys(key, game_state):
         return handle_player_dead_key(key)
     elif game_state == GameStates.INVENTORY_OPEN:
         return handle_player_inv_key(key)
-    
+    elif game_state == GameStates.MAIN_MENU:
+        return handle_main_menu(key)
     return {}
 
 def handle_player_turn_key(key):
@@ -41,6 +42,9 @@ def handle_player_turn_key(key):
     
     elif key.vk == libtcod.KEY_ESCAPE:
         return {'exit': True}
+
+    if key_char == 's':
+        return {'save': True}
     
     return {}
 
@@ -72,5 +76,16 @@ def handle_player_inv_key(key):
     
     return {}
     
+def handle_main_menu(key):
+    key_char = chr(key.c)
+
+    if key_char == 'a':
+        return {'game_start': 'from_scratch'}
+    elif key_char == 'b':
+        return {'game_start': 'from_save'}
+    elif key_char == 'c':
+        return {'exit': True}
+    
+    return {}
 
     

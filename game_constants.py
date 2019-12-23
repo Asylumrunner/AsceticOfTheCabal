@@ -27,6 +27,8 @@ fov_radius = 10
 max_monsters_per_room = 3
 max_items_per_room = 1
 
+main_menu_background_image = libtcod.image_load('cool_background.png')
+
 colors = {
     'dark_wall': libtcod.Color(0, 0, 100),
     'dark_ground': libtcod.Color(50, 50, 150),
