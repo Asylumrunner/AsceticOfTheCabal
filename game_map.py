@@ -6,6 +6,7 @@ from random import randint
 from components.ai import BasicMonster
 from components.fighter import Fighter
 from components.item import Item
+from components.character import Character
 from render_functions import RenderOrder
 import item_functions
 import game_constants
@@ -82,9 +83,10 @@ class GameMap:
     def spawn_character(self, x, y, name):
         monster_data = game_constants.npcs[name]
         fighter_component = Fighter(hp = monster_data['hp'], defense = monster_data['defense'], power = monster_data['power'])
+        character_component = Character(description = monster_data['description'], conv_options = monster_data['conv']) if 'conv' in monster_data else None
         ai_component = BasicMonster()
         return Entity(x, y, monster_data['icon'], monster_data['color'], monster_data['name'], 
-                blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component, item=None, inventory=None, message_log=self.log)
+                blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component, character = character_component, item=None, inventory=None, message_log=self.log, state = monster_data['state'])
 
     def spawn_item(self, x, y, name):
         item_data = game_constants.items[name]

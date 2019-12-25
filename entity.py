@@ -1,11 +1,11 @@
 import math
 import tcod as libtcod
+from game_states import AIStates
 from render_functions import RenderOrder
-
 
 class Entity:
     
-    def __init__(self, x, y, char, color, name, blocks=False, render_order = RenderOrder.CORPSE, fighter=None, ai=None, item=None, inventory=None, message_log=None):
+    def __init__(self, x, y, char, color, name, blocks=False, render_order = RenderOrder.CORPSE, fighter=None, ai=None, character=None, item=None, inventory=None, message_log=None, state=AIStates.INANIMATE):
         self.x = x
         self.y = y
         self.char = char
@@ -15,9 +15,11 @@ class Entity:
         self.render_order = render_order
         self.fighter = fighter
         self.ai = ai
+        self.character = character
         self.item = item
         self.inventory = inventory
         self.log = message_log
+        self.state = state
 
         if self.fighter:
             self.fighter.owner = self

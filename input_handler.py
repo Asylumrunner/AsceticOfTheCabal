@@ -10,6 +10,8 @@ def handle_keys(key, game_state):
         return handle_player_inv_key(key)
     elif game_state == GameStates.MAIN_MENU:
         return handle_main_menu(key)
+    elif game_state == GameStates.DIALOGUE:
+        return handle_dialogue_key(key)
     return {}
 
 def handle_player_turn_key(key):
@@ -75,6 +77,20 @@ def handle_player_inv_key(key):
         return {'exit': True}
     
     return {}
+
+def handle_dialogue_key(key):
+    index = key.c - ord('a')
+
+    if index >= 0:
+        return {'dialogue_option': index}
+
+    if key.vk == libtcod.KEY_ENTER and key.lalt:
+        return {'fullscreen': True}
+
+    elif key.vk == libtcod.KEY_ESCAPE:
+        return {'exit': True}
+    
+    return {}
     
 def handle_main_menu(key):
     key_char = chr(key.c)
@@ -83,7 +99,7 @@ def handle_main_menu(key):
         return {'game_start': 'from_scratch'}
     elif key_char == 'b':
         return {'game_start': 'from_save'}
-    elif key_char == 'c':
+    elif key_char == 'c' or key.vk == libtcod.KEY_ESCAPE:
         return {'exit': True}
     
     return {}

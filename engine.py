@@ -5,7 +5,7 @@ from input_handler import handle_keys
 from render_functions import render_all, clear_all, RenderOrder
 from game_map import GameMap
 from fov_functions import initialize_fov, recompute_fov
-from game_states import GameStates
+from game_states import GameStates, AIStates
 from components.inventory import Inventory
 from components.fighter import Fighter
 from menus import main_menu
@@ -31,6 +31,7 @@ class Engine():
         self.player = self.initialize_player()
         self.entities = [self.player]
         self.game_map.make_map(self.player, self.entities)
+        self.dialogue_target = None
 
         # Initialize the FOV
         self.fov_recompute = True
@@ -99,7 +100,7 @@ class Engine():
                 recompute_fov(self.fov_map, self.player.x, self.player.y)
             
             # Render the game world according to current FOV, mark FOV recompute as complete, and flush to console
-            render_all(self.con, self.panel, self.entities, self.player, self.game_map, self.fov_map, self.fov_recompute, self.message_log, self.mouse, self.game_state)
+            render_all(self.con, self.panel, self.entities, self.player, self.game_map, self.fov_map, self.fov_recompute, self.message_log, self.mouse, self.game_state, self.dialogue_target)
             self.fov_recompute = False
             libtcod.console_flush()
 
@@ -113,6 +114,7 @@ class Engine():
             exit = action.get('exit')
             save = action.get('save')
             inventory_item = action.get('inventory_item')
+            dialogue_option = action.get('dialogue_option')
             show_inventory = action.get('inventory')
             fullscreen = action.get('fullscreen')
 
@@ -126,14 +128,19 @@ class Engine():
                 if not self.game_map.is_blocked(destination_x, destination_y):
                     # If they're not about to walk into a wall, check for enemies at the destination
                     target = get_blocking_entities_at_location(self.entities, destination_x, destination_y)
-                    if target:
+                    if target and target.state == AIStates.HOSTILE:
                         # If there are enemies, attack them
                         self.player.fighter.attack(target)
+                        self.game_state = GameStates.ENEMY_TURN
+                    elif target and target.state == AIStates.FRIENDLY:
+                        self.previous_game_state = self.game_state
+                        self.dialogue_target = target
+                        self.game_state = GameStates.DIALOGUE
                     else:
                         # If there are not enemies, move and mark FOV for recomputation
                         self.player.move(dx, dy)
                         self.fov_recompute = True
-                    self.game_state = GameStates.ENEMY_TURN
+                        self.game_state = GameStates.ENEMY_TURN
             
             elif grab and self.game_state == GameStates.PLAYERS_TURN:
                 for item in [entity for entity in self.entities if entity.item and entity.x == self.player.x and entity.y == self.player.y]:
@@ -150,11 +157,14 @@ class Engine():
                 if item_entity.item.use(self.player):
                     self.player.inventory.remove_item(item_entity)
             
+            elif dialogue_option is not None:
+                self.dialogue_target.character.talk(dialogue_option)
+
             elif save:
                 save_game(self.player, self.entities, self.game_map, self.message_log, self.game_state)
                 
             # Exit the game
-            if exit and self.game_state == GameStates.INVENTORY_OPEN:
+            if exit and (self.game_state == GameStates.INVENTORY_OPEN or self.game_state == GameStates.DIALOGUE):
                 self.game_state = self.previous_game_state
             elif exit:
                 return True
@@ -168,7 +178,7 @@ class Engine():
 
             if self.game_state == GameStates.ENEMY_TURN:
                 for entity in self.entities:
-                    if entity.ai:
+                    if entity.ai and entity.state == AIStates.HOSTILE:
                         entity.ai.take_turn(self.player, self.fov_map, self.game_map, self.entities)
                         if self.cull_dead():
                             self.game_state = GameStates.PLAYER_DEAD

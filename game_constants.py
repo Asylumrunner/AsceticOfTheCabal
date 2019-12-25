@@ -1,4 +1,5 @@
 import tcod as libtcod
+from game_states import AIStates
 
 screen_width = 80
 screen_height = 50
@@ -43,7 +44,28 @@ npcs = {
         'name': 'Orc',
         'hp': 10,
         'defense': 0,
-        'power': 3
+        'power': 3,
+        'state': AIStates.FRIENDLY,
+        'description': 'A lumbering green orc, with jagged teeth and a dim expression',
+        'conv': {
+            'utterance': 'Did you know Coca Cola is made with real cocaine?',
+            'choices': [
+                {
+                    'player_utterance': 'No it\'s coca leaves, not cocaine',
+                    'response': {
+                        'utterance': 'Whatever, fuck you man',
+                        'choices': []
+                    }
+                },
+                {
+                    'player_utterance': 'Where\'d you learn that?',
+                    'response': {
+                        'utterance': 'Joe Rogan podcast, dude. Check it out',
+                        'choices': []
+                    }
+                }
+            ]
+        }
     },
     'Troll': {
         'icon': 'T',
@@ -51,7 +73,9 @@ npcs = {
         'name': 'Troll',
         'hp': 16,
         'defense': 1,
-        'power': 4
+        'power': 4,
+        'state': AIStates.HOSTILE,
+        'description': 'A massive troll, standing two men tall. Brandishing a large club',
     }
 }
 
