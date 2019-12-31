@@ -65,7 +65,8 @@ npcs = {
                     }
                 }
             ]
-        }
+        },
+        'money': 10
     },
     'Troll': {
         'icon': 'T',
@@ -76,6 +77,7 @@ npcs = {
         'power': 4,
         'state': AIStates.HOSTILE,
         'description': 'A massive troll, standing two men tall. Brandishing a large club',
+        'money': 30
     }
 }
 

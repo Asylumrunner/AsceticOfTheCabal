@@ -4,6 +4,8 @@ from game_states import GameStates
 from menus import inventory_menu, dialogue_menu
 import game_constants
 
+#TODO: Annotate this nonsense file
+
 class RenderOrder(Enum):
     CORPSE = 1
     ITEM = 2
@@ -64,6 +66,8 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
         y += 1
 
     render_bar(panel, 1, 1, game_constants.bar_width, 'HP', player.fighter.hp, player.fighter.max_hp, libtcod.light_red, libtcod.darker_red)
+    libtcod.console_set_default_foreground(panel, libtcod.green)
+    libtcod.console_print_ex(panel, 1, 2, libtcod.BKGND_NONE, libtcod.LEFT, "${}".format(player.fighter.money))
 
     libtcod.console_set_default_foreground(panel, libtcod.light_grey)
     libtcod.console_print_ex(panel, 1, 0, libtcod.BKGND_NONE, libtcod.LEFT, get_names_under_mouse(mouse, entities, fov_map))

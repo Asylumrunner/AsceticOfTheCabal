@@ -82,7 +82,7 @@ class GameMap:
 
     def spawn_character(self, x, y, name):
         monster_data = game_constants.npcs[name]
-        fighter_component = Fighter(hp = monster_data['hp'], defense = monster_data['defense'], power = monster_data['power'])
+        fighter_component = Fighter(hp = monster_data['hp'], defense = monster_data['defense'], power = monster_data['power'], money = monster_data['money'])
         character_component = Character(description = monster_data['description'], conv_options = monster_data['conv']) if 'conv' in monster_data else None
         ai_component = BasicMonster()
         return Entity(x, y, monster_data['icon'], monster_data['color'], monster_data['name'], 

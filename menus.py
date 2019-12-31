@@ -38,7 +38,7 @@ def dialogue_menu(con, dialogue_target):
     menu(con, conversation_state.utterance, conversation_state.choices, 36)
 
 def main_menu(con, background_image):
-    libtcod.image_blit_2x(background_image, 0, 0, 0)
+    libtcod.image_blit_2x(background_image, con, 0, 0)
 
     libtcod.console_set_default_foreground(0, libtcod.light_yellow)
     libtcod.console_print_ex(0, int(game_constants.screen_width/2), int(game_constants.screen_height/2) - 5,

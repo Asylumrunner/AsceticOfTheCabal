@@ -13,6 +13,8 @@ from game_messages import MessageLog
 from save import save_game, load_game
 import game_constants
 
+#TODO: Update comments
+
 class Engine():
     def __init__(self):
         # Set up the game window
@@ -59,7 +61,9 @@ class Engine():
 
         if dead_entities:
             for dead_entity in dead_entities:
-                dead_entity.fighter.die()
+                drop = dead_entity.fighter.die()
+                if drop:
+                    self.entities.append(drop)
                 if dead_entity == self.player:
                     player_killed = True
         return player_killed
@@ -143,8 +147,11 @@ class Engine():
                         self.game_state = GameStates.ENEMY_TURN
             
             elif grab and self.game_state == GameStates.PLAYERS_TURN:
-                for item in [entity for entity in self.entities if entity.item and entity.x == self.player.x and entity.y == self.player.y]:
-                    self.player.inventory.add_item(item)
+                for item in [entity for entity in self.entities if (entity.item or entity.money) and entity.x == self.player.x and entity.y == self.player.y]:
+                    if item.money:
+                        self.player.fighter.pick_up_money(item)
+                    else:
+                        self.player.inventory.add_item(item)
                     self.entities.remove(item)
                     self.game_state = GameStates.ENEMY_TURN
 

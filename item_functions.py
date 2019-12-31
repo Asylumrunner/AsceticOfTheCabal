@@ -1,8 +1,6 @@
 import tcod as libtcod
 from game_messages import Message 
 
-#TODO: Sending messages to MessageLog
-
 def heal(*args, **kwargs):
     print(args)
     print(kwargs)
