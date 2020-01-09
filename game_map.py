@@ -8,14 +8,18 @@ from components.fighter import Fighter
 from components.item import Item
 from components.character import Character
 from render_functions import RenderOrder
+from game_states import AIStates
+from stairs import Stairs
+import numpy as np
 import item_functions
 import game_constants
 
 class GameMap:
-    def __init__(self, message_log):
+    def __init__(self, message_log, dungeon_level=1):
         self.width = game_constants.map_width
         self.height = game_constants.map_height
         self.tiles = self.initialize_tiles()
+        self.dungeon_level = dungeon_level
         self.log = message_log
 
     def initialize_tiles(self):
@@ -27,9 +31,12 @@ class GameMap:
         rooms = []
         num_rooms = 0
 
+        center_of_last_room_x = None
+        center_of_last_room_y = None
+
         for r in range(game_constants.max_rooms):
             w = randint(game_constants.room_min_size, game_constants.room_max_size)
-            h = randint(game_constants.room_min_size, game_constants.room_max_size)
+            h = randint(game_constants.room_min_size, game_constants.room_max_size)    
 
             x = randint(0, game_constants.map_width - w - 1)
             y = randint(0, game_constants.map_height - h - 1)
@@ -41,6 +48,9 @@ class GameMap:
             else:
                 self.create_room(new_room)
                 (new_x, new_y) = new_room.center()
+                center_of_last_room_x = new_x
+                center_of_last_room_y = new_y
+
                 if num_rooms == 0:
                     player.x = new_x
                     player.y = new_y
@@ -56,7 +66,11 @@ class GameMap:
                 self.place_entities(new_room, entities)
                 rooms.append(new_room)
                 num_rooms += 1
-        
+
+        stairs = Stairs(self.dungeon_level + 1)
+        stairs_entity = Entity(center_of_last_room_x, center_of_last_room_y, ">", libtcod.white,"Stairs Down", blocks=True, render_order=RenderOrder.ACTOR, 
+                fighter=None, ai=None, character=None, item=None, inventory=None, message_log=self.log, state=AIStates.INANIMATE, stairs=stairs)
+        entities.append(stairs_entity)
     
     def is_blocked(self, x, y):
         if self.tiles[x][y].blocked:
@@ -86,25 +100,23 @@ class GameMap:
         character_component = Character(description = monster_data['description'], conv_options = monster_data['conv']) if 'conv' in monster_data else None
         ai_component = BasicMonster()
         return Entity(x, y, monster_data['icon'], monster_data['color'], monster_data['name'], 
-                blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component, character = character_component, item=None, inventory=None, message_log=self.log, state = monster_data['state'])
+                blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component, character = character_component, item=None, inventory=None, message_log=self.log, state = monster_data['state'], stairs=None)
 
     def spawn_item(self, x, y, name):
         item_data = game_constants.items[name]
         item_funcs = [item_functions.item_fuction_dict[function] for function in item_data['functions']]
-        return Entity(x, y, item_data['icon'], item_data['color'], item_data['name'], blocks=False, render_order=RenderOrder.ITEM, fighter=None, ai=None, item=Item(item_funcs, item_data['uses'], **item_data['kwargs']), inventory=None, message_log=self.log)
+        return Entity(x, y, item_data['icon'], item_data['color'], item_data['name'], blocks=False, render_order=RenderOrder.ITEM, fighter=None, ai=None, item=Item(item_funcs, item_data['uses'], **item_data['kwargs']), inventory=None, message_log=self.log, stairs=None)
 
     def place_entities(self, room, entities):
         number_of_monsters = randint(0, game_constants.max_monsters_per_room)
+        floor_dict = [game_constants.floors[key] for key in game_constants.floors if self.dungeon_level in key][0]
 
         for i in range(number_of_monsters):
             x = randint(room.x1 + 1, room.x2 -1)
             y = randint(room.y1 +1, room.y2 -1)
 
             if not any([entity for entity in entities if entity.x == x and entity.y == y]):
-                if randint(0, 100) < 80:
-                    entities.append(self.spawn_character(x, y, 'Orc'))
-                else:
-                    entities.append(self.spawn_character(x, y, 'Troll'))
+                entities.append(self.spawn_character(x, y, np.random.choice(floor_dict['enemies']['names'], 1, floor_dict['enemies']['distribution'])[0]))
         
         number_of_items = randint(0, game_constants.max_items_per_room)
 

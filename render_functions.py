@@ -54,7 +54,7 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
                         libtcod.console_set_char_background(con, x, y, game_constants.colors.get('dark_ground'), libtcod.BKGND_SET)
     entities_in_render_order = sorted(entities, key= lambda x: x.render_order.value)
     for entity in entities_in_render_order:
-        draw_entity(con, entity, fov_map)
+        draw_entity(con, entity, game_map, fov_map)
 
     libtcod.console_set_default_background(panel, libtcod.black)
     libtcod.console_clear(panel)
@@ -68,23 +68,31 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
     render_bar(panel, 1, 1, game_constants.bar_width, 'HP', player.fighter.hp, player.fighter.max_hp, libtcod.light_red, libtcod.darker_red)
     libtcod.console_set_default_foreground(panel, libtcod.green)
     libtcod.console_print_ex(panel, 1, 2, libtcod.BKGND_NONE, libtcod.LEFT, "${}".format(player.fighter.money))
+    libtcod.console_set_default_background(panel, libtcod.lighter_blue)
+    libtcod.console_print_ex(panel, 1, 3, libtcod.BKGND_NONE, libtcod.LEFT, "Level {}".format(game_map.dungeon_level))
 
     libtcod.console_set_default_foreground(panel, libtcod.light_grey)
     libtcod.console_print_ex(panel, 1, 0, libtcod.BKGND_NONE, libtcod.LEFT, get_names_under_mouse(mouse, entities, fov_map))
+    
     libtcod.console_blit(con, 0, 0, game_constants.screen_width, game_constants.screen_height, 0, 0, 0)
     libtcod.console_blit(panel, 0, 0, game_constants.screen_width, game_constants.panel_height, 0, 0, game_constants.panel_y)
 
     if game_state == GameStates.INVENTORY_OPEN:
         inventory_menu(con, "Press the indicated key to use item", player.inventory)
     elif game_state == GameStates.DIALOGUE and dialogue_target:
+        character_portrait(dialogue_target)
         dialogue_menu(con, dialogue_target)
 
 def clear_all(con, entities):
     for entity in entities:
         clear_entity(con, entity)
 
-def draw_entity(con, entity, fov_map):
-    if fov_map.fov[entity.y][entity.x]:
+def character_portrait(dialogue_target):
+    portrait_image = libtcod.image_load('green.png')
+    libtcod.image_blit_rect(portrait_image, 0, game_constants.screen_width-8, game_constants.panel_y, 12, game_constants.panel_height, libtcod.BKGND_SET)
+
+def draw_entity(con, entity, game_map, fov_map):
+    if fov_map.fov[entity.y][entity.x] or (entity.stairs and game_map.tiles[entity.x][entity.y].explored):
         libtcod.console_set_default_foreground(con, entity.color)
         libtcod.console_put_char(con, entity.x, entity.y, entity.char, libtcod.BKGND_NONE)
 

@@ -23,7 +23,12 @@ def menu(con, header, options, width):
     
     x = int(game_constants.screen_width / 2 - width / 2)
     y = int(game_constants.screen_height / 2 - height / 2)
-    libtcod.console_blit(window, 0, 0, width, height, 0, x, y, 1.0, 0.7)
+    libtcod.console_blit(window, 0, 0, width, height, 0, game_constants.screen_width-40 ,game_constants.panel_y, 1.0, 0.7)
+
+def draw_picture(con, image, width):
+    picture = libtcod.console.Console(game_constants.portrait_width, game_constants.portrait_height)
+    libtcod.image_blit_rect(image, picture, 0, 0, -1, -1, libtcod.BKGND_NONE)
+    libtcod.console_blit(picture, 0, 0, game_constants.portrait_width, game_constants.portrait_height, con, x, y, 1.0, 0.7)
 
 def inventory_menu(con, header, inventory):
     if len(inventory.items) == 0:

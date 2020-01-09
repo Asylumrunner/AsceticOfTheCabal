@@ -1,11 +1,11 @@
 import tcod as libtcod
 from game_states import AIStates
 
-screen_width = 80
-screen_height = 50
+screen_width = 120
+screen_height = 75
 
 bar_width = 20
-panel_height = 7
+panel_height = 12
 panel_y = screen_height - panel_height
 
 message_x = bar_width + 2
@@ -91,5 +91,26 @@ items = {
         'kwargs': {
             'amount': 30
         }
+    }
+}
+
+floors = {
+    (1, 2, 3): {
+        'enemies': {
+            'names': ['Orc', 'Troll'],
+            'distribution': [0.7, 0.3]
+        }
+    },
+    (4, 5, 6): {
+        'enemies': {}
+    },
+    (7, 8, 9): {
+        'enemies': {}
+    },
+    (10, 11): {
+        'enemies': {}
+    },
+    (12,): {
+        'enemies': {}
     }
 }

@@ -28,16 +28,13 @@ class Engine():
         # Create and initialize the Message Log
         self.message_log = MessageLog()
 
-        # Create a game map and fill it with enemies
-        self.game_map = GameMap(self.message_log)
+        #Initialize the player
         self.player = self.initialize_player()
-        self.entities = [self.player]
-        self.game_map.make_map(self.player, self.entities)
-        self.dialogue_target = None
 
-        # Initialize the FOV
-        self.fov_recompute = True
-        self.fov_map = initialize_fov(self.game_map)
+        # Create a game map and fill it with enemies
+        self.build_map()
+
+        self.dialogue_target = None
 
         # Create references for the player input
         self.key = libtcod.Key()
@@ -52,6 +49,17 @@ class Engine():
         return Entity(int(game_constants.screen_width/2), int(game_constants.screen_height/2), '@',
         libtcod.white, "Player", True, RenderOrder.ACTOR, Fighter(hp=30, defense=2, power=5), ai=None, 
         item=None, inventory=Inventory(26), message_log=self.message_log)
+    
+    def build_map(self, level=1):
+        self.game_map = GameMap(self.message_log, level)
+        self.entities = [self.player]
+        self.game_map.make_map(self.player, self.entities)
+
+        self.fov_recompute = True
+        self.fov_map = initialize_fov(self.game_map)
+
+    def grade_map_down(self):
+        self.game_map.grade_down()
 
     def cull_dead(self):
         # Finds every entity in the game world with 0 health and kills them
@@ -121,6 +129,7 @@ class Engine():
             dialogue_option = action.get('dialogue_option')
             show_inventory = action.get('inventory')
             fullscreen = action.get('fullscreen')
+            go_down = action.get('go_down')
 
             # If players turned and it's their turn to move
             if move and self.game_state == GameStates.PLAYERS_TURN:
@@ -166,6 +175,11 @@ class Engine():
             
             elif dialogue_option is not None:
                 self.dialogue_target.character.talk(dialogue_option)
+
+            elif go_down and self.game_state == GameStates.PLAYERS_TURN:
+                if [entity for entity in self.entities if entity.x==self.player.x and entity.y==self.player.y and entity.stairs]:
+                    self.build_map(entity.stairs.floor)
+                    libtcod.console_clear(self.con)
 
             elif save:
                 save_game(self.player, self.entities, self.game_map, self.message_log, self.game_state)

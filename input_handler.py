@@ -41,6 +41,8 @@ def handle_player_turn_key(key):
 
     if key.vk == libtcod.KEY_ENTER and key.lalt:
         return {'fullscreen': True}
+    elif key.vk == libtcod.KEY_ENTER:
+        return {'go_down': True}
     
     elif key.vk == libtcod.KEY_ESCAPE:
         return {'exit': True}
