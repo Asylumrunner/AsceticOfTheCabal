@@ -23,7 +23,7 @@ def menu(con, header, options, width):
     
     x = int(game_constants.screen_width / 2 - width / 2)
     y = int(game_constants.screen_height / 2 - height / 2)
-    libtcod.console_blit(window, 0, 0, width, height, 0, game_constants.screen_width-40 ,game_constants.panel_y, 1.0, 0.7)
+    libtcod.console_blit(window, 0, 0, width, height, 0, game_constants.screen_width-game_constants.character_portrait_width-width, game_constants.panel_y+1, 1.0, 0.7)
 
 def draw_picture(con, image, width):
     picture = libtcod.console.Console(game_constants.portrait_width, game_constants.portrait_height)
@@ -36,11 +36,12 @@ def inventory_menu(con, header, inventory):
     else:
         options = [item.name for item in inventory.items]
     
-    menu(con, header, options, game_constants.inventory_width)
+    menu(con, header, options, 44)
 
 def dialogue_menu(con, dialogue_target):
+    dialogue_target_name = dialogue_target.name
     conversation_state = dialogue_target.character.get_conversation()
-    menu(con, conversation_state.utterance, conversation_state.choices, 36)
+    menu(con, "<" + dialogue_target_name + ">" + "\n" + conversation_state.utterance, conversation_state.choices, 44)
 
 def main_menu(con, background_image):
     libtcod.image_blit_2x(background_image, con, 0, 0)

@@ -89,7 +89,7 @@ def clear_all(con, entities):
 
 def character_portrait(dialogue_target):
     portrait_image = libtcod.image_load('green.png')
-    libtcod.image_blit_rect(portrait_image, 0, game_constants.screen_width-8, game_constants.panel_y, 12, game_constants.panel_height, libtcod.BKGND_SET)
+    libtcod.image_blit_rect(portrait_image, 0, game_constants.screen_width-game_constants.character_portrait_width, game_constants.panel_y, game_constants.character_portrait_width, game_constants.panel_height, libtcod.BKGND_SET)
 
 def draw_entity(con, entity, game_map, fov_map):
     if fov_map.fov[entity.y][entity.x] or (entity.stairs and game_map.tiles[entity.x][entity.y].explored):

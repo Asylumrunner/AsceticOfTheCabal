@@ -14,8 +14,8 @@ message_height = panel_height - 1
 
 inventory_width = 50
 
-map_width = 80
-map_height = 43
+map_width = screen_width
+map_height = panel_y-1
 
 room_max_size = 10
 room_min_size = 6
@@ -27,6 +27,8 @@ fov_radius = 10
 
 max_monsters_per_room = 3
 max_items_per_room = 1
+
+character_portrait_width = 12
 
 main_menu_background_image = libtcod.image_load('cool_background.png')
 
