@@ -43,15 +43,19 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
 
                 if visible:
                     if wall:
-                        libtcod.console_set_char_background(con, x, y, game_constants.colors.get('light_wall'), libtcod.BKGND_SET)
+                        libtcod.console_set_default_foreground(con, game_constants.colors.get('light_wall'))
+                        libtcod.console_put_char(con, x, y, libtcod.CHAR_BLOCK3, libtcod.BKGND_NONE)
                     else:
-                        libtcod.console_set_char_background(con, x, y, game_constants.colors.get('light_ground'), libtcod.BKGND_SET)
+                        libtcod.console_set_default_foreground(con, game_constants.colors.get('light_ground'))
+                        libtcod.console_put_char(con, x, y, libtcod.CHAR_BLOCK1, libtcod.BKGND_NONE)
                     game_map.tiles[x][y].explored = True
                 elif game_map.tiles[x][y].explored:
                     if wall:
-                        libtcod.console_set_char_background(con, x, y, game_constants.colors.get('dark_wall'), libtcod.BKGND_SET)
+                        libtcod.console_set_default_foreground(con, game_constants.colors.get('dark_wall'))
+                        libtcod.console_put_char(con, x, y, libtcod.CHAR_BLOCK3, libtcod.BKGND_NONE)
                     else:
-                        libtcod.console_set_char_background(con, x, y, game_constants.colors.get('dark_ground'), libtcod.BKGND_SET)
+                        libtcod.console_set_default_foreground(con, game_constants.colors.get('dark_ground'))
+                        libtcod.console_put_char(con, x, y, libtcod.CHAR_BLOCK1, libtcod.BKGND_NONE)
     entities_in_render_order = sorted(entities, key= lambda x: x.render_order.value)
     for entity in entities_in_render_order:
         draw_entity(con, entity, game_map, fov_map)
