@@ -7,6 +7,7 @@ class GameStates(Enum):
     INVENTORY_OPEN = 4
     MAIN_MENU = 5
     DIALOGUE = 6
+    PLAYER_SHOOT = 7
 
 class AIStates(Enum):
     INANIMATE = 0

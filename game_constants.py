@@ -63,7 +63,15 @@ npcs = {
                     'player_utterance': 'Where\'d you learn that?',
                     'response': {
                         'utterance': 'Joe Rogan podcast, dude. Check it out',
-                        'choices': []
+                        'choices': [
+                            {
+                                'player_utterance': 'Isn\'t Joe Rogan that crazy guy who talks about DMT?',
+                                'response': {
+                                    'utterance': 'Not wrong.',
+                                    'choices': []
+                                }
+                            }
+                        ]
                     }
                 }
             ]

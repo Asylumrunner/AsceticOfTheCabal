@@ -12,6 +12,8 @@ def handle_keys(key, game_state):
         return handle_main_menu(key)
     elif game_state == GameStates.DIALOGUE:
         return handle_dialogue_key(key)
+    elif game_state == GameStates.PLAYER_SHOOT:
+        return handle_shoot_key(key)
     return {}
 
 def handle_player_turn_key(key):
@@ -32,6 +34,8 @@ def handle_player_turn_key(key):
         return {'move': (-1, 1)}
     elif key_char == 'n':
         return {'move': (1, 1)}
+    elif key_char == 'e':
+        return {'gun': True}
 
     if key_char == 'g':
         return {'grab': True}
@@ -105,5 +109,20 @@ def handle_main_menu(key):
         return {'exit': True}
     
     return {}
-
     
+def handle_shoot_key(key):
+    key_char = chr(key.c)
+
+    if key_char == 'e':
+        return {'holster': True}
+    return {}
+
+def get_shoot_target(mouse, entities, fov_map):
+    (x, y) = (mouse.cx, mouse.cy)
+
+    target = [entity for entity in entities if entity.x == x and entity.y == y and libtcod.map_is_in_fov(fov_map, entity.x, entity.y) and entity.fighter]
+    
+    if(len(target) > 0):
+        return target[0]
+    else:
+        return []

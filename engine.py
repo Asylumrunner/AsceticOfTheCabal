@@ -1,7 +1,7 @@
 import tcod as libtcod
 
 from entity import Entity, get_blocking_entities_at_location
-from input_handler import handle_keys
+from input_handler import handle_keys, get_shoot_target
 from render_functions import render_all, clear_all, RenderOrder
 from game_map import GameMap
 from fov_functions import initialize_fov, recompute_fov
@@ -9,7 +9,7 @@ from game_states import GameStates, AIStates
 from components.inventory import Inventory
 from components.fighter import Fighter
 from menus import main_menu
-from game_messages import MessageLog
+from game_messages import MessageLog, Message
 from save import save_game, load_game
 import game_constants
 
@@ -126,11 +126,13 @@ class Engine():
             grab = action.get('grab')
             exit = action.get('exit')
             save = action.get('save')
+            gun = action.get('gun')
             inventory_item = action.get('inventory_item')
             dialogue_option = action.get('dialogue_option')
             show_inventory = action.get('inventory')
             fullscreen = action.get('fullscreen')
             go_down = action.get('go_down')
+            holster = action.get('holster')
 
             # If players turned and it's their turn to move
             if move and self.game_state == GameStates.PLAYERS_TURN:
@@ -184,6 +186,22 @@ class Engine():
 
             elif save:
                 save_game(self.player, self.entities, self.game_map, self.message_log, self.game_state)
+
+            elif self.game_state == GameStates.PLAYERS_TURN and gun:
+                self.previous_game_state = self.game_state
+                self.game_state = GameStates.PLAYER_SHOOT
+                self.message_log.add_message(Message("Taking aim. Click on your target, or e to holster"))
+            
+            elif self.game_state == GameStates.PLAYER_SHOOT and holster:
+                self.game_state = self.previous_game_state
+                self.message_log.add_message(Message("Holstered your weapon"))
+            
+            elif self.game_state == GameStates.PLAYER_SHOOT and self.mouse.lbutton_pressed:
+                target = get_shoot_target(self.mouse, self.entities, self.fov_map)
+                if(target):
+                    self.player.fighter.attack(target)
+                    target.state = AIStates.HOSTILE
+                    self.game_state = GameStates.ENEMY_TURN
                 
             # Exit the game
             if exit and (self.game_state == GameStates.INVENTORY_OPEN or self.game_state == GameStates.DIALOGUE):
