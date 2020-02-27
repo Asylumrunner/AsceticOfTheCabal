@@ -36,6 +36,7 @@ def render_bar(panel, x, y, total_width, name, value, maximum, bar_color, back_c
 
 def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, message_log, mouse, game_state, dialogue_target):
     if fov_recompute:
+        colors = game_map.get_floor_info()['colors']
         for y in range(game_map.height):
             for x in range(game_map.width):
                 visible = fov_map.fov[y][x]
@@ -43,18 +44,18 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
 
                 if visible:
                     if wall:
-                        libtcod.console_set_default_foreground(con, game_constants.colors.get('light_wall'))
+                        libtcod.console_set_default_foreground(con, colors['light_wall'])
                         libtcod.console_put_char(con, x, y, libtcod.CHAR_BLOCK3, libtcod.BKGND_NONE)
                     else:
-                        libtcod.console_set_default_foreground(con, game_constants.colors.get('light_ground'))
+                        libtcod.console_set_default_foreground(con, colors['light_ground'])
                         libtcod.console_put_char(con, x, y, libtcod.CHAR_BLOCK1, libtcod.BKGND_NONE)
                     game_map.tiles[x][y].explored = True
                 elif game_map.tiles[x][y].explored:
                     if wall:
-                        libtcod.console_set_default_foreground(con, game_constants.colors.get('dark_wall'))
+                        libtcod.console_set_default_foreground(con, colors['dark_wall'])
                         libtcod.console_put_char(con, x, y, libtcod.CHAR_BLOCK3, libtcod.BKGND_NONE)
                     else:
-                        libtcod.console_set_default_foreground(con, game_constants.colors.get('dark_ground'))
+                        libtcod.console_set_default_foreground(con, colors['dark_ground'])
                         libtcod.console_put_char(con, x, y, libtcod.CHAR_BLOCK1, libtcod.BKGND_NONE)
     entities_in_render_order = sorted(entities, key= lambda x: x.render_order.value)
     for entity in entities_in_render_order:
@@ -72,8 +73,10 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
     render_bar(panel, 1, 1, game_constants.bar_width, 'HP', player.fighter.hp, player.fighter.max_hp, libtcod.light_red, libtcod.darker_red)
     libtcod.console_set_default_foreground(panel, libtcod.green)
     libtcod.console_print_ex(panel, 1, 2, libtcod.BKGND_NONE, libtcod.LEFT, "${}".format(player.fighter.money))
-    libtcod.console_set_default_background(panel, libtcod.lighter_blue)
+    libtcod.console_set_default_foreground(panel, libtcod.lighter_blue)
     libtcod.console_print_ex(panel, 1, 3, libtcod.BKGND_NONE, libtcod.LEFT, "Level {}".format(game_map.dungeon_level))
+    libtcod.console_print_ex(panel, 1, 4, libtcod.BKGND_NONE, libtcod.LEFT, "({}, {})".format(player.x, player.y))
+    libtcod.console_print_ex(panel, 1, 5, libtcod.BKGND_NONE, libtcod.LEFT, "({}, {})".format(mouse.cx, mouse.cy))
 
     libtcod.console_set_default_foreground(panel, libtcod.light_grey)
     libtcod.console_print_ex(panel, 1, 0, libtcod.BKGND_NONE, libtcod.LEFT, get_names_under_mouse(mouse, entities, fov_map))

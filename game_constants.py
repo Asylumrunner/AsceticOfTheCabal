@@ -88,6 +88,62 @@ npcs = {
         'state': AIStates.HOSTILE,
         'description': 'A massive troll, standing two men tall. Brandishing a large club',
         'money': 30
+    },
+    'Eye of the Divine': {
+        'icon': libtcod.CHAR_FEMALE,
+        'color': libtcod.dark_purple,
+        'name': 'Eye of the Divine',
+        'hp': 30,
+        'defense': 3,
+        'power': 5,
+        'state': AIStates.FRIENDLY,
+        'description': 'A tall, gaunt figure in a dark robe, with a mask of a single eye. Looks unhuman',
+        'money': 100,
+        'conv': {
+            'utterance': 'Begone human. My observations must be unimpeded',
+            'choices': []
+        }
+    },
+    'Citizen': {
+        'icon': 'a',
+        'color': libtcod.white,
+        'name': 'Citizen',
+        'hp': 5,
+        'defense': 0,
+        'power': 2,
+        'state': AIStates.FRIENDLY,
+        'description': 'A human inhabitant of this city. Looks tired and dissheveled',
+        'money': 10,
+        'conv': {
+            'utterance': 'Howdy stranger! Welcome to town! What brings you here?',
+            'choices': [
+                {
+                    'player_utterance': 'Just passin\' through.',
+                    'response': {
+                        'utterance': "Well, be sure to go pray to the City God before you leave!",
+                        'choices': []
+                    }
+                },
+                {
+                    'player_utterance': "I worship the Cabal. I'm here to kill your God",
+                    'response': {
+                        'utterance': "GUARDS! GUARDS! HERETIC!",
+                        'choices': []
+                    }
+                }
+            ]
+        }
+    },
+    'Godspawn': {
+        'icon': 'G',
+        'color': libtcod.dark_red,
+        'name': "Godspawn",
+        'hp': 15,
+        'defense': 1,
+        'power': 7,
+        'state': AIStates.HOSTILE,
+        'description': 'A hulking mass, humanoid, but resembling the God of this City. One of its children',
+        'money': 0
     }
 }
 
@@ -97,6 +153,7 @@ items = {
         'color': libtcod.violet,
         'name': 'Healing Potion',
         'uses': 1,
+        'type': 1,
         'functions': ['heal'],
         'kwargs': {
             'amount': 30
@@ -107,20 +164,62 @@ items = {
 floors = {
     (1, 2, 3): {
         'enemies': {
-            'names': ['Orc', 'Troll'],
-            'distribution': [0.7, 0.3]
+            'names': ['Citizen', 'Godspawn', 'Troll', 'Eye of the Divine'],
+            'distribution': [0.69, 0.01, 0.2, 0.1]
+        },
+        'colors': {
+            'dark_wall': libtcod.dark_grey,
+            'dark_ground': libtcod.sepia,
+            'light_wall': libtcod.light_grey,
+            'light_ground': libtcod.lighter_sepia
         }
     },
     (4, 5, 6): {
-        'enemies': {}
+        'enemies': {
+            'names': ['Orc', 'Troll'],
+            'distribution': [0.7, 0.3]
+        },
+        'colors': {
+            'dark_wall': libtcod.darker_grey,
+            'dark_ground': libtcod.dark_sepia,
+            'light_wall': libtcod.grey,
+            'light_ground': libtcod.light_sepia
+        }
     },
     (7, 8, 9): {
-        'enemies': {}
+        'enemies': {
+            'names': ['Orc', 'Troll'],
+            'distribution': [0.7, 0.3]
+        },
+        'colors': {
+            'dark_wall': libtcod.darker_grey,
+            'dark_ground': libtcod.dark_sepia,
+            'light_wall': libtcod.grey,
+            'light_ground': libtcod.light_sepia
+        }
     },
     (10, 11): {
-        'enemies': {}
+        'enemies': {
+            'names': ['Orc', 'Troll'],
+            'distribution': [0.7, 0.3]
+        },
+        'colors': {
+            'dark_wall': libtcod.darker_grey,
+            'dark_ground': libtcod.dark_sepia,
+            'light_wall': libtcod.grey,
+            'light_ground': libtcod.light_sepia
+        }
     },
     (12,): {
-        'enemies': {}
+        'enemies': {
+            'names': ['Orc', 'Troll'],
+            'distribution': [0.7, 0.3]
+        },
+        'colors': {
+            'dark_wall': libtcod.darker_grey,
+            'dark_ground': libtcod.dark_sepia,
+            'light_wall': libtcod.grey,
+            'light_ground': libtcod.light_sepia
+        }
     }
 }
