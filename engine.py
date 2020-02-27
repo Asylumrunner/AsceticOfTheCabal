@@ -20,7 +20,7 @@ class Engine():
         # Set up the game window
         #libtcod.console_set_custom_font('spritesheet.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
         libtcod.console_set_custom_font('Winterwing_Curses.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_ASCII_INROW)
-        libtcod.console_init_root(game_constants.screen_width, game_constants.screen_height, 'Ascetic of the Cabal', False, libtcod.RENDERER_SDL2, vsync=True)
+        libtcod.console_init_root(game_constants.screen_width, game_constants.screen_height, 'Ascetic of the Cabal', True, libtcod.RENDERER_SDL2, vsync=True)
 
         # Establish the primary console as well as the detail panel
         self.con = libtcod.console.Console(game_constants.screen_width, game_constants.screen_height)
@@ -141,7 +141,8 @@ class Engine():
                 destination_x = self.player.x + dx
                 destination_y = self.player.y + dy
 
-                if not self.game_map.is_blocked(destination_x, destination_y):
+                #if not self.game_map.is_blocked(destination_x, destination_y):
+                if True:
                     # If they're not about to walk into a wall, check for enemies at the destination
                     target = get_blocking_entities_at_location(self.entities, destination_x, destination_y)
                     if target and target.state == AIStates.HOSTILE:

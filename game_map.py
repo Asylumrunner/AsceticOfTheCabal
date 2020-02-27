@@ -54,6 +54,8 @@ class GameMap:
                 if num_rooms == 0:
                     player.x = new_x
                     player.y = new_y
+                    print("Placing player at {}, {}".format(player.x, player.y))
+                    libtcod.mouse_move(player.x, player.y)
                 else:
                     (prev_x, prev_y) = rooms[num_rooms - 1].center()
 
@@ -109,7 +111,7 @@ class GameMap:
 
     def place_entities(self, room, entities):
         number_of_monsters = randint(0, game_constants.max_monsters_per_room)
-        floor_dict = [game_constants.floors[key] for key in game_constants.floors if self.dungeon_level in key][0]
+        floor_dict = self.get_floor_info()
 
         for i in range(number_of_monsters):
             x = randint(room.x1 + 1, room.x2 -1)
@@ -126,3 +128,6 @@ class GameMap:
 
             if not any([entity for entity in entities if entity.x == x and entity.y == y]):
                 entities.append(self.spawn_item(x, y, "Healing Potion"))
+
+    def get_floor_info(self):
+        return [game_constants.floors[key] for key in game_constants.floors if self.dungeon_level in key][0]
