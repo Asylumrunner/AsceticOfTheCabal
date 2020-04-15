@@ -138,7 +138,7 @@ npcs = {
         'icon': 'G',
         'color': libtcod.dark_red,
         'name': "Godspawn",
-        'hp': 15,
+        'hp': 5,
         'defense': 1,
         'power': 7,
         'state': AIStates.HOSTILE,
@@ -151,13 +151,24 @@ items = {
     'Healing Potion': {
         'icon': '!',
         'color': libtcod.violet,
+        'description': "A vial of stomach-churning green fluid, heals some health",
         'name': 'Healing Potion',
         'uses': 1,
-        'type': 1,
+        'type': 0,
         'functions': ['heal'],
         'kwargs': {
             'amount': 30
         }
+    },
+    'Cool Hat': {
+        'icon': 'a',
+        'color': libtcod.lighter_red,
+        'description': "A cool hat that makes you feel like a cool guy",
+        'name': 'Cool Hat',
+        'uses': -99,
+        'type': 1,
+        'functions': [],
+        'kwargs': {}
     }
 }
 

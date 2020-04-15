@@ -1,7 +1,7 @@
 import tcod as libtcod
 from enum import Enum
 from game_states import GameStates
-from menus import inventory_menu, dialogue_menu
+from menus import inventory_menu, dialogue_menu, equipped_menu
 import game_constants
 
 #TODO: Annotate this nonsense file
@@ -89,6 +89,8 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
     elif game_state == GameStates.DIALOGUE and dialogue_target:
         character_portrait(dialogue_target)
         dialogue_menu(con, dialogue_target)
+    elif game_state == GameStates.EQUIPPED_OPEN:
+        equipped_menu(con, player.inventory)
 
 def clear_all(con, entities):
     for entity in entities:

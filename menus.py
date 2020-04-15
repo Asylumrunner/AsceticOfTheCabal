@@ -1,7 +1,7 @@
 import tcod as libtcod
 import game_constants
 
-def menu(con, header, options, width):
+def menu(con, header, options, width, itemized=True):
     if len(options) > 26:
         raise ValueError("Too many menu options: " + len(options))
 
@@ -16,7 +16,7 @@ def menu(con, header, options, width):
     y = header_height
     letter_index = ord('a')
     for option_text in options:
-        text = '(' + chr(letter_index) + ') ' + option_text
+        text = ('(' + chr(letter_index) + ') ' + option_text) if itemized else option_text
         libtcod.console_print_ex(window, 0, y, libtcod.BKGND_NONE, libtcod.LEFT, text)
         y += 1
         letter_index += 1
@@ -42,6 +42,17 @@ def dialogue_menu(con, dialogue_target):
     dialogue_target_name = dialogue_target.name
     conversation_state = dialogue_target.character.get_conversation()
     menu(con, "<" + dialogue_target_name + ">" + "\n" + conversation_state.utterance, conversation_state.choices, 44)
+
+def equipped_menu(con, inventory):
+    listed_options = [key + ": " + (inventory.equipped[key].name if inventory.equipped[key] else "None") for key in inventory.equipped]
+    menu(con, "EQUIPPED GEAR", listed_options, 44)
+
+def item_detail_menu(con, item):
+    item_type = item.item.item_type.name
+    description = game_constants.items[item.name]['description']
+    uses = (item.item.uses + " uses") if item.item.uses != -00 else None
+    listed_attributes = [item_type, description, uses]
+    menu(con, item.name, listed_attributes, 44, False)
 
 def main_menu(con, background_image):
     libtcod.image_blit_2x(background_image, con, 0, 0)

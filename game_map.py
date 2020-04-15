@@ -107,7 +107,7 @@ class GameMap:
     def spawn_item(self, x, y, name):
         item_data = game_constants.items[name]
         item_funcs = [item_functions.item_fuction_dict[function] for function in item_data['functions']]
-        return Entity(x, y, item_data['icon'], item_data['color'], item_data['name'], blocks=False, render_order=RenderOrder.ITEM, fighter=None, ai=None, item=Item(item_funcs, item_data['uses'], **item_data['kwargs']), inventory=None, message_log=self.log, stairs=None)
+        return Entity(x, y, item_data['icon'], item_data['color'], item_data['name'], blocks=False, render_order=RenderOrder.ITEM, fighter=None, ai=None, item=Item(item_funcs, item_data['uses'], item_data['type'], **item_data['kwargs']), inventory=None, message_log=self.log, stairs=None)
 
     def place_entities(self, room, entities):
         number_of_monsters = randint(0, game_constants.max_monsters_per_room)
@@ -127,7 +127,7 @@ class GameMap:
             y = randint(room.y1 + 1, room.y2 -1)
 
             if not any([entity for entity in entities if entity.x == x and entity.y == y]):
-                entities.append(self.spawn_item(x, y, "Healing Potion"))
+                entities.append(self.spawn_item(x, y, "Cool Hat"))
 
     def get_floor_info(self):
         return [game_constants.floors[key] for key in game_constants.floors if self.dungeon_level in key][0]

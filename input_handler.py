@@ -14,6 +14,10 @@ def handle_keys(key, game_state):
         return handle_dialogue_key(key)
     elif game_state == GameStates.PLAYER_SHOOT:
         return handle_shoot_key(key)
+    elif game_state == GameStates.EQUIPPED_OPEN:
+        return handle_player_equ_key(key)
+    elif game_state == GameStates.INSPECT_OPEN:
+        return handle_player_insp_key(key)
     return {}
 
 def handle_player_turn_key(key):
@@ -42,6 +46,8 @@ def handle_player_turn_key(key):
     
     if key_char == 'i':
         return {'inventory': True}
+    elif key_char == 'p':
+        return {'equipped': True}
 
     if key.vk == libtcod.KEY_ENTER and key.lalt:
         return {'fullscreen': True}
@@ -76,6 +82,15 @@ def handle_player_inv_key(key):
     if index >= 0:
         return {'inventory_item': index}
 
+    if key.vk == libtcod.KEY_ENTER and key.lalt:
+        return {'fullscreen': True}
+
+    elif key.vk == libtcod.KEY_ESCAPE:
+        return {'exit': True}
+    
+    return {}
+
+def handle_player_equ_key(key):
     if key.vk == libtcod.KEY_ENTER and key.lalt:
         return {'fullscreen': True}
 

@@ -8,6 +8,8 @@ class GameStates(Enum):
     MAIN_MENU = 5
     DIALOGUE = 6
     PLAYER_SHOOT = 7
+    EQUIPPED_OPEN = 8
+    INSPECT_OPEN = 9
 
 class AIStates(Enum):
     INANIMATE = 0

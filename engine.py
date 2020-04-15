@@ -6,6 +6,7 @@ from render_functions import render_all, clear_all, RenderOrder
 from game_map import GameMap
 from fov_functions import initialize_fov, recompute_fov
 from game_states import GameStates, AIStates
+from components.item import ItemType
 from components.inventory import Inventory
 from components.fighter import Fighter
 from menus import main_menu
@@ -130,6 +131,7 @@ class Engine():
             inventory_item = action.get('inventory_item')
             dialogue_option = action.get('dialogue_option')
             show_inventory = action.get('inventory')
+            show_equipped = action.get('equipped')
             fullscreen = action.get('fullscreen')
             go_down = action.get('go_down')
             holster = action.get('holster')
@@ -171,11 +173,21 @@ class Engine():
             elif show_inventory:
                 self.previous_game_state = self.game_state
                 self.game_state = GameStates.INVENTORY_OPEN
+            
+            elif show_equipped:
+                self.previous_game_state = self.game_state
+                self.game_state = GameStates.EQUIPPED_OPEN
 
             elif inventory_item is not None and self.previous_game_state != GameStates.PLAYER_DEAD and inventory_item < len(self.player.inventory.items):
                 item_entity = self.player.inventory.items[inventory_item]
-                if item_entity.item.use(self.player):
-                    self.player.inventory.remove_item(item_entity)
+                print(item_entity.item.item_type)
+                if item_entity.item.item_type != ItemType.NONE:
+                    print("Equipping {}".format(item_entity.name))
+                    self.player.inventory.equip_item(item_entity)
+                else:
+                    print("Using {}".format(item_entity.name))
+                    if item_entity.item.use(self.player):
+                        self.player.inventory.remove_item(item_entity)
             
             elif dialogue_option is not None:
                 self.dialogue_target.character.talk(dialogue_option)
@@ -205,7 +217,7 @@ class Engine():
                     self.game_state = GameStates.ENEMY_TURN
                 
             # Exit the game
-            if exit and (self.game_state == GameStates.INVENTORY_OPEN or self.game_state == GameStates.DIALOGUE):
+            if exit and (self.game_state in [GameStates.INVENTORY_OPEN, GameStates.DIALOGUE, GameStates.EQUIPPED_OPEN]):
                 self.game_state = self.previous_game_state
             elif exit:
                 return True
