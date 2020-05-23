@@ -7,8 +7,8 @@ def heal(*args, **kwargs):
     entity = args[0]
     amount = kwargs.get('amount')
 
-    if entity.fighter.hp < entity.fighter.max_hp:
-        entity.fighter.hp = min(entity.fighter.max_hp, entity.fighter.hp + amount)
+    if entity.get_component("Fighter").hp < entity.get_component("Fighter").max_hp:
+        entity.get_component("Fighter").hp = min(entity.get_component("Fighter").max_hp, entity.get_component("Fighter").hp + amount)
     if entity.log:
         entity.log.add_message(Message('Healed {0} damage'.format(amount), libtcod.white))
 

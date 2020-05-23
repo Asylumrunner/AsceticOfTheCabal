@@ -9,10 +9,11 @@ from components.item import Item
 from components.character import Character
 from render_functions import RenderOrder
 from game_states import AIStates
-from stairs import Stairs
+from components.stairs import Stairs
 import numpy as np
 import item_functions
 import game_constants
+import equip_effect
 
 class GameMap:
     def __init__(self, message_log, dungeon_level=1):
@@ -69,9 +70,11 @@ class GameMap:
                 rooms.append(new_room)
                 num_rooms += 1
 
-        stairs = Stairs(self.dungeon_level + 1)
+        stairs_components = { "Stairs": Stairs(self.dungeon_level + 1) }
         stairs_entity = Entity(center_of_last_room_x, center_of_last_room_y, ">", libtcod.white,"Stairs Down", blocks=True, render_order=RenderOrder.ACTOR, 
-                fighter=None, ai=None, character=None, item=None, inventory=None, message_log=self.log, state=AIStates.INANIMATE, stairs=stairs)
+                message_log=self.log, state=AIStates.INANIMATE, components=stairs_components)
+        print("STAIRS")
+        print(stairs_entity.get_component("Stairs").floor)
         entities.append(stairs_entity)
     
     def is_blocked(self, x, y):
@@ -98,16 +101,22 @@ class GameMap:
 
     def spawn_character(self, x, y, name):
         monster_data = game_constants.npcs[name]
-        fighter_component = Fighter(hp = monster_data['hp'], defense = monster_data['defense'], power = monster_data['power'], money = monster_data['money'])
-        character_component = Character(description = monster_data['description'], conv_options = monster_data['conv']) if 'conv' in monster_data else None
-        ai_component = BasicMonster()
+        monster_components = {
+            "Fighter": Fighter(hp = monster_data['hp'], defense = monster_data['defense'], power = monster_data['power'], money = monster_data['money']),
+            "Character": Character(description = monster_data['description'], conv_options = monster_data['conv']) if 'conv' in monster_data else None,
+            "AI": BasicMonster()
+        }
         return Entity(x, y, monster_data['icon'], monster_data['color'], monster_data['name'], 
-                blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component, character = character_component, item=None, inventory=None, message_log=self.log, state = monster_data['state'], stairs=None)
+                blocks=True, render_order=RenderOrder.ACTOR, message_log=self.log, state = monster_data['state'], components=monster_components)
 
     def spawn_item(self, x, y, name):
         item_data = game_constants.items[name]
         item_funcs = [item_functions.item_fuction_dict[function] for function in item_data['functions']]
-        return Entity(x, y, item_data['icon'], item_data['color'], item_data['name'], blocks=False, render_order=RenderOrder.ITEM, fighter=None, ai=None, item=Item(item_funcs, item_data['uses'], item_data['type'], **item_data['kwargs']), inventory=None, message_log=self.log, stairs=None)
+        equip_effects = [equip_effect.item_equip_dict[equip](**item_data['kwargs']) for equip in item_data['equip_abilities']] if item_data['equip_abilities'] else []
+        item_components = {
+            "Item": Item(item_funcs, item_data['uses'], item_data['type'], equip_effects, **item_data['kwargs'])
+        }
+        return Entity(x, y, item_data['icon'], item_data['color'], item_data['name'], blocks=False, render_order=RenderOrder.ITEM, message_log=self.log, state=AIStates.INANIMATE, components=item_components)
 
     def place_entities(self, room, entities):
         number_of_monsters = randint(0, game_constants.max_monsters_per_room)

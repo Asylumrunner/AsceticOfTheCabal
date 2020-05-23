@@ -5,7 +5,7 @@ from render_functions import RenderOrder
 
 class Entity:
     
-    def __init__(self, x, y, char, color, name, blocks=False, render_order = RenderOrder.CORPSE, fighter=None, ai=None, character=None, item=None, inventory=None, message_log=None, state=AIStates.INANIMATE, money=None, stairs=None):
+    def __init__(self, x, y, char, color, name, blocks=False, render_order = RenderOrder.CORPSE, message_log=None, state=AIStates.INANIMATE, components={}):
         self.x = x
         self.y = y
         self.char = char
@@ -13,34 +13,23 @@ class Entity:
         self.name = name
         self.blocks = blocks
         self.render_order = render_order
-        self.fighter = fighter
-        self.ai = ai
-        self.character = character
-        self.item = item
-        self.inventory = inventory
         self.log = message_log
         self.state = state
-        self.money = money
-        self.stairs = stairs
+        self.components = components
 
-        if self.fighter:
-            self.fighter.owner = self
+        for key in self.components:
+            if self.components[key]:
+                self.components[key].owner = self
+    
+    def get_components(self):
+        return self.components
+    
+    def has_component(self, component_name):
+        return component_name in self.components and self.components[component_name] != None
+    
+    def get_component(self, component_name):
+        return self.components[component_name] if component_name in self.components else None
         
-        if self.ai:
-            self.ai.owner = self
-
-        if self.item:
-            self.item.owner = self
-        
-        if self.inventory:
-            self.inventory.owner = self
-
-        if self.money:
-            self.money.owner = self
-        
-        if self.stairs:
-            self.stairs.owner = self
-
     def move(self, x, y):
         self.x += x
         self.y += y

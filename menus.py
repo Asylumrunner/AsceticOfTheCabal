@@ -1,12 +1,14 @@
 import tcod as libtcod
 import game_constants
+from inspect_functions import inspect_entity
 
 def menu(con, header, options, width, itemized=True):
     if len(options) > 26:
         raise ValueError("Too many menu options: " + len(options))
 
     header_height = libtcod.console_get_height_rect(con, 0, 0, width, game_constants.screen_height, header)
-    height = len(options) + header_height
+    body_height = libtcod.console_get_height_rect(con, 0, 0, width, game_constants.screen_height, "\n".join(options))
+    height = body_height + header_height * 2
 
     window = libtcod.console.Console(width, height)
 
@@ -17,13 +19,11 @@ def menu(con, header, options, width, itemized=True):
     letter_index = ord('a')
     for option_text in options:
         text = ('(' + chr(letter_index) + ') ' + option_text) if itemized else option_text
-        libtcod.console_print_ex(window, 0, y, libtcod.BKGND_NONE, libtcod.LEFT, text)
-        y += 1
+        offset = libtcod.console_print_rect_ex(window, 0, y, width, height, libtcod.BKGND_NONE, libtcod.LEFT, text)
+        y += offset
         letter_index += 1
     
-    x = int(game_constants.screen_width / 2 - width / 2)
-    y = int(game_constants.screen_height / 2 - height / 2)
-    libtcod.console_blit(window, 0, 0, width, height, 0, game_constants.screen_width-game_constants.character_portrait_width-width, game_constants.panel_y+1, 1.0, 0.7)
+    libtcod.console_blit(window, 0, 0, width, height, 0, game_constants.screen_width-game_constants.character_portrait_width-width, game_constants.screen_height-height, 1.0, 0.7)
 
 def draw_picture(con, image, width):
     picture = libtcod.console.Console(game_constants.portrait_width, game_constants.portrait_height)
@@ -40,12 +40,17 @@ def inventory_menu(con, header, inventory):
 
 def dialogue_menu(con, dialogue_target):
     dialogue_target_name = dialogue_target.name
-    conversation_state = dialogue_target.character.get_conversation()
+    conversation_state = dialogue_target.get_component("Character").get_conversation()
     menu(con, "<" + dialogue_target_name + ">" + "\n" + conversation_state.utterance, conversation_state.choices, 44)
 
 def equipped_menu(con, inventory):
     listed_options = [key + ": " + (inventory.equipped[key].name if inventory.equipped[key] else "None") for key in inventory.equipped]
     menu(con, "EQUIPPED GEAR", listed_options, 44)
+
+def inspect_menu(con, inspect_target):
+    inspect_details = inspect_entity(inspect_target)
+    menu(con, "INSPECTED ENTITY: {}".format(inspect_target.name), inspect_details, 44, False)
+    #add a call to draw_picture here
 
 def item_detail_menu(con, item):
     item_type = item.item.item_type.name

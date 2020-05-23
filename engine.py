@@ -9,6 +9,7 @@ from game_states import GameStates, AIStates
 from components.item import ItemType
 from components.inventory import Inventory
 from components.fighter import Fighter
+from components.devotee import Devotee
 from menus import main_menu
 from game_messages import MessageLog, Message
 from save import save_game, load_game
@@ -36,7 +37,7 @@ class Engine():
         # Create a game map and fill it with enemies
         self.build_map()
 
-        self.dialogue_target = None
+        self.player_target = None
 
         # Create references for the player input
         self.key = libtcod.Key()
@@ -48,9 +49,14 @@ class Engine():
         self.game_running = True
         
     def initialize_player(self):
+        player_components = {
+            "Fighter": Fighter(hp=3000, defense=2, power=5),
+            "Inventory": Inventory(26),
+            "Devotee": Devotee(100)
+        }
+
         return Entity(int(game_constants.screen_width/2), int(game_constants.screen_height/2), '@',
-        libtcod.white, "Player", True, RenderOrder.ACTOR, Fighter(hp=30, defense=2, power=5), ai=None, 
-        item=None, inventory=Inventory(26), message_log=self.message_log)
+        libtcod.white, "Player", True, RenderOrder.ACTOR, message_log=self.message_log, state=AIStates.INANIMATE, components=player_components)
     
     def build_map(self, level=1):
         self.game_map = GameMap(self.message_log, level)
@@ -67,11 +73,11 @@ class Engine():
         # Finds every entity in the game world with 0 health and kills them
         # Returns true if it kills the player, otherwise false
         player_killed = False
-        dead_entities = [entity for entity in self.entities if entity.fighter and not entity.fighter.isAlive() and entity.char != '%']
+        dead_entities = [entity for entity in self.entities if entity.has_component("Fighter") and not entity.get_component("Fighter").isAlive() and entity.char != '%']
 
         if dead_entities:
             for dead_entity in dead_entities:
-                drop = dead_entity.fighter.die()
+                drop = dead_entity.get_component("Fighter").die()
                 if drop:
                     self.entities.append(drop)
                 if dead_entity == self.player:
@@ -114,7 +120,7 @@ class Engine():
                 recompute_fov(self.fov_map, self.player.x, self.player.y)
             
             # Render the game world according to current FOV, mark FOV recompute as complete, and flush to console
-            render_all(self.con, self.panel, self.entities, self.player, self.game_map, self.fov_map, self.fov_recompute, self.message_log, self.mouse, self.game_state, self.dialogue_target)
+            render_all(self.con, self.panel, self.entities, self.player, self.game_map, self.fov_map, self.fov_recompute, self.message_log, self.mouse, self.game_state, self.player_target)
             self.fov_recompute = False
             libtcod.console_flush()
 
@@ -149,11 +155,11 @@ class Engine():
                     target = get_blocking_entities_at_location(self.entities, destination_x, destination_y)
                     if target and target.state == AIStates.HOSTILE:
                         # If there are enemies, attack them
-                        self.player.fighter.attack(target)
+                        self.player.get_component("Fighter").attack(target)
                         self.game_state = GameStates.ENEMY_TURN
                     elif target and target.state == AIStates.FRIENDLY:
                         self.previous_game_state = self.game_state
-                        self.dialogue_target = target
+                        self.player_target = target
                         self.game_state = GameStates.DIALOGUE
                     else:
                         # If there are not enemies, move and mark FOV for recomputation
@@ -162,11 +168,11 @@ class Engine():
                         self.game_state = GameStates.ENEMY_TURN
             
             elif grab and self.game_state == GameStates.PLAYERS_TURN:
-                for item in [entity for entity in self.entities if (entity.item or entity.money) and entity.x == self.player.x and entity.y == self.player.y]:
-                    if item.money:
-                        self.player.fighter.pick_up_money(item)
+                for item in [entity for entity in self.entities if (entity.has_component("Item") or entity.has_component("Money")) and entity.x == self.player.x and entity.y == self.player.y]:
+                    if item.has_component("Money"):
+                        self.player.get_component("Fighter").pick_up_money(item)
                     else:
-                        self.player.inventory.add_item(item)
+                        self.player.get_component("Inventory").add_item(item)
                     self.entities.remove(item)
                     self.game_state = GameStates.ENEMY_TURN
 
@@ -178,23 +184,24 @@ class Engine():
                 self.previous_game_state = self.game_state
                 self.game_state = GameStates.EQUIPPED_OPEN
 
-            elif inventory_item is not None and self.previous_game_state != GameStates.PLAYER_DEAD and inventory_item < len(self.player.inventory.items):
-                item_entity = self.player.inventory.items[inventory_item]
-                print(item_entity.item.item_type)
-                if item_entity.item.item_type != ItemType.NONE:
+            elif inventory_item is not None and self.previous_game_state != GameStates.PLAYER_DEAD and inventory_item < len(self.player.get_component("Inventory").items):
+                item_entity = self.player.get_component("Inventory").items[inventory_item]
+                print(item_entity.get_component("Item").item_type)
+                if item_entity.get_component("Item").item_type != ItemType.NONE:
                     print("Equipping {}".format(item_entity.name))
-                    self.player.inventory.equip_item(item_entity)
+                    self.player.get_component("Inventory").equip_item(item_entity)
                 else:
                     print("Using {}".format(item_entity.name))
-                    if item_entity.item.use(self.player):
-                        self.player.inventory.remove_item(item_entity)
+                    if item_entity.get_component("Item").use(self.player):
+                        self.player.get_component("Inventory").remove_item(item_entity)
             
             elif dialogue_option is not None:
-                self.dialogue_target.character.talk(dialogue_option)
+                self.player_target.get_component("Character").talk(dialogue_option)
 
             elif go_down and self.game_state == GameStates.PLAYERS_TURN:
-                if [entity for entity in self.entities if entity.x==self.player.x and entity.y==self.player.y and entity.stairs]:
-                    self.build_map(entity.stairs.floor)
+                stairs_candidates = [entity for entity in self.entities if entity.x==self.player.x and entity.y==self.player.y and entity.has_component("Stairs")]
+                if stairs_candidates:
+                    self.build_map(stairs_candidates[0].get_component("Stairs").floor)
                     libtcod.console_clear(self.con)
 
             elif save:
@@ -212,9 +219,16 @@ class Engine():
             elif self.game_state == GameStates.PLAYER_SHOOT and self.mouse.lbutton_pressed:
                 target = get_shoot_target(self.mouse, self.entities, self.fov_map)
                 if(target):
-                    self.player.fighter.attack(target)
+                    self.player.get_component("Fighter").attack(target)
                     target.state = AIStates.HOSTILE
                     self.game_state = GameStates.ENEMY_TURN
+            
+            elif self.mouse.rbutton_pressed and self.game_state != GameStates.INSPECT_OPEN:
+                target = get_shoot_target(self.mouse, self.entities, self.fov_map, False)
+                if(target):
+                    self.player_target = target
+                    self.previous_game_state = self.game_state
+                    self.game_state = GameStates.INSPECT_OPEN
                 
             # Exit the game
             if exit and (self.game_state in [GameStates.INVENTORY_OPEN, GameStates.DIALOGUE, GameStates.EQUIPPED_OPEN]):
@@ -231,8 +245,8 @@ class Engine():
 
             if self.game_state == GameStates.ENEMY_TURN:
                 for entity in self.entities:
-                    if entity.ai and entity.state == AIStates.HOSTILE:
-                        entity.ai.take_turn(self.player, self.fov_map, self.game_map, self.entities)
+                    if entity.has_component("AI") and entity.state == AIStates.HOSTILE:
+                        entity.get_component("AI").take_turn(self.player, self.fov_map, self.game_map, self.entities)
                         if self.cull_dead():
                             self.game_state = GameStates.PLAYER_DEAD
 

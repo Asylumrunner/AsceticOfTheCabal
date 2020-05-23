@@ -168,7 +168,11 @@ items = {
         'uses': -99,
         'type': 1,
         'functions': [],
-        'kwargs': {}
+        'equip_abilities': ['Armor', "Max_Health_Up"],
+        'kwargs': {
+            'armor': 5,
+            'health_up': 10
+        }
     }
 }
 

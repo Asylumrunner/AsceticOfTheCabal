@@ -17,9 +17,9 @@ class Fighter:
         self.hp -= damage
     
     def attack(self, target):
-        damage = self.power - target.fighter.defense
+        damage = self.power - target.get_component("Fighter").defense
         if damage > 0:
-            target.fighter.take_damage(damage)
+            target.get_component("Fighter").take_damage(damage)
             self.owner.log.add_message(Message('{0} attacks {1}, dealing {2} damage'.format(self.owner.name.capitalize(), target.name.capitalize(), damage), libtcod.white))
         else:
             self.owner.log.add_message(Message('Get absolutely rekt, {0}, {1}\'s armor is too strong and repels your attack'.format(self.owner.name.capitalize(), target.name.capitalize()), libtcod.white))
@@ -33,12 +33,23 @@ class Fighter:
         self.owner.color = libtcod.dark_red
 
         self.owner.blocks = False
-        self.owner.ai = None
+        del self.owner.components['AI']
         self.owner.render_order = RenderOrder.CORPSE
         self.owner.name = 'remains of {0}'.format(self.owner.name.capitalize())
 
-        return Entity(self.owner.x, self.owner.y, '$', libtcod.green, "${}".format(self.money), blocks=False, render_order=RenderOrder.ITEM, fighter=None, ai=None, item=None, inventory=None, message_log=self.owner.log, state=AIStates.INANIMATE, money=Money(self.money)) if self.money > 0 else None
+        money_components = {
+            "Money": Money(self.money)
+        }
+        return Entity(self.owner.x, self.owner.y, '$', libtcod.green, "${}".format(self.money), blocks=False, render_order=RenderOrder.ITEM, message_log=self.owner.log, state=AIStates.INANIMATE, components=money_components) if self.money > 0 else None
     
     def pick_up_money(self, money_obj):
-        if money_obj.money:
-            self.money += money_obj.money.value
+        if money_obj.has_component("Money"):
+            self.money += money_obj.get_component("Money").value
+    
+    def change_defense(self, defense_value):
+        self.defense += defense_value
+        print("Current health of {} is {}".format(self.owner.name, self.defense))
+    
+    def change_max_hp(self, hp_modification):
+        self.max_hp += hp_modification
+        print("Current maximum HP of {} is {}".format(self.owner.name, self.max_hp))
