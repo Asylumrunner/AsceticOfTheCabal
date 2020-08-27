@@ -143,6 +143,7 @@ def handle_player_insp_key(key):
 
     return {}
 
+#TODO: Oh honey why the hell is this logic here
 def get_shoot_target(mouse, entities, fov_map, fighters_only=True):
     (x, y) = (mouse.cx, mouse.cy)
 

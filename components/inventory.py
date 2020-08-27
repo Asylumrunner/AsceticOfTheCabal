@@ -30,17 +30,25 @@ class Inventory:
             print("Item not found")
     
     def equip_item(self, item):
-        item_type = ItemType(item.get_component("Item").item_type)
         try:
-            last_item = self.equipped[item_type.name]
-            if(last_item is not item):
-                self.equipped[item_type.name] = item
-                item.get_component("Item").equip(player=self.owner)
-                self.owner.log.add_message(Message("Equipped {0}".format(item.name), libtcod.green))
-                self.items = [inv_item for inv_item in self.items if inv_item is not item]
-                if(last_item):
-                    item.get_component("Item").unequip(player=self.owner)
-                    self.owner.log.add_message(Message("Unequipped {0}".format(last_item.name), libtcod.green))
-                    self.items.append(last_item)
+            item_type = ItemType(item.get_component("Item").item_type)
+            if item_type.name != 'NONE':
+                last_item = self.equipped[item_type.name]
+                if(last_item is not item):
+                    self.equipped[item_type.name] = item
+                    item.get_component("Item").equip(player=self.owner)
+                    self.owner.log.add_message(Message("Equipped {0}".format(item.name), libtcod.green))
+                    self.items = [inv_item for inv_item in self.items if inv_item is not item]
+                    if(last_item):
+                        item.get_component("Item").unequip(player=self.owner)
+                        self.owner.log.add_message(Message("Unequipped {0}".format(last_item.name), libtcod.green))
+                        self.items.append(last_item)
+
         except Exception as e:
             print("Equipping exception: {}".format(e))
+
+    def slot_filled(self, slot_name):
+        return True if slot_name in self.equipped and self.equipped[slot_name] != None else False
+    
+    def get_slot(self, slot_name):
+        return self.equipped[slot_name]

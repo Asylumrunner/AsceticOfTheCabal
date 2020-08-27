@@ -1,6 +1,19 @@
 import tcod as libtcod
 from game_messages import Message 
 
+effects = {
+    'Shredding': {
+        'description': " with a serrated edge, caked with dried blood",
+        "name": "of Shredding",
+        "arrangement": "suffix",
+        "targets": [5. 6],
+        "hit_effect": ['Shredding']
+    },
+    'Healing': {
+        ''
+    }
+}
+
 def heal(*args, **kwargs):
     print(args)
     print(kwargs)

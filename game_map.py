@@ -73,8 +73,6 @@ class GameMap:
         stairs_components = { "Stairs": Stairs(self.dungeon_level + 1) }
         stairs_entity = Entity(center_of_last_room_x, center_of_last_room_y, ">", libtcod.white,"Stairs Down", blocks=True, render_order=RenderOrder.ACTOR, 
                 message_log=self.log, state=AIStates.INANIMATE, components=stairs_components)
-        print("STAIRS")
-        print(stairs_entity.get_component("Stairs").floor)
         entities.append(stairs_entity)
     
     def is_blocked(self, x, y):

@@ -13,6 +13,7 @@ from components.devotee import Devotee
 from menus import main_menu
 from game_messages import MessageLog, Message
 from save import save_game, load_game
+from aiming_functions import draw_line
 import game_constants
 
 #TODO: Update comments
@@ -219,9 +220,13 @@ class Engine():
             elif self.game_state == GameStates.PLAYER_SHOOT and self.mouse.lbutton_pressed:
                 target = get_shoot_target(self.mouse, self.entities, self.fov_map)
                 if(target):
-                    self.player.get_component("Fighter").attack(target)
-                    target.state = AIStates.HOSTILE
-                    self.game_state = GameStates.ENEMY_TURN
+                    line_of_sight = draw_line((self.player.x, self.player.y), (target.x, target.y))
+                    if not [space for space in line_of_sight if self.game_map.is_blocked(space[0], space[1])]:
+                        self.player.get_component("Fighter").attack(target)
+                        target.state = AIStates.HOSTILE
+                        self.game_state = GameStates.ENEMY_TURN
+                    else:
+                        self.message_log.add_message(Message("You don't have a clear line of sight!"))
             
             elif self.mouse.rbutton_pressed and self.game_state != GameStates.INSPECT_OPEN:
                 target = get_shoot_target(self.mouse, self.entities, self.fov_map, False)

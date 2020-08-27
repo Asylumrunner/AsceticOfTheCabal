@@ -21,6 +21,9 @@ class Fighter:
         if damage > 0:
             target.get_component("Fighter").take_damage(damage)
             self.owner.log.add_message(Message('{0} attacks {1}, dealing {2} damage'.format(self.owner.name.capitalize(), target.name.capitalize(), damage), libtcod.white))
+            if self.owner.has_component("Inventory") and self.owner.get_component("Inventory").slot_filled("WEAPON"):
+                weapon = self.owner.get_component("Inventory").get_slot("WEAPON")
+                weapon.get_component("Item").use(self.owner, target)
         else:
             self.owner.log.add_message(Message('Get absolutely rekt, {0}, {1}\'s armor is too strong and repels your attack'.format(self.owner.name.capitalize(), target.name.capitalize()), libtcod.white))
 
