@@ -187,7 +187,9 @@ floors = {
             'dark_ground': libtcod.sepia,
             'light_wall': libtcod.light_grey,
             'light_ground': libtcod.lighter_sepia
-        }
+        },
+        'quality_prob': 0.3,
+        'effect_prob': 0.1
     },
     (4, 5, 6): {
         'enemies': {
@@ -199,7 +201,9 @@ floors = {
             'dark_ground': libtcod.dark_sepia,
             'light_wall': libtcod.grey,
             'light_ground': libtcod.light_sepia
-        }
+        },
+        'quality_prob': 0.4,
+        'effect_prob': 0.2
     },
     (7, 8, 9): {
         'enemies': {
@@ -211,7 +215,9 @@ floors = {
             'dark_ground': libtcod.dark_sepia,
             'light_wall': libtcod.grey,
             'light_ground': libtcod.light_sepia
-        }
+        },
+        'quality_prob': 0.5,
+        'effect_prob': 0.30
     },
     (10, 11): {
         'enemies': {
@@ -223,7 +229,9 @@ floors = {
             'dark_ground': libtcod.dark_sepia,
             'light_wall': libtcod.grey,
             'light_ground': libtcod.light_sepia
-        }
+        },
+        'quality_prob': 0.8,
+        'effect_prob': 0.5
     },
     (12,): {
         'enemies': {
@@ -235,6 +243,8 @@ floors = {
             'dark_ground': libtcod.dark_sepia,
             'light_wall': libtcod.grey,
             'light_ground': libtcod.light_sepia
-        }
+        },
+        'quality_prob': 0.9,
+        'effect_prob': 0.75
     }
 }

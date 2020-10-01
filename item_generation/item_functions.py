@@ -1,16 +1,25 @@
 import tcod as libtcod
+import random
 from game_messages import Message 
 
 effects = {
-    'Shredding': {
-        'description': " with a serrated edge, caked with dried blood",
-        "name": "of Shredding",
-        "arrangement": "suffix",
-        "targets": [5. 6],
-        "hit_effect": ['Shredding']
-    },
     'Healing': {
-        ''
+        'description': " with a warm glow about it that makes you feel calm",
+        "name": " of Healing",
+        "arrangement": "suffix",
+        "targets": [5,6],
+        "hit_effect": ['heal'],
+        'kwargs': {
+            'amount': 5
+        }
+    },
+    'Hematic': {
+        'description': " with barbs which dig into your skin that seem to be drawing blood",
+        "name": " of Blooddrinking",
+        "arrangement": "suffix",
+        "targets": [5,6],
+        "hit_effect": ["hematic"],
+        'kwargs': {}
     }
 }
 
@@ -25,6 +34,23 @@ def heal(*args, **kwargs):
     if entity.log:
         entity.log.add_message(Message('Healed {0} damage'.format(amount), libtcod.white))
 
-item_fuction_dict = {
-    "heal": heal
+def hematic(*args, **kwargs):
+    print(args)
+    print(kwargs)
+    entity = args[0]
+    target = args[1]
+    blood = random.randint(0, 5)
+    
+    entity.get_component("Fighter").take_damage(blood)
+    target.get_component("Fighter").take_damage(blood * 2)
+
+    if blood > 0:
+        entity.log.add_message(Message('Drained {} blood from the wielder to deal {} damage to {}'.format(blood, blood*2, target.name)))
+    
+
+item_function_dict = {
+    "heal": heal,
+    "hematic": hematic
 }
+
+effect_weights = [1, 1]

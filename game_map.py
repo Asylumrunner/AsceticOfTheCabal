@@ -11,9 +11,8 @@ from render_functions import RenderOrder
 from game_states import AIStates
 from components.stairs import Stairs
 import numpy as np
-import item_functions
 import game_constants
-import equip_effect
+from item_generation.item_generation import generate_weapon
 
 class GameMap:
     def __init__(self, message_log, dungeon_level=1):
@@ -107,15 +106,6 @@ class GameMap:
         return Entity(x, y, monster_data['icon'], monster_data['color'], monster_data['name'], 
                 blocks=True, render_order=RenderOrder.ACTOR, message_log=self.log, state = monster_data['state'], components=monster_components)
 
-    def spawn_item(self, x, y, name):
-        item_data = game_constants.items[name]
-        item_funcs = [item_functions.item_fuction_dict[function] for function in item_data['functions']]
-        equip_effects = [equip_effect.item_equip_dict[equip](**item_data['kwargs']) for equip in item_data['equip_abilities']] if item_data['equip_abilities'] else []
-        item_components = {
-            "Item": Item(item_funcs, item_data['uses'], item_data['type'], equip_effects, **item_data['kwargs'])
-        }
-        return Entity(x, y, item_data['icon'], item_data['color'], item_data['name'], blocks=False, render_order=RenderOrder.ITEM, message_log=self.log, state=AIStates.INANIMATE, components=item_components)
-
     def place_entities(self, room, entities):
         number_of_monsters = randint(0, game_constants.max_monsters_per_room)
         floor_dict = self.get_floor_info()
@@ -134,7 +124,7 @@ class GameMap:
             y = randint(room.y1 + 1, room.y2 -1)
 
             if not any([entity for entity in entities if entity.x == x and entity.y == y]):
-                entities.append(self.spawn_item(x, y, "Cool Hat"))
+                entities.append(generate_weapon(floor_dict['quality_prob'], floor_dict['effect_prob'], x, y, self.log))
 
     def get_floor_info(self):
         return [game_constants.floors[key] for key in game_constants.floors if self.dungeon_level in key][0]

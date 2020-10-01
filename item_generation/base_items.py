@@ -1,32 +1,43 @@
+import tcod as libtcod
+
 weapons = {
     "Sword": {
-        'name': 'Sword',
-        'desc_start': 'A longsword',
+        'name': '{}Sword{}',
+        'description': 'A {} longsword{}',
         'uses': -99,
         'type': 5,
-        'strength': 5
+        'strength': 5,
+        'icon': 'T',
+        'color': libtcod.light_blue
     },
     "Axe": {
-        'name': 'Axe',
-        'desc_start': 'A hefty axe',
+        'name': '{}Axe{}',
+        'description': 'A hefty {} axe{}',
         'uses': -99,
         'type': 5,
-        'strength': 10
+        'strength': 10,
+        'icon': 'P',
+        'color': libtcod.light_blue
     },
     "Knife": {
-        'name': 'Knife',
-        'desc_start': 'A serrated knife',
+        'name': '{}Knife{}',
+        'description': 'A serrated  {} knife{}',
         'uses': -99,
         'type': 5,
         'strength': 3,
-        'hit_abilities': ['Backstab']
+        'hit_abilities': ['Backstab'],
+        'icon': 't',
+        'color': libtcod.light_blue
+
     }
 }
+
+weapon_weights = [2, 1, 3]
 
 armor = {
     "Hat": {
         'name': 'Hat',
-        'desc_start': 'A slightly-worn cap',
+        'desription': 'A slightly-worn cap',
         'uses': -99,
         'type': 1,
         'equip_abilities': ['Armor'],
@@ -35,3 +46,5 @@ armor = {
         }
     }
 }
+
+armor_weights = [1]

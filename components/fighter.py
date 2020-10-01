@@ -17,7 +17,16 @@ class Fighter:
         self.hp -= damage
     
     def attack(self, target):
-        damage = self.power - target.get_component("Fighter").defense
+        if self.owner.has_component("Inventory"):
+            eq_weapon = self.owner.get_component("Inventory").get_slot("MELEE")
+            unblocked_damage = eq_weapon.get_component("Item").weapon.strength if eq_weapon and eq_weapon.get_component("Item").weapon != None else self.power
+            damage = unblocked_damage - target.get_component("Fighter").defense
+
+            if eq_weapon:
+                eq_weapon.get_component("Item").use(self.owner, target)
+        else:
+            damage = self.power - target.get_component("Fighter").defense
+
         if damage > 0:
             target.get_component("Fighter").take_damage(damage)
             self.owner.log.add_message(Message('{0} attacks {1}, dealing {2} damage'.format(self.owner.name.capitalize(), target.name.capitalize(), damage), libtcod.white))
@@ -50,8 +59,8 @@ class Fighter:
             self.money += money_obj.get_component("Money").value
     
     def change_defense(self, defense_value):
-        self.defense += defense_value
-        print("Current health of {} is {}".format(self.owner.name, self.defense))
+        self.defense = defense_value
+        print("Current defense of {} is {}".format(self.owner.name, self.defense))
     
     def change_max_hp(self, hp_modification):
         self.max_hp += hp_modification
