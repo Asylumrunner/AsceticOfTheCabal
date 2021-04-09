@@ -32,6 +32,8 @@ def inspect_fighter(entity, desc):
     
     return description_text
 
+
+#TODO: The name of an item is randomly generated, so looking up based on the item name as a key causes an exception
 def inspect_item(entity, desc):
     description_text = desc
     item = entity.get_component("Item")
