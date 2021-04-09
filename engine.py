@@ -106,7 +106,7 @@ class Engine():
 
             action = handle_keys(self.key, GameStates.MAIN_MENU)
             game_type = action.get('game_start')
-            exit_game = action.get('exit')
+            exit_game = action.get('action') == 'exit'
 
             if exit_game:
                 return False
@@ -136,24 +136,16 @@ class Engine():
             clear_all(self.con, self.entities)
 
             # Interpret the input into a game action
-            action = handle_keys(self.key, self.game_state)
-            move = action.get('move')
-            grab = action.get('grab')
-            exit = action.get('exit')
-            save = action.get('save')
-            gun = action.get('gun')
+            input = handle_keys(self.key, self.game_state)
+            action = input.get('action')
+
             inventory_item = action.get('inventory_item')
             dialogue_option = action.get('dialogue_option')
-            show_inventory = action.get('inventory')
-            show_equipped = action.get('equipped')
-            fullscreen = action.get('fullscreen')
-            go_down = action.get('go_down')
-            holster = action.get('holster')
 
             # If players turned and it's their turn to move
-            if move and self.game_state == GameStates.PLAYERS_TURN:
+            if action == 'move' and self.game_state == GameStates.PLAYERS_TURN:
                 # Calculate where they should move
-                dx, dy = move
+                dx, dy = input.get('move')
                 destination_x = self.player.x + dx
                 destination_y = self.player.y + dy
 
@@ -176,7 +168,7 @@ class Engine():
                         self.game_state = GameStates.ENEMY_TURN
             
             # If the player grabs something, check if there is an object at their feet, and either have them pick it up (if it's an Item) or add it to their wallet (if it's money)
-            elif grab and self.game_state == GameStates.PLAYERS_TURN:
+            elif action == 'grab' and self.game_state == GameStates.PLAYERS_TURN:
                 for item in [entity for entity in self.entities if (entity.has_component("Item") or entity.has_component("Money")) and entity.x == self.player.x and entity.y == self.player.y]:
                     if item.has_component("Money"):
                         self.player.get_component("Fighter").pick_up_money(item)
@@ -186,12 +178,12 @@ class Engine():
                     self.game_state = GameStates.ENEMY_TURN
 
             # Open up the inventory menu
-            elif show_inventory:
+            elif action == 'inventory':
                 self.previous_game_state = self.game_state
                 self.game_state = GameStates.INVENTORY_OPEN
             
             # Open up the equipped menu
-            elif show_equipped:
+            elif action == 'equipped':
                 self.previous_game_state = self.game_state
                 self.game_state = GameStates.EQUIPPED_OPEN
 
@@ -211,12 +203,12 @@ class Engine():
                 self.player_target.get_component("Character").talk(dialogue_option)
 
             # if the player attempts to go down some stairs, make sure they're on stairs, then build a new map and clear the console
-            elif go_down and self.game_state == GameStates.PLAYERS_TURN:
+            elif action == 'go_down' and self.game_state == GameStates.PLAYERS_TURN:
                 stairs_candidates = [entity for entity in self.entities if entity.x==self.player.x and entity.y==self.player.y and entity.has_component("Stairs")]
                 if stairs_candidates:
                     self.build_map(stairs_candidates[0].get_component("Stairs").floor)
                     libtcod.console_clear(self.con)
-            elif save:
+            elif action == 'save':
                 save_game(self.player, self.entities, self.game_map, self.message_log, self.game_state)
 
             # if the player draws their gun, change to a player shoot state and await gunfire
@@ -226,7 +218,7 @@ class Engine():
                 self.message_log.add_message(Message("Taking aim. Click on your target, or e to holster"))
             
             # if the player already has their gun drawn and presses the draw button, holster it instead
-            elif self.game_state == GameStates.PLAYER_SHOOT and holster:
+            elif self.game_state == GameStates.PLAYER_SHOOT and action == 'holster':
                 self.game_state = self.previous_game_state
                 self.message_log.add_message(Message("Holstered your weapon"))
             
@@ -252,13 +244,13 @@ class Engine():
                     self.game_state = GameStates.INSPECT_OPEN
                 
             # Exit the game
-            if exit and (self.game_state in [GameStates.INVENTORY_OPEN, GameStates.DIALOGUE, GameStates.EQUIPPED_OPEN]):
+            if action == 'exit' and (self.game_state in [GameStates.INVENTORY_OPEN, GameStates.DIALOGUE, GameStates.EQUIPPED_OPEN]):
                 self.game_state = self.previous_game_state
-            elif exit:
+            elif action == 'exit':
                 return True
             
             # Set the game to fullscreen
-            if fullscreen:
+            if action == 'fullscreen':
                 libtcod.console_set_fullscreen(not libtcod.console_is_fullscreen())
 
             # cull_dead returns true if the player is dead, so this conditional calls it to cull the dead, and then

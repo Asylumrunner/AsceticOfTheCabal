@@ -23,42 +23,42 @@ def handle_keys(key, game_state):
 def handle_player_turn_key(key):
     key_char = chr(key.c)
     if key.vk == libtcod.KEY_UP:
-        return {'move': (0, -1)}
+        return {'action': 'move', 'move': (0, -1)}
     elif key.vk == libtcod.KEY_DOWN:
-        return {'move': (0, 1)}
+        return {'action': 'move', 'move': (0, 1)}
     elif key.vk == libtcod.KEY_LEFT:
-        return {'move': (-1, 0)}
+        return {'action': 'move', 'move': (-1, 0)}
     elif key.vk == libtcod.KEY_RIGHT:
-        return {'move': (1, 0)}
+        return {'action': 'move', 'move': (1, 0)}
     elif key_char == 'y':
-        return {'move': (-1, -1)}
+        return {'action': 'move', 'move': (-1, -1)}
     elif key_char == 'u':
-        return {'move': (1, -1)}
+        return {'action': 'move', 'move': (1, -1)}
     elif key_char == 'b':
-        return {'move': (-1, 1)}
+        return {'action': 'move', 'move': (-1, 1)}
     elif key_char == 'n':
-        return {'move': (1, 1)}
+        return {'action': 'move', 'move': (1, 1)}
     elif key_char == 'e':
-        return {'gun': True}
+        return {'action': 'gun'}
 
     if key_char == 'g':
-        return {'grab': True}
+        return {'action': 'grab'}
     
     if key_char == 'i':
-        return {'inventory': True}
+        return {'action': 'inventory'}
     elif key_char == 'p':
-        return {'equipped': True}
+        return {'action': 'equipped'}
 
     if key.vk == libtcod.KEY_ENTER and key.lalt:
-        return {'fullscreen': True}
+        return {'action': 'fullscreen'}
     elif key.vk == libtcod.KEY_ENTER:
-        return {'go_down': True}
+        return {'action': 'go_down'}
     
     elif key.vk == libtcod.KEY_ESCAPE:
-        return {'exit': True}
+        return {'action': 'exit'}
 
     if key_char == 's':
-        return {'save': True}
+        return {'action': 'save'}
     
     return {}
 
@@ -66,13 +66,13 @@ def handle_player_dead_key(key):
     key_char = chr(key.c)
 
     if key_char == 'i':
-        return {'inventory': True}
+        return {'action': 'inventory'}
     
     if key.vk == libtcod.KEY_ENTER and key.lalt:
-        return {'fullscreen': True}
+        return {'action': 'fullscreen'}
 
     elif key.vk == libtcod.KEY_ESCAPE:
-        return {'exit': True}
+        return {'action': 'exit'}
     
     return {}
 
@@ -80,22 +80,22 @@ def handle_player_inv_key(key):
     index = key.c - ord('a')
 
     if index >= 0:
-        return {'inventory_item': index}
+        return {'action': 'inventory', 'inventory_item': index}
 
     if key.vk == libtcod.KEY_ENTER and key.lalt:
-        return {'fullscreen': True}
+        return {'action': 'fullscreen'}
 
     elif key.vk == libtcod.KEY_ESCAPE:
-        return {'exit': True}
+        return {'action': 'exit'}
     
     return {}
 
 def handle_player_equ_key(key):
     if key.vk == libtcod.KEY_ENTER and key.lalt:
-        return {'fullscreen': True}
+        return {'action': 'fullscreen'}
 
     elif key.vk == libtcod.KEY_ESCAPE:
-        return {'exit': True}
+        return {'action': 'exit'}
     
     return {}
 
@@ -103,13 +103,13 @@ def handle_dialogue_key(key):
     index = key.c - ord('a')
 
     if index >= 0:
-        return {'dialogue_option': index}
+        return {'action': 'speak', 'dialogue_option': index}
 
     if key.vk == libtcod.KEY_ENTER and key.lalt:
-        return {'fullscreen': True}
+        return {'action': 'fullscreen'}
 
     elif key.vk == libtcod.KEY_ESCAPE:
-        return {'exit': True}
+        return {'action': 'exit'}
     
     return {}
     
@@ -121,7 +121,7 @@ def handle_main_menu(key):
     elif key_char == 'b':
         return {'game_start': 'from_save'}
     elif key_char == 'c' or key.vk == libtcod.KEY_ESCAPE:
-        return {'exit': True}
+        return {'action': 'exit'}
     
     return {}
     
@@ -129,17 +129,17 @@ def handle_shoot_key(key):
     key_char = chr(key.c)
 
     if key_char == 'e':
-        return {'holster': True}
+        return {'action': 'holster'}
     return {}
 
 def handle_player_insp_key(key):
     key_char = chr(key.c)
     
     if key.vk == libtcod.KEY_ENTER and key.lalt:
-        return {'fullscreen': True}
+        return {'action': 'fullscreen'}
 
     elif key.vk == libtcod.KEY_ESCAPE:
-        return {'exit': True}
+        return {'action': 'exit'}
 
     return {}
 
