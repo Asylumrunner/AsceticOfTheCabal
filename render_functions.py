@@ -76,8 +76,9 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
     libtcod.console_set_default_foreground(panel, libtcod.lighter_blue)
     render_bar(panel, 1, 2, game_constants.bar_width, 'DEVOTION', player.get_component("Devotee").curr_devotion, player.get_component("Devotee").max_devotion, libtcod.light_blue, libtcod.darker_blue)
     libtcod.console_print_ex(panel, 1, 4, libtcod.BKGND_NONE, libtcod.LEFT, "Level {}".format(game_map.dungeon_level))
-    libtcod.console_print_ex(panel, 1, 5, libtcod.BKGND_NONE, libtcod.LEFT, "({}, {})".format(player.x, player.y))
-    libtcod.console_print_ex(panel, 1, 6, libtcod.BKGND_NONE, libtcod.LEFT, "({}, {})".format(mouse.cx, mouse.cy))
+    #libtcod.console_print_ex(panel, 1, 5, libtcod.BKGND_NONE, libtcod.LEFT, "({}, {})".format(player.x, player.y))
+    #libtcod.console_print_ex(panel, 1, 6, libtcod.BKGND_NONE, libtcod.LEFT, "({}, {})".format(mouse.cx, mouse.cy))
+    libtcod.console_print_ex(panel, 1, 5, libtcod.BKGND_NONE, libtcod.LEFT,' '.join(player.get_component("StatusContainer").get_statuses()))
 
     libtcod.console_set_default_foreground(panel, libtcod.light_grey)
     libtcod.console_print_ex(panel, 1, 0, libtcod.BKGND_NONE, libtcod.LEFT, get_names_under_mouse(mouse, entities, fov_map))

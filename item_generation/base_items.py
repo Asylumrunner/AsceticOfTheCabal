@@ -1,5 +1,7 @@
 import tcod as libtcod
 
+# Lists of the base (unenchanted) weapons and armor descriptions, as well as probability lists of how likely they are to appear
+
 weapons = {
     "Sword": {
         'name': '{}Sword{}',

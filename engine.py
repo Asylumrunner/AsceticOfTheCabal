@@ -10,6 +10,7 @@ from components.item import ItemType
 from components.inventory import Inventory
 from components.fighter import Fighter
 from components.devotee import Devotee
+from components.status_container import StatusContainer
 from menus import main_menu
 from game_messages import MessageLog, Message
 from save import save_game, load_game
@@ -49,16 +50,20 @@ class Engine():
         self.previous_game_state = GameStates.PLAYERS_TURN
         self.game_running = True
         
+    # Creates the player object, with all associated defaults
+    # This can and probably should be moved to another file
     def initialize_player(self):
         player_components = {
             "Fighter": Fighter(hp=3000, defense=2, power=5),
             "Inventory": Inventory(26),
-            "Devotee": Devotee(100)
+            "Devotee": Devotee(100),
+            "StatusContainer": StatusContainer()
         }
 
         return Entity(int(game_constants.screen_width/2), int(game_constants.screen_height/2), '@',
         libtcod.white, "Player", True, RenderOrder.ACTOR, message_log=self.message_log, state=AIStates.INANIMATE, components=player_components)
     
+    # Generates a game map and initializes the FOV map of it
     def build_map(self, level=1):
         self.game_map = GameMap(self.message_log, level)
         self.entities = [self.player]
@@ -67,11 +72,12 @@ class Engine():
         self.fov_recompute = True
         self.fov_map = initialize_fov(self.game_map)
 
+    # Literally 0 recollection what this does
     def grade_map_down(self):
         self.game_map.grade_down()
 
     def cull_dead(self):
-        # Finds every entity in the game world with 0 health and kills them
+        # Finds every entity in the game world with 0 or less health and kills them
         # Returns true if it kills the player, otherwise false
         player_killed = False
         dead_entities = [entity for entity in self.entities if entity.has_component("Fighter") and not entity.get_component("Fighter").isAlive() and entity.char != '%']
@@ -88,6 +94,7 @@ class Engine():
     def send_invalid_action_message(self):
         self.message_log.add_message(Message("Can't do that here"), libtcod.red)
 
+    # Initializes the game's start menu, and captures any player input on that menu and passes it to the appropriate handler
     def start_screen(self):
         show_main_menu = True
 
@@ -168,6 +175,7 @@ class Engine():
                         self.fov_recompute = True
                         self.game_state = GameStates.ENEMY_TURN
             
+            # If the player grabs something, check if there is an object at their feet, and either have them pick it up (if it's an Item) or add it to their wallet (if it's money)
             elif grab and self.game_state == GameStates.PLAYERS_TURN:
                 for item in [entity for entity in self.entities if (entity.has_component("Item") or entity.has_component("Money")) and entity.x == self.player.x and entity.y == self.player.y]:
                     if item.has_component("Money"):
@@ -177,17 +185,19 @@ class Engine():
                     self.entities.remove(item)
                     self.game_state = GameStates.ENEMY_TURN
 
+            # Open up the inventory menu
             elif show_inventory:
                 self.previous_game_state = self.game_state
                 self.game_state = GameStates.INVENTORY_OPEN
             
+            # Open up the equipped menu
             elif show_equipped:
                 self.previous_game_state = self.game_state
                 self.game_state = GameStates.EQUIPPED_OPEN
 
+            # if the player has selected an inventory item to use, get the item object, and equip it if it's vgear, or use it if it's a consumable (like a potion) 
             elif inventory_item is not None and self.previous_game_state != GameStates.PLAYER_DEAD and inventory_item < len(self.player.get_component("Inventory").items):
                 item_entity = self.player.get_component("Inventory").items[inventory_item]
-                print(item_entity.get_component("Item").item_type)
                 if item_entity.get_component("Item").item_type != ItemType.NONE:
                     print("Equipping {}".format(item_entity.name))
                     self.player.get_component("Inventory").equip_item(item_entity)
@@ -196,27 +206,32 @@ class Engine():
                     if item_entity.get_component("Item").use(self.player):
                         self.player.get_component("Inventory").remove_item(item_entity)
             
+            # if the player is in dialogue, provide the dialogue option to the target's Character object
             elif dialogue_option is not None:
                 self.player_target.get_component("Character").talk(dialogue_option)
 
+            # if the player attempts to go down some stairs, make sure they're on stairs, then build a new map and clear the console
             elif go_down and self.game_state == GameStates.PLAYERS_TURN:
                 stairs_candidates = [entity for entity in self.entities if entity.x==self.player.x and entity.y==self.player.y and entity.has_component("Stairs")]
                 if stairs_candidates:
                     self.build_map(stairs_candidates[0].get_component("Stairs").floor)
                     libtcod.console_clear(self.con)
-
             elif save:
                 save_game(self.player, self.entities, self.game_map, self.message_log, self.game_state)
 
+            # if the player draws their gun, change to a player shoot state and await gunfire
             elif self.game_state == GameStates.PLAYERS_TURN and gun:
                 self.previous_game_state = self.game_state
                 self.game_state = GameStates.PLAYER_SHOOT
                 self.message_log.add_message(Message("Taking aim. Click on your target, or e to holster"))
             
+            # if the player already has their gun drawn and presses the draw button, holster it instead
             elif self.game_state == GameStates.PLAYER_SHOOT and holster:
                 self.game_state = self.previous_game_state
                 self.message_log.add_message(Message("Holstered your weapon"))
             
+            # if the player has their gun drawn and clicks on a target, check if there is line of sight
+            # and if so, shoot the target. This sets the AI to hostile if it isn't already (this should be handled by Fighter)
             elif self.game_state == GameStates.PLAYER_SHOOT and self.mouse.lbutton_pressed:
                 target = get_shoot_target(self.mouse, self.entities, self.fov_map)
                 if(target):
@@ -228,6 +243,7 @@ class Engine():
                     else:
                         self.message_log.add_message(Message("You don't have a clear line of sight!"))
             
+            # if the player right clicks something, get open up the inspect menu for that target
             elif self.mouse.rbutton_pressed and self.game_state != GameStates.INSPECT_OPEN:
                 target = get_shoot_target(self.mouse, self.entities, self.fov_map, False)
                 if(target):
@@ -245,9 +261,12 @@ class Engine():
             if fullscreen:
                 libtcod.console_set_fullscreen(not libtcod.console_is_fullscreen())
 
+            # cull_dead returns true if the player is dead, so this conditional calls it to cull the dead, and then
+            # checks if the game is over
             if self.cull_dead():
                 self.game_state = GameStates.PLAYER_DEAD
 
+            # when it's the AI's turn, find every entity that has AI and move it (if it's hostile)
             if self.game_state == GameStates.ENEMY_TURN:
                 for entity in self.entities:
                     if entity.has_component("AI") and entity.state == AIStates.HOSTILE:
@@ -257,6 +276,8 @@ class Engine():
 
                 if self.game_state != GameStates.PLAYER_DEAD:
                     self.game_state = GameStates.PLAYERS_TURN
+
+            # TODO: need a check somewhere around here to tick condition clocks, and then to apply conditions
 
 if __name__ == '__main__':
     engine = Engine()

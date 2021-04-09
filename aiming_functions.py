@@ -1,4 +1,5 @@
 # Credit to Red Blob Games for this logic, found at https://www.redblobgames.com/grids/line-drawing.html
+# Is used to determine if a character has unimpeded line of sight to another character
 def draw_line(point1, point2):
     line = []
     interpolation_points = diagonal_distance(point1, point2)

@@ -1,3 +1,5 @@
+# A one-stop compendium of all qualities (consant buff/debuffs) an item may possess
+
 class Armor:
     def __init__(self, **kwargs):
         self.armor_value = kwargs['armor'] if 'armor' in kwargs else 0

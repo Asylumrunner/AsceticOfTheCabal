@@ -1,5 +1,3 @@
-
-
 """ {
     "utterance": "sup idiot",
     "choices": [

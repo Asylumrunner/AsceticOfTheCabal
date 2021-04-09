@@ -2,6 +2,8 @@ import tcod as libtcod
 import random
 from game_messages import Message 
 
+# A central repository for all of the on-use effects that might be enchanted onto a target
+
 effects = {
     'Healing': {
         'description': " with a warm glow about it that makes you feel calm",
