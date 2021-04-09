@@ -139,8 +139,9 @@ class Engine():
             input = handle_keys(self.key, self.game_state)
             action = input.get('action')
 
-            inventory_item = action.get('inventory_item')
-            dialogue_option = action.get('dialogue_option')
+
+            inventory_item = input.get('inventory_item') if 'inventory_item' in input else None
+            dialogue_option = input.get('dialogue_option') if 'dialogue_option' in input else None
 
             # If players turned and it's their turn to move
             if action == 'move' and self.game_state == GameStates.PLAYERS_TURN:
@@ -178,7 +179,7 @@ class Engine():
                     self.game_state = GameStates.ENEMY_TURN
 
             # Open up the inventory menu
-            elif action == 'inventory':
+            elif action == 'inventory' and inventory_item is None:
                 self.previous_game_state = self.game_state
                 self.game_state = GameStates.INVENTORY_OPEN
             
@@ -189,6 +190,7 @@ class Engine():
 
             # if the player has selected an inventory item to use, get the item object, and equip it if it's vgear, or use it if it's a consumable (like a potion) 
             elif inventory_item is not None and self.previous_game_state != GameStates.PLAYER_DEAD and inventory_item < len(self.player.get_component("Inventory").items):
+                print("making it into the loop")
                 item_entity = self.player.get_component("Inventory").items[inventory_item]
                 if item_entity.get_component("Item").item_type != ItemType.NONE:
                     print("Equipping {}".format(item_entity.name))
@@ -212,7 +214,7 @@ class Engine():
                 save_game(self.player, self.entities, self.game_map, self.message_log, self.game_state)
 
             # if the player draws their gun, change to a player shoot state and await gunfire
-            elif self.game_state == GameStates.PLAYERS_TURN and gun:
+            elif self.game_state == GameStates.PLAYERS_TURN and action == 'gun':
                 self.previous_game_state = self.game_state
                 self.game_state = GameStates.PLAYER_SHOOT
                 self.message_log.add_message(Message("Taking aim. Click on your target, or e to holster"))

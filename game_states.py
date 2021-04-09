@@ -1,5 +1,7 @@
 from enum import Enum
 
+# Some misc. enums which contain the states the game can be in, as well as the AI states
+
 class GameStates(Enum):
     PLAYERS_TURN = 1
     ENEMY_TURN = 2

@@ -3,6 +3,7 @@ from game_constants import npcs, items
 from collections import OrderedDict
 from components.item import ItemType
 
+# A collection of conditionals which are used to inspect entities in the game and give vague readouts to the UI
 def inspect_fighter(entity, desc):
     description_text = desc
     fighter = entity.get_component("Fighter")

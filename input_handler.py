@@ -1,6 +1,8 @@
 import tcod as libtcod
 from game_states import GameStates
 
+# A collection of conditionals which exist to take in an input from the player (either keyboard or mouse) and extrapolate those into a game state
+
 def handle_keys(key, game_state):
     if game_state == GameStates.PLAYERS_TURN:
         return handle_player_turn_key(key)

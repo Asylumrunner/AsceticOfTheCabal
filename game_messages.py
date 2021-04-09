@@ -2,6 +2,7 @@ import tcod as libtcod
 import game_constants
 import textwrap
 
+# Messages are the objects handled by the text log which displays via the UI
 class Message:
     def __init__(self, text, color=libtcod.white):
         self.text = text
