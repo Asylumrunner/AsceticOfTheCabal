@@ -26,7 +26,7 @@ class Fighter:
         if self.owner.has_component("Inventory"):
             eq_weapon = self.owner.get_component("Inventory").get_slot("MELEE")
             unblocked_damage = eq_weapon.get_component("Item").weapon.strength if eq_weapon and eq_weapon.get_component("Item").weapon != None else self.power
-            damage = unblocked_damage - target.get_component("Fighter").defense
+            damage = unblocked_damage - target.get_component("Fighter").get_defense()
 
             #Activate any effects of the Melee item against the target (e.g enchantments)
             if eq_weapon:
@@ -34,7 +34,7 @@ class Fighter:
         
         # if you don't have any weapons, just punchem
         else:
-            damage = self.power - target.get_component("Fighter").defense
+            damage = self.power - target.get_component("Fighter").get_defense()
 
         # if you successfully dealt any damage, inflict that damage on the target, and write a UI message
         if damage > 0:
@@ -75,6 +75,13 @@ class Fighter:
         if money_obj.has_component("Money"):
             self.money += money_obj.get_component("Money").value
     
+    # gets the total defensive value (inherit defense + armor) of a character
+    def get_defense(self):
+        if self.owner.has_component("Inventory"):
+            return self.defense + self.owner.get_component("Inventory").calculate_armor()
+        else:
+            return self.defense
+
     # changes the defense to a given number
     def change_defense(self, defense_value):
         self.defense = defense_value

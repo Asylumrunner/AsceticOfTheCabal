@@ -14,7 +14,7 @@ class ItemType(Enum):
 # This gets _preeeeeetty abstracted_
 
 class Item:
-    def __init__(self, use_function=None, uses=-99, item_type=ItemType.NONE, equip_effects=None, strength=0, **kwargs):
+    def __init__(self, use_function=None, uses=-99, item_type=ItemType.NONE, equip_effects=None, strength=0, defense=0, **kwargs):
         self.use_function = use_function
         self.uses = uses
         self.function_kwargs = kwargs
@@ -25,6 +25,11 @@ class Item:
             self.weapon = Weapon(strength)
         else:
             self.weapon = None
+
+        if defense != 0:
+            self.armor = Armor(defense)
+        else:
+            self.armor = None
     
     # Trigger all existing equip effects, passing in a generic list of kwargs
     def equip(self, **kwargs):
