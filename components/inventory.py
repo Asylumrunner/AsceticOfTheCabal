@@ -73,6 +73,6 @@ class Inventory:
     def calculate_armor(self):
         armor_value = 0
         for slot, item in self.equipped.items():
-            if item and item.get_component("Item").function_kwargs and item.get_component("Item").function_kwargs['armor']:
-                armor_value += item.get_component("Item").function_kwargs['armor']
-        self.owner.get_component("Fighter").change_defense(armor_value)
+            if item and item.get_component("Item").armor:
+                armor_value += item.get_component("Item").armor.armor_value
+        return armor_value

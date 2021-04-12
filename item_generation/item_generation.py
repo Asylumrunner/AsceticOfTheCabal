@@ -9,6 +9,8 @@ import random
 
 # A collection of the functions used to randomly generate a weapon or armor
 
+# Todo: Am I not generating armor? I don't think I am?
+
 def generate_weapon(quality_prob, effect_prob, x, y, log):
     # Pick a base item from base_items using the appropriate probability weights
     item_base = weapons[random.choices(list(weapons.keys()), weapon_weights)[0]].copy()
@@ -48,7 +50,7 @@ def generate_weapon(quality_prob, effect_prob, x, y, log):
 
     # generate an Entity object for the item
     components = {
-        "Item": Item(use_function=item_base['functions'], uses=item_base['uses'], item_type=item_base['type'], equip_effects=item_base['equip_abilities'], strength=item_base['strength'], **item_base['kwargs'])
+        "Item": Item(use_function=item_base['functions'], uses=item_base['uses'], item_type=item_base['type'], equip_effects=item_base['equip_abilities'], strength=item_base['strength'], defense=0, **item_base['kwargs'])
     }
 
     return Entity(x, y, item_base['icon'], item_base['color'], item_base['name'], blocks=False, render_order=RenderOrder.ITEM, message_log=log, state=AIStates.INANIMATE, components=components)

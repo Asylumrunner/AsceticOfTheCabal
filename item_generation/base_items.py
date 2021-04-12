@@ -42,10 +42,7 @@ armor = {
         'desription': 'A slightly-worn cap',
         'uses': -99,
         'type': 1,
-        'equip_abilities': ['Armor'],
-        'kwargs': {
-            'armor': 2
-        }
+        'defense': 3'
     }
 }
 
