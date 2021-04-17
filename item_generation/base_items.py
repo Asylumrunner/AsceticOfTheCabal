@@ -42,7 +42,7 @@ armor = {
         'desription': 'A slightly-worn cap',
         'uses': -99,
         'type': 1,
-        'defense': 3'
+        'defense': 3
     }
 }
 

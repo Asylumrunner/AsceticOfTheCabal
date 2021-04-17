@@ -5,7 +5,9 @@ from components.item import Item
 from entity import Entity
 from render_functions import RenderOrder
 from game_states import AIStates
+from utilities.entity_inspector import inspect_entity
 import random
+import pprint
 
 # A collection of the functions used to randomly generate a weapon or armor
 
@@ -50,8 +52,9 @@ def generate_armor(quality_prob, effect_prob, x, y, log):
     components = {
         "Item": Item(use_function=item_base['functions'], uses=item_base['uses'], item_type=item_base['type'], equip_effects=item_base['equip_abilities'], strength=0, **item_base['kwargs'])
     }
-
+    
     return Entity(x, y, item_base['icon'], item_base['color'], item_base['name'], blocks=False, render_order=RenderOrder.ITEM, message_log=log, state=AIStates.INANIMATE, components=components)
+
 
 def generate_weapon(quality_prob, effect_prob, x, y, log):
     # Pick a base item from base_items using the appropriate probability weights
@@ -95,8 +98,9 @@ def generate_weapon(quality_prob, effect_prob, x, y, log):
         "Item": Item(use_function=item_base['functions'], uses=item_base['uses'], item_type=item_base['type'], equip_effects=item_base['equip_abilities'], strength=item_base['strength'], defense=0, **item_base['kwargs'])
     }
 
-    return Entity(x, y, item_base['icon'], item_base['color'], item_base['name'], blocks=False, render_order=RenderOrder.ITEM, message_log=log, state=AIStates.INANIMATE, components=components)
-
+    item = Entity(x, y, item_base['icon'], item_base['color'], item_base['name'], blocks=False, render_order=RenderOrder.ITEM, message_log=log, state=AIStates.INANIMATE, components=components)
+    inspect_entity(item)
+    return item
 
 def apply_effect(item, effect):
     # if an effect is to be applied, add it, its name, its description, and its kwargs to the item
