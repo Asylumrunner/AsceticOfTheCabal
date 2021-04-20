@@ -4,8 +4,6 @@ from game_states import GameStates
 from menus import inventory_menu, dialogue_menu, equipped_menu, inspect_menu
 import game_constants
 
-#TODO: Annotate this nonsense file
-
 class RenderOrder(Enum):
     CORPSE = 1
     ITEM = 2

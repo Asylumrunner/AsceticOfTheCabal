@@ -47,7 +47,9 @@ class Item:
     def use(self, *args):
         print(self.use_function)
         for function in self.use_function:
-            function(args, self.function_kwargs)
+            print("Use function:")
+            print(args)
+            function(*args, **self.function_kwargs)
         
         if self.uses != -99:
             self.uses -= 1

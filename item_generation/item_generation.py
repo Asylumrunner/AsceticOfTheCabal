@@ -5,7 +5,6 @@ from components.item import Item
 from entity import Entity
 from render_functions import RenderOrder
 from game_states import AIStates
-from utilities.entity_inspector import inspect_entity
 import random
 import pprint
 
@@ -83,7 +82,8 @@ def generate_weapon(quality_prob, effect_prob, x, y, log):
         apply_quality(item_base, quality)
 
     # randomly determine if the item will get an on-use ability, which is randomly chosen and applied to the item
-    if random.random() <= effect_prob:
+    #if random.random() <= effect_prob:
+    if 0 <= effect_prob:
         while True:
             effect = effects[random.choices(list(effects.keys()), effect_weights)[0]].copy()
             if item_base['type'] in effect['targets']:
@@ -99,7 +99,6 @@ def generate_weapon(quality_prob, effect_prob, x, y, log):
     }
 
     item = Entity(x, y, item_base['icon'], item_base['color'], item_base['name'], blocks=False, render_order=RenderOrder.ITEM, message_log=log, state=AIStates.INANIMATE, components=components)
-    inspect_entity(item)
     return item
 
 def apply_effect(item, effect):

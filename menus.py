@@ -4,6 +4,33 @@ from inspect_functions import inspect_entity
 
 #A set of functions designed to assist with drawing various menus (inventory, dialogue, etc)
 
+def new_menu(con, title, text, options, width, selectable=True, image=None, border=None, first_option=0):
+    # con = the console to blit to
+    # title = always one line, the top thing on the menu
+    # text = any nonselectable text that will be put between the text and options
+    # options = either selectable options or just rows of data (for like a status screen)
+    # width = how wide to draw the console
+    # selectable = are options selectable or not
+    # image = an image to draw in the corner of the menu, if there is one
+    # border = the border used to draw the menu
+    # first_option = this will be how I circumvent menu height issues, buy allowing the menu to render the list of options from a starting point
+
+    # These functions together generate the number of lines of screen space that will be needed 
+    #  to print the menu
+    text_height = libtcod.console_get_height_rect(con, 0, 0, width, game_constants.screen_height, text)
+    options_height = min(len(options)-first_option, 12) #this 12 should be a game constant. Eh. Also I think this needs to be retooled for long options
+    height = 7 + text_height + options_height # Two rows of border, two rows of margin next to border, one row of title, one row of margin between title and text, and one row of margin between text and options
+
+    # Then we create and set up the window with the borders
+    window = libtcod.console.Console(width + 4, height) # The plus four comes from the two columns of border, plus two rows of margin
+    libtcod.console_set_default_foreground(window, libtcod.white)
+    libtcod.console_print_rect_ex(window, 0, 0, width+4, 1, border['corner'] + (width+2) * border['top_and_bottom'] + border['corner'])
+    libtcod.console_print_rect_ex(window, 1, 0, 1, height-2, border['side'] * (height-2))
+    libtcod.console_print_rect_ext(window, 1, width, 1, height-2, border['side'] * (height-2))
+    libtcod.console_print_rect_ex(window, 0, height, width+4, 1, border['corner'] + (width+2) * border['top_and_bottom'] + border['corner'])
+
+    
+
 def menu(con, header, options, width, itemized=True):
     #hard-wiring in a maximimal list length of 26 items
     if len(options) > 26:

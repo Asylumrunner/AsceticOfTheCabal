@@ -26,8 +26,6 @@ effects = {
 }
 
 def heal(*args, **kwargs):
-    print(args)
-    print(kwargs)
     entity = args[0]
     amount = kwargs.get('amount')
 
@@ -37,12 +35,9 @@ def heal(*args, **kwargs):
         entity.log.add_message(Message('Healed {0} damage'.format(amount), libtcod.white))
 
 def hematic(*args, **kwargs):
-    print(args)
-    print(kwargs)
     entity = args[0]
     target = args[1]
     blood = random.randint(0, 5)
-    
     entity.get_component("Fighter").take_damage(blood)
     target.get_component("Fighter").take_damage(blood * 2)
 

@@ -32,7 +32,7 @@ item_equip_dict = {
 qualities = {
     "Max_Health_Up": {
         "description": " that emanates a soothing sensation which melts into your skin",
-        "name": "Restorative ",
+        "name": "Invigorating ",
         "kwargs": {
             "health_up": 30
         },
