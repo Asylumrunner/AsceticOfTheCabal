@@ -12,7 +12,7 @@ from game_states import AIStates
 from components.stairs import Stairs
 import numpy as np
 import game_constants
-from item_generation.item_generation import generate_weapon
+from item_generation.item_generation import generate_weapon, generate_armor
 
 class GameMap:
     def __init__(self, message_log, dungeon_level=1):
@@ -138,7 +138,11 @@ class GameMap:
             y = randint(room.y1 + 1, room.y2 -1)
 
             if not any([entity for entity in entities if entity.x == x and entity.y == y]):
-                entities.append(generate_weapon(floor_dict['quality_prob'], floor_dict['effect_prob'], x, y, self.log))
+                weapon_or_armor = randint(0, 1)
+                if weapon_or_armor == 0:
+                    entities.append(generate_weapon(floor_dict['quality_prob'], floor_dict['effect_prob'], x, y, self.log))
+                else:
+                    entities.append(generate_armor(floor_dict['quality_prob'], floor_dict['effect_prob'], x, y, self.log))
 
     # Returns the game_constants data for the current floor
     def get_floor_info(self):

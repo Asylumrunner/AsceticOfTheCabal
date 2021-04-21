@@ -1,5 +1,6 @@
 from enum import Enum
 from components.weapon import Weapon
+from components.armor import Armor
 
 class ItemType(Enum):
     NONE = 0

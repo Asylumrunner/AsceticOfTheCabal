@@ -39,10 +39,12 @@ weapon_weights = [2, 1, 3]
 armor = {
     "Hat": {
         'name': 'Hat',
-        'desription': 'A slightly-worn cap',
+        'description': 'A slightly-worn cap',
         'uses': -99,
         'type': 1,
-        'defense': 3'
+        'defense': 3,
+        'icon': 'A',
+        'color': libtcod.light_green
     }
 }
 

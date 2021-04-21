@@ -12,6 +12,7 @@ import random
 def generate_armor(quality_prob, effect_prob, x, y, log):
     #pick a base item from base_items using the appropriate probability weights
     item_base = armor[random.choices(list(armor.keys()), armor_weights)[0]].copy()
+    print(item_base)
     if 'kwargs' not in item_base:
         item_base['kwargs'] = {}
 
@@ -48,7 +49,7 @@ def generate_armor(quality_prob, effect_prob, x, y, log):
 
     # generate an Entity object for the item
     components = {
-        "Item": Item(use_function=item_base['functions'], uses=item_base['uses'], item_type=item_base['type'], equip_effects=item_base['equip_abilities'], strength=0, **item_base['kwargs'])
+        "Item": Item(use_function=item_base['functions'], uses=item_base['uses'], item_type=item_base['type'], equip_effects=item_base['equip_abilities'], strength=0, defense=item_base['defense'], **item_base['kwargs'])
     }
 
     return Entity(x, y, item_base['icon'], item_base['color'], item_base['name'], blocks=False, render_order=RenderOrder.ITEM, message_log=log, state=AIStates.INANIMATE, components=components)
@@ -97,14 +98,12 @@ def generate_weapon(quality_prob, effect_prob, x, y, log):
 
     return Entity(x, y, item_base['icon'], item_base['color'], item_base['name'], blocks=False, render_order=RenderOrder.ITEM, message_log=log, state=AIStates.INANIMATE, components=components)
 
-
 def apply_effect(item, effect):
     # if an effect is to be applied, add it, its name, its description, and its kwargs to the item
     item['functions'] = item['equip_abilities'] + [item_function_dict[func] for func in effect['hit_effect']]
     item['effect_description'] = effect['description']
     item['effect_name'] = effect['name']
     item['kwargs'] = {**item['kwargs'], **effect['kwargs']}
-    
 
 def apply_quality(item, quality):
     # if a quality is to be applied, add it, its name, its description, and its kwargs to the item
@@ -117,4 +116,3 @@ def format_name(item):
     # compound together all details of an item into a complete description and name
     item['name'] = item['name'].format(item['quality_name'] if 'quality_name' in item else '', item['effect_name'] if 'effect_name' in item else '')
     item['description'] = item['description'].format(item['quality_description'] if 'quality_description' in item else '', item['effect_description'] if 'effect_description' in item else '')
-
