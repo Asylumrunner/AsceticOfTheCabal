@@ -15,6 +15,9 @@ def new_menu(con, title, text, options, width, selectable=True, image=None, bord
     # border = the border used to draw the menu
     # first_option = this will be how I circumvent menu height issues, buy allowing the menu to render the list of options from a starting point
 
+    if border == None:
+        border = game_constants.default_border
+
     # These functions together generate the number of lines of screen space that will be needed 
     #  to print the menu
     text_height = libtcod.console_get_height_rect(con, 0, 0, width, game_constants.screen_height, text)
@@ -24,12 +27,26 @@ def new_menu(con, title, text, options, width, selectable=True, image=None, bord
     # Then we create and set up the window with the borders
     window = libtcod.console.Console(width + 4, height) # The plus four comes from the two columns of border, plus two rows of margin
     libtcod.console_set_default_foreground(window, libtcod.white)
-    libtcod.console_print_rect_ex(window, 0, 0, width+4, 1, border['corner'] + (width+2) * border['top_and_bottom'] + border['corner'])
-    libtcod.console_print_rect_ex(window, 1, 0, 1, height-2, border['side'] * (height-2))
-    libtcod.console_print_rect_ext(window, 1, width, 1, height-2, border['side'] * (height-2))
-    libtcod.console_print_rect_ex(window, 0, height, width+4, 1, border['corner'] + (width+2) * border['top_and_bottom'] + border['corner'])
+    libtcod.console_print_rect_ex(window, 0, 0, width+4, 1, libtcod.BKGND_NONE, libtcod.LEFT, border['corner'] + (width+2) * border['top_and_bottom'] + border['corner'])
+    libtcod.console_print_rect_ex(window, 0, 1, 1, height-2, libtcod.BKGND_NONE, libtcod.LEFT, border['side'] * (height-2))
+    libtcod.console_print_rect_ex(window, width+3, 1, 1, height-2, libtcod.BKGND_NONE, libtcod.LEFT, border['side'] * (height-2))
+    libtcod.console_print_rect_ex(window, 0, height-1, width+4, 1, libtcod.BKGND_NONE, libtcod.LEFT, border['corner'] + (width+2) * border['top_and_bottom'] + border['corner'])
 
+    # Then we print the title and text
+    libtcod.console_print_rect_ex(window, 2, 2, width, 1, libtcod.BKGND_NONE, libtcod.LEFT, title)
+    libtcod.console_print_rect_ex(window, 2, 4, width, text_height, libtcod.BKGND_NONE, libtcod.LEFT, text)
+
+    # Finally, print all options
+    y = text_height + 4
+    letter_index = ord('a')
+    for option_text in options:
+        text = ('(' + chr(letter_index) + ') ' + option_text) if selectable else option_text
+        offset = libtcod.console_print_rect_ex(window, 2, y, width, height, libtcod.BKGND_NONE, libtcod.LEFT, text)
+        y += offset
+        letter_index += 1
     
+    # Then you blit the window to console
+    libtcod.console_blit(window, 0, 0, width+4, height+1, 0, 10, 10, 1.0, 0.7)
 
 def menu(con, header, options, width, itemized=True):
     #hard-wiring in a maximimal list length of 26 items
@@ -72,23 +89,27 @@ def inventory_menu(con, header, inventory):
     else:
         options = [item.name for item in inventory.items]
     
-    menu(con, header, options, 44)
+    #menu(con, header, options, 44)
+    new_menu(con, "Inventory Menu", "Press key to equip/use item", options, 85)
 
 # Creates a dialogue menu for a given dialogue target
 def dialogue_menu(con, dialogue_target):
     dialogue_target_name = dialogue_target.name
     conversation_state = dialogue_target.get_component("Character").get_conversation()
-    menu(con, "<" + dialogue_target_name + ">" + "\n" + conversation_state.utterance, conversation_state.choices, 44)
+    #menu(con, "<" + dialogue_target_name + ">" + "\n" + conversation_state.utterance, conversation_state.choices, 44)
+    new_menu(con, "<" + dialogue_target_name + ">", conversation_state.utterance, conversation_state.choices, 85)
 
 # Creates a menu for the currently equipped gear of the player
 def equipped_menu(con, inventory):
     listed_options = [key + ": " + (inventory.equipped[key].name if inventory.equipped[key] else "None") for key in inventory.equipped]
-    menu(con, "EQUIPPED GEAR", listed_options, 44)
+    #menu(con, "EQUIPPED GEAR", listed_options, 44)
+    new_menu(con, "Equipped Gear", "All gear currently equipped on the Ascetic", listed_options, 85)
 
 # Creates a menu for when the player chooses to inspect an NPC or item
 def inspect_menu(con, inspect_target):
     inspect_details = inspect_entity(inspect_target)
-    menu(con, "INSPECTED ENTITY: {}".format(inspect_target.name), inspect_details, 44, False)
+    #menu(con, "INSPECTED ENTITY: {}".format(inspect_target.name), inspect_details, 44, False)
+    new_menu(con, "Inspected Entity: {}".format(inspect_target.name), "Description should go here", inspect_details, 85, False)
     #add a call to draw_picture here
 
 # Draws a menu for item descriptions

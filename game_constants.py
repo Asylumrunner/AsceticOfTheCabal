@@ -248,3 +248,9 @@ floors = {
         'effect_prob': 0.75
     }
 }
+
+default_border = {
+    'top_and_bottom': '=',
+    'side': '|',
+    'corner': 'X'
+}
