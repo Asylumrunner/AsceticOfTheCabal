@@ -6,6 +6,7 @@ from entity import Entity
 from render_functions import RenderOrder
 from game_states import AIStates
 import random
+import pprint
 
 # A collection of the functions used to randomly generate a weapon or armor
 
@@ -51,8 +52,9 @@ def generate_armor(quality_prob, effect_prob, x, y, log):
     components = {
         "Item": Item(use_function=item_base['functions'], uses=item_base['uses'], item_type=item_base['type'], equip_effects=item_base['equip_abilities'], strength=0, defense=item_base['defense'], **item_base['kwargs'])
     }
-
+    
     return Entity(x, y, item_base['icon'], item_base['color'], item_base['name'], blocks=False, render_order=RenderOrder.ITEM, message_log=log, state=AIStates.INANIMATE, components=components)
+
 
 def generate_weapon(quality_prob, effect_prob, x, y, log):
     # Pick a base item from base_items using the appropriate probability weights
@@ -81,7 +83,8 @@ def generate_weapon(quality_prob, effect_prob, x, y, log):
         apply_quality(item_base, quality)
 
     # randomly determine if the item will get an on-use ability, which is randomly chosen and applied to the item
-    if random.random() <= effect_prob:
+    #if random.random() <= effect_prob:
+    if 0 <= effect_prob:
         while True:
             effect = effects[random.choices(list(effects.keys()), effect_weights)[0]].copy()
             if item_base['type'] in effect['targets']:
@@ -96,7 +99,8 @@ def generate_weapon(quality_prob, effect_prob, x, y, log):
         "Item": Item(use_function=item_base['functions'], uses=item_base['uses'], item_type=item_base['type'], equip_effects=item_base['equip_abilities'], strength=item_base['strength'], defense=0, **item_base['kwargs'])
     }
 
-    return Entity(x, y, item_base['icon'], item_base['color'], item_base['name'], blocks=False, render_order=RenderOrder.ITEM, message_log=log, state=AIStates.INANIMATE, components=components)
+    item = Entity(x, y, item_base['icon'], item_base['color'], item_base['name'], blocks=False, render_order=RenderOrder.ITEM, message_log=log, state=AIStates.INANIMATE, components=components)
+    return item
 
 def apply_effect(item, effect):
     # if an effect is to be applied, add it, its name, its description, and its kwargs to the item
