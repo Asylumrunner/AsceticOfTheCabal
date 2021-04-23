@@ -1,4 +1,5 @@
 import csv
+import pathlib
 
 #A utility function which reads in a JSON file and converts it into
 # a dictionary
@@ -15,11 +16,12 @@ import csv
 #    into whatever they're actually supposed to be
 
 def read_csv_to_dict(file_name):
-    response = []
+    dict_response = {}
     with open(file_name) as csv_file:
         csv_reader = csv.DictReader(csv_file)
         first_line = True
         for row in csv_reader:
-            response.append(row.copy())
-    return response
+            if 'key' in row:
+                dict_response[row['key']] = row
+    return dict_response
 

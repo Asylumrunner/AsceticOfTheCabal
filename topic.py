@@ -21,8 +21,8 @@
 } """
 
 class Conversation():
-    def __init__(self, conversation_dict):
-        self.root = self.bookmark = Topic(conversation_dict['utterance'], None, conversation_dict['choices'])
+    def __init__(self, start, conversation_dict):
+        self.root = self.bookmark = Topic(start, conversation_dict)
     
     def respond(self, index):
         if index < len(self.bookmark.responses) and self.bookmark.responses[index].shop == None:
@@ -35,8 +35,8 @@ class Conversation():
         self.bookmark = self.root
 
 class Topic():
-    def __init__(self, utterance, shop=None, choices=None):
-        self.utterance = utterance
+    def __init__(self, utterance, conversation_dict, shop=None):
+        self.utterance = conversation_dict[str(utterance)]['utterance']
         self.shop = shop
-        self.choices = [choice["player_utterance"] for choice in choices]
-        self.responses = [Topic(choice["response"]["utterance"], None, choice["response"]["choices"]) for choice in choices]
+        self.choices = [value for key, value in conversation_dict[str(utterance)].items() if 'choice' in key and value != '']
+        self.responses = [Topic(value, conversation_dict) for key, value in conversation_dict[str(utterance)].items() if 'goto' in key and value != '']

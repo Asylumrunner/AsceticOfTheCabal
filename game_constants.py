@@ -49,33 +49,6 @@ npcs = {
         'power': 3,
         'state': AIStates.FRIENDLY,
         'description': 'A lumbering green orc, with jagged teeth and a dim expression',
-        'conv': {
-            'utterance': 'Did you know Coca Cola is made with real cocaine?',
-            'choices': [
-                {
-                    'player_utterance': 'No it\'s coca leaves, not cocaine',
-                    'response': {
-                        'utterance': 'Whatever, fuck you man',
-                        'choices': []
-                    }
-                },
-                {
-                    'player_utterance': 'Where\'d you learn that?',
-                    'response': {
-                        'utterance': 'Joe Rogan podcast, dude. Check it out',
-                        'choices': [
-                            {
-                                'player_utterance': 'Isn\'t Joe Rogan that crazy guy who talks about DMT?',
-                                'response': {
-                                    'utterance': 'Not wrong.',
-                                    'choices': []
-                                }
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
         'money': 10
     },
     'Troll': {
@@ -99,10 +72,7 @@ npcs = {
         'state': AIStates.FRIENDLY,
         'description': 'A tall, gaunt figure in a dark robe, with a mask of a single eye. Looks unhuman',
         'money': 100,
-        'conv': {
-            'utterance': 'Begone human. My observations must be unimpeded',
-            'choices': []
-        }
+        'conv': '1'
     },
     'Citizen': {
         'icon': 'a',
@@ -114,25 +84,7 @@ npcs = {
         'state': AIStates.FRIENDLY,
         'description': 'A human inhabitant of this city. Looks tired and dissheveled',
         'money': 10,
-        'conv': {
-            'utterance': 'Howdy stranger! Welcome to town! What brings you here?',
-            'choices': [
-                {
-                    'player_utterance': 'Just passin\' through.',
-                    'response': {
-                        'utterance': "Well, be sure to go pray to the City God before you leave!",
-                        'choices': []
-                    }
-                },
-                {
-                    'player_utterance': "I worship the Cabal. I'm here to kill your God",
-                    'response': {
-                        'utterance': "GUARDS! GUARDS! HERETIC!",
-                        'choices': []
-                    }
-                }
-            ]
-        }
+        'conv': 2
     },
     'Godspawn': {
         'icon': 'G',

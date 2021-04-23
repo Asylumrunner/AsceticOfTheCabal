@@ -113,7 +113,7 @@ class GameMap:
         monster_data = game_constants.npcs[name]
         monster_components = {
             "Fighter": Fighter(hp = monster_data['hp'], defense = monster_data['defense'], power = monster_data['power'], money = monster_data['money']),
-            "Character": Character(description = monster_data['description'], conv_options = monster_data['conv']) if 'conv' in monster_data else None,
+            "Character": Character(monster_data['description'], monster_data['conv']) if 'conv' in monster_data else None,
             "AI": BasicMonster()
         }
         return Entity(x, y, monster_data['icon'], monster_data['color'], monster_data['name'], 
