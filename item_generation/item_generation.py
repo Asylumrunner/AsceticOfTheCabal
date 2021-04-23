@@ -83,8 +83,7 @@ def generate_weapon(quality_prob, effect_prob, x, y, log):
         apply_quality(item_base, quality)
 
     # randomly determine if the item will get an on-use ability, which is randomly chosen and applied to the item
-    #if random.random() <= effect_prob:
-    if 0 <= effect_prob:
+    if random.random() <= effect_prob:
         while True:
             effect = effects[random.choices(list(effects.keys()), effect_weights)[0]].copy()
             if item_base['type'] in effect['targets']:
@@ -104,14 +103,14 @@ def generate_weapon(quality_prob, effect_prob, x, y, log):
 
 def apply_effect(item, effect):
     # if an effect is to be applied, add it, its name, its description, and its kwargs to the item
-    item['functions'] = item['equip_abilities'] + [item_function_dict[func] for func in effect['hit_effect']]
+    item['functions'] = item['functions'] + [item_function_dict[func] for func in effect['hit_effect']]
     item['effect_description'] = effect['description']
     item['effect_name'] = effect['name']
     item['kwargs'] = {**item['kwargs'], **effect['kwargs']}
 
 def apply_quality(item, quality):
     # if a quality is to be applied, add it, its name, its description, and its kwargs to the item
-    item['equip_abilities'] = item['functions'] + [item_equip_dict[effect](**quality['kwargs']) for effect in quality['effects']]
+    item['equip_abilities'] = item['equip_abilities'] + [item_equip_dict[effect](**quality['kwargs']) for effect in quality['effects']]
     item['quality_description'] = quality['description']
     item['quality_name'] = quality['name']
     item['kwargs'] = {**item['kwargs'], **quality['kwargs']}
