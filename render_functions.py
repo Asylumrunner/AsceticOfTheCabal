@@ -107,6 +107,8 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
     elif game_state == GameStates.DIALOGUE and target:
         #character_portrait(target)
         dialogue_menu(con, target)
+    elif game_state == GameStates.SHOPPING and target:
+        shopping_menu(con, target)
     elif game_state == GameStates.EQUIPPED_OPEN:
         equipped_menu(con, player.get_component("Inventory"))
     elif game_state == GameStates.INSPECT_OPEN:

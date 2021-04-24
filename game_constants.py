@@ -206,3 +206,9 @@ default_border = {
     'side': '|',
     'corner': 'X'
 }
+
+shop_border = {
+    'top_and_bottom': '~',
+    'side': '|',
+    'corner': '$'
+}

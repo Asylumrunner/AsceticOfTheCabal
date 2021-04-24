@@ -12,6 +12,7 @@ class GameStates(Enum):
     PLAYER_SHOOT = 7
     EQUIPPED_OPEN = 8
     INSPECT_OPEN = 9
+    SHOPPING = 10
 
 class AIStates(Enum):
     INANIMATE = 0

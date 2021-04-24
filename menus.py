@@ -88,6 +88,11 @@ def item_detail_menu(con, item):
     listed_attributes = [item_type, description, uses]
     menu(con, item.name, description, listed_attributes, 85, False)
 
+def shopping_menu(con, shopkeeper):
+    choices = ["{} (${})".format(item.name, item.get_component('item').get_cost()) for item in shopkeeper.get_component("Shop").get_items()]
+    shopkeeper_text = shopkeeper.get_component("Shop").text
+    menu(con, shopkeeper.name, shopkeeper_text, choices, 85, True, None, game_constants.shop_border)
+
 # Draws the main menu of the game on boot
 def main_menu(con, background_image):
     libtcod.image_blit_2x(background_image, con, 0, 0)

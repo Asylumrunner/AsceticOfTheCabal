@@ -202,7 +202,9 @@ class Engine():
             
             # if the player is in dialogue, provide the dialogue option to the target's Character object
             elif dialogue_option is not None:
-                self.player_target.get_component("Character").talk(dialogue_option)
+                dialogue_response = self.player_target.get_component("Character").talk(dialogue_option)
+                if dialogue_response.shop:
+                    self.game_state = GameStates.SHOPPING
 
             # if the player attempts to go down some stairs, make sure they're on stairs, then build a new map and clear the console
             elif action == 'go_down' and self.game_state == GameStates.PLAYERS_TURN:
@@ -246,7 +248,7 @@ class Engine():
                     self.game_state = GameStates.INSPECT_OPEN
                 
             # Exit the game
-            if action == 'exit' and (self.game_state in [GameStates.INVENTORY_OPEN, GameStates.DIALOGUE, GameStates.EQUIPPED_OPEN]):
+            if action == 'exit' and (self.game_state in [GameStates.INVENTORY_OPEN, GameStates.DIALOGUE, GameStates.EQUIPPED_OPEN, GameStates.SHOPPING]):
                 self.game_state = self.previous_game_state
             elif action == 'exit':
                 return True

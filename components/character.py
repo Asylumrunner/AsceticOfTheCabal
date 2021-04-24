@@ -17,6 +17,9 @@ class Character():
     # Progress the conversation forward with a dialogue option
     def talk(self, response_index=None):
         if response_index is not None:
-            return self.conv_options.respond(response_index)
+            response = self.conv_options.respond(response_index)
+            if response.shop:
+                self.conv_options.reset()
+            return response
         else:
             return self.conv_options.bookmark
