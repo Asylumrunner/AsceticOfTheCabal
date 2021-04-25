@@ -96,7 +96,68 @@ npcs = {
         'state': AIStates.HOSTILE,
         'description': 'A hulking mass, humanoid, but resembling the God of this City. One of its children',
         'money': 0
+    },
+    'Jeff Shopkeep': {
+        'icon': 'S',
+        'color': libtcod.light_green,
+        'name': "Jeff Shopkeep",
+        'hp': 9,
+        'defense': 0,
+        'power': 5,
+        'state': AIStates.FRIENDLY,
+        'description': 'A guy in a big coat who keeps goin Eyyyy gonna buy somethin gabagool',
+        'shop_description': "Fuck you buy my garbage",
+        'money': 10,
+        'conv': 5,
+        'shop': 'Default'
     }
+}
+
+shops = {
+    'Default': [
+        {
+            'icon': 'a',
+            'color': libtcod.lighter_red,
+            'description': "A cool hat that makes you feel like a cool guy",
+            'name': 'Cool Hat',
+            'uses': -99,
+            'type': 1,
+            'functions': [],
+            'cost': 10,
+            'strength': 0,
+            'defense': 1,
+            'equip_abilities': [],
+            'kwargs': {}
+        },
+        {
+            'icon': 'a',
+            'color': libtcod.lighter_red,
+            'description': "A cool hat that makes you feel like a cool guy",
+            'name': 'Cooler Hat',
+            'uses': -99,
+            'type': 1,
+            'functions': [],
+            'cost': 15,
+            'strength': 0,
+            'defense': 2,
+            'equip_abilities': [],
+            'kwargs': {}
+        },
+        {
+            'icon': 'a',
+            'color': libtcod.lighter_red,
+            'description': "A cool hat that makes you feel like a cool guy",
+            'name': 'Coolest Hat',
+            'uses': -99,
+            'type': 1,
+            'functions': [],
+            'cost': 20,
+            'strength': 0,
+            'defense': 3,
+            'equip_abilities': [],
+            'kwargs': {}
+        }
+    ]
 }
 
 items = {
@@ -131,8 +192,8 @@ items = {
 floors = {
     (1, 2, 3): {
         'enemies': {
-            'names': ['Citizen', 'Godspawn', 'Troll', 'Eye of the Divine'],
-            'distribution': [0.69, 0.01, 0.2, 0.1]
+            'names': ['Citizen', 'Godspawn', 'Troll', 'Eye of the Divine', 'Jeff Shopkeep'],
+            'distribution': [0.49, 0.01, 0.2, 0.1, 0.2]
         },
         'colors': {
             'dark_wall': libtcod.dark_grey,

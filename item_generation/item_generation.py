@@ -50,7 +50,7 @@ def generate_armor(quality_prob, effect_prob, x, y, log):
 
     # generate an Entity object for the item
     components = {
-        "Item": Item(use_function=item_base['functions'], uses=item_base['uses'], item_type=item_base['type'], equip_effects=item_base['equip_abilities'], strength=0, defense=item_base['defense'], **item_base['kwargs'])
+        "Item": Item(use_function=item_base['functions'], uses=item_base['uses'], item_type=item_base['type'], equip_effects=item_base['equip_abilities'], strength=0, defense=item_base['defense'], price = item_base['price'], **item_base['kwargs'])
     }
     
     return Entity(x, y, item_base['icon'], item_base['color'], item_base['name'], blocks=False, render_order=RenderOrder.ITEM, message_log=log, state=AIStates.INANIMATE, components=components)
@@ -95,7 +95,7 @@ def generate_weapon(quality_prob, effect_prob, x, y, log):
 
     # generate an Entity object for the item
     components = {
-        "Item": Item(use_function=item_base['functions'], uses=item_base['uses'], item_type=item_base['type'], equip_effects=item_base['equip_abilities'], strength=item_base['strength'], defense=0, **item_base['kwargs'])
+        "Item": Item(use_function=item_base['functions'], uses=item_base['uses'], item_type=item_base['type'], equip_effects=item_base['equip_abilities'], strength=item_base['strength'], defense=0, price = item_base['price'], **item_base['kwargs'])
     }
 
     item = Entity(x, y, item_base['icon'], item_base['color'], item_base['name'], blocks=False, render_order=RenderOrder.ITEM, message_log=log, state=AIStates.INANIMATE, components=components)

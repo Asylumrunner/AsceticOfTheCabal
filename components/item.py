@@ -15,12 +15,13 @@ class ItemType(Enum):
 # This gets _preeeeeetty abstracted_
 
 class Item:
-    def __init__(self, use_function=None, uses=-99, item_type=ItemType.NONE, equip_effects=None, strength=0, defense=0, **kwargs):
+    def __init__(self, use_function=None, uses=-99, item_type=ItemType.NONE, equip_effects=None, strength=0, defense=0, price=0, **kwargs):
         self.use_function = use_function
         self.uses = uses
         self.function_kwargs = kwargs
         self.item_type = item_type
         self.equip_effects = equip_effects
+        self.price = price
 
         if strength != 0:
             self.weapon = Weapon(strength)
@@ -42,6 +43,9 @@ class Item:
     def unequip(self, **kwargs):
         for effect in self.equip_effects:
             effect.unequip(**kwargs)
+    
+    def get_cost(self):
+        return self.price
     
     # Use the item one time, calling every use function and passing in the function_kwargs set at init as well as any args given now
     # if the item has limited uses, tick those uses down one and return if it needs to be destroyed

@@ -142,6 +142,7 @@ class Engine():
 
             inventory_item = input.get('inventory_item') if 'inventory_item' in input else None
             dialogue_option = input.get('dialogue_option') if 'dialogue_option' in input else None
+            shop_option = input.get('shop_option') if 'shop_option' in input else None
 
             # If players turned and it's their turn to move
             if action == 'move' and self.game_state == GameStates.PLAYERS_TURN:
@@ -246,6 +247,10 @@ class Engine():
                     self.player_target = target
                     self.previous_game_state = self.game_state
                     self.game_state = GameStates.INSPECT_OPEN
+            
+            # If the player is buying something, they make the purchase
+            elif action == 'buy' and shop_option is not None:
+                target.get_component("Shop").purchase(shop_option, self.player)
                 
             # Exit the game
             if action == 'exit' and (self.game_state in [GameStates.INVENTORY_OPEN, GameStates.DIALOGUE, GameStates.EQUIPPED_OPEN, GameStates.SHOPPING]):

@@ -1,7 +1,7 @@
 import tcod as libtcod
 from enum import Enum
 from game_states import GameStates
-from menus import inventory_menu, dialogue_menu, equipped_menu, inspect_menu
+from menus import inventory_menu, dialogue_menu, equipped_menu, inspect_menu, shopping_menu
 import game_constants
 
 class RenderOrder(Enum):

@@ -89,8 +89,8 @@ def item_detail_menu(con, item):
     menu(con, item.name, description, listed_attributes, 85, False)
 
 def shopping_menu(con, shopkeeper):
-    choices = ["{} (${})".format(item.name, item.get_component('item').get_cost()) for item in shopkeeper.get_component("Shop").get_items()]
-    shopkeeper_text = shopkeeper.get_component("Shop").text
+    choices = ["{} (${})".format(item.name, item.get_component('Item').get_cost()) for item in shopkeeper.get_component("Shop").get_items()]
+    shopkeeper_text = shopkeeper.get_component("Shop").description
     menu(con, shopkeeper.name, shopkeeper_text, choices, 85, True, None, game_constants.shop_border)
 
 # Draws the main menu of the game on boot

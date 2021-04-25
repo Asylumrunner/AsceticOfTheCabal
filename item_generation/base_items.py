@@ -10,6 +10,7 @@ weapons = {
         'type': 5,
         'strength': 5,
         'icon': 'T',
+        'price': 5,
         'color': libtcod.light_blue
     },
     "Axe": {
@@ -19,6 +20,7 @@ weapons = {
         'type': 5,
         'strength': 10,
         'icon': 'P',
+        'price': 10,
         'color': libtcod.light_blue
     },
     "Knife": {
@@ -29,6 +31,7 @@ weapons = {
         'strength': 3,
         'hit_abilities': ['Backstab'],
         'icon': 't',
+        'price': 3,
         'color': libtcod.light_blue
 
     }
@@ -44,6 +47,7 @@ armor = {
         'type': 1,
         'defense': 3,
         'icon': 'A',
+        'price': '10',
         'color': libtcod.light_green
     }
 }
