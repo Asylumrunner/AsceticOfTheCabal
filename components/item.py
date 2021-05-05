@@ -24,7 +24,8 @@ class Item:
         self.price = price
 
         if strength != 0:
-            self.weapon = Weapon(strength)
+            ammo = kwargs['ammo'] if 'ammo' in kwargs else 0
+            self.weapon = Weapon(strength, ammo)
         else:
             self.weapon = None
 

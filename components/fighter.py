@@ -40,12 +40,39 @@ class Fighter:
         if damage > 0:
             target.get_component("Fighter").take_damage(damage)
             self.owner.log.add_message(Message('{0} attacks {1}, dealing {2} damage'.format(self.owner.name.capitalize(), target.name.capitalize(), damage), libtcod.white))
-            #TODO: what the fuck does this do?
-            if self.owner.has_component("Inventory") and self.owner.get_component("Inventory").slot_filled("WEAPON"):
-                weapon = self.owner.get_component("Inventory").get_slot("WEAPON")
-                weapon.get_component("Item").use(self.owner, target)
         else:
-            self.owner.log.add_message(Message('Get absolutely rekt, {0}, {1}\'s armor is too strong and repels your attack'.format(self.owner.name.capitalize(), target.name.capitalize()), libtcod.white))
+            self.owner.log.add_message(Message('{0}\'s armor is too strong and repels the attack'.format(target.name.capitalize()), libtcod.white))
+
+    # A modified attack function designed to handle ranged attacks
+    def ranged_attack(self, target):
+        # Unlike a regular attack, not every single entity is capable of making a melee attack. Characters either need to have a ranged weapon equipped, or a base ranged attack
+        # Certain monsters will have a ranged attack by default, but the player does not.
+        # This logic will almost certainly require expansion later on to account for monsters making ranged attacks of their own volition to the player
+        # But for the moment it's basically only going to handle the player's ranged attacks
+
+        if self.owner.has_component("Inventory") and self.owner.get_component("Inventory").slot_filled("RANGED"):
+            eq_weapon = self.owner.get_component("Inventory").get_slot("RANGED")
+            if eq_weapon and eq_weapon.get_component("Item").weapon != None and eq_weapon.get_component("Item").weapon.ammo > 0:
+                unblocked_damage = eq_weapon.get_component("Item").weapon.strength
+                damage = max(unblocked_damage - target.get_component("Fighter").get_defense(), 0)
+                eq_weapon.get_component("Item").weapon.ammo -= 1
+
+                #Activate any effects of the Ranged item against the target (e.g enchantments)
+                if eq_weapon:
+                    eq_weapon.get_component("Item").use(self.owner, target)
+
+            elif eq_weapon and eq_weapon.get_component("Item").weapon != None:
+                self.owner.log.add_message(Message("CLICK! Out of bullets", libtcod.red))
+                damage = -1
+
+        else:
+            damage = -1
+
+        if damage > 0:
+            target.get_component("Fighter").take_damage(damage)
+            self.owner.log.add_message(Message('{0} attacks {1}, dealing {2} damage'.format(self.owner.name.capitalize(), target.name.capitalize(), damage), libtcod.white))
+        elif damage == 0:
+            self.owner.log.add_message(Message('{0}\'s armor is too strong and repels the attack'.format(target.name.capitalize()), libtcod.white))
 
     # return a boolean value if you have at least 1 HP
     def isAlive(self):
