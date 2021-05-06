@@ -37,6 +37,22 @@ weapons = {
     }
 }
 
+starting_pistol = {
+    'name': 'Ascetic\'s Pistol',
+    'description': 'Given to you by the Cabal at the start of your pilgrimmage',
+    'uses': -99,
+    'type': 6,
+    'strength': 3,
+    'icon': 'r',
+    'price': 1,
+    'color': libtcod.red,
+    'functions': [],
+    'equip_abilities': [],
+    'kwargs': {
+        'ammo': 6
+    }
+}
+
 weapon_weights = [2, 1, 3]
 
 armor = {

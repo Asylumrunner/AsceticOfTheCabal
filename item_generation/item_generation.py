@@ -1,4 +1,4 @@
-from .base_items import weapons, armor, weapon_weights, armor_weights
+from .base_items import weapons, armor, weapon_weights, armor_weights, starting_pistol
 from .qualities  import qualities, quality_weights, item_equip_dict
 from .item_functions import item_function_dict, effects, effect_weights
 from components.item import Item
@@ -125,3 +125,13 @@ def format_name(item):
     # compound together all details of an item into a complete description and name
     item['name'] = item['name'].format(item['quality_name'] if 'quality_name' in item else '', item['effect_name'] if 'effect_name' in item else '')
     item['description'] = item['description'].format(item['quality_description'] if 'quality_description' in item else '', item['effect_description'] if 'effect_description' in item else '')
+
+def generate_starting_pistol(log):
+    # sort of a weird one, this function puts together the Ascetic's Pistol that every run begins with
+    components = {
+        'Item': Item(use_function=starting_pistol['functions'], uses=starting_pistol['uses'], item_type=starting_pistol['type'], equip_effects=starting_pistol['equip_abilities'], strength=starting_pistol['strength'], defense=0, price=starting_pistol['price'], **starting_pistol['kwargs'])
+    }
+
+    gun = Entity(0, 0, starting_pistol['icon'], starting_pistol['color'], starting_pistol['name'], blocks=False, render_order=RenderOrder.ITEM, message_log=log, state=AIStates.INANIMATE, components=components)
+
+    return gun

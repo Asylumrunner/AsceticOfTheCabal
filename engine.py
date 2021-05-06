@@ -15,6 +15,7 @@ from menus import main_menu
 from game_messages import MessageLog, Message
 from save import save_game, load_game
 from aiming_functions import draw_line
+from item_generation.item_generation import generate_starting_pistol
 import game_constants
 
 #TODO: Update comments
@@ -60,8 +61,11 @@ class Engine():
             "StatusContainer": StatusContainer()
         }
 
-        return Entity(int(game_constants.screen_width/2), int(game_constants.screen_height/2), '@',
+        player = Entity(int(game_constants.screen_width/2), int(game_constants.screen_height/2), '@',
         libtcod.white, "Player", True, RenderOrder.ACTOR, message_log=self.message_log, state=AIStates.INANIMATE, components=player_components)
+
+        player.get_component("Inventory").equip_item(generate_starting_pistol(self.message_log))
+        return player
     
     # Generates a game map and initializes the FOV map of it
     def build_map(self, level=1):
@@ -218,9 +222,12 @@ class Engine():
 
             # if the player draws their gun, change to a player shoot state and await gunfire
             elif self.game_state == GameStates.PLAYERS_TURN and action == 'gun':
-                self.previous_game_state = self.game_state
-                self.game_state = GameStates.PLAYER_SHOOT
-                self.message_log.add_message(Message("Taking aim. Click on your target, or e to holster"))
+                if(self.player.get_component("Inventory").slot_filled("RANGED")):
+                    self.previous_game_state = self.game_state
+                    self.game_state = GameStates.PLAYER_SHOOT
+                    self.message_log.add_message(Message("Taking aim. Click on your target, or e to holster"))
+                else:
+                    self.message_log.add_message(Message("No ranged weapon equipped!"))
             
             # if the player already has their gun drawn and presses the draw button, holster it instead
             elif self.game_state == GameStates.PLAYER_SHOOT and action == 'holster':
@@ -234,7 +241,7 @@ class Engine():
                 if(target):
                     line_of_sight = draw_line((self.player.x, self.player.y), (target.x, target.y))
                     if not [space for space in line_of_sight if self.game_map.is_blocked(space[0], space[1])]:
-                        self.player.get_component("Fighter").attack(target)
+                        self.player.get_component("Fighter").ranged_attack(target)
                         target.state = AIStates.HOSTILE
                         self.game_state = GameStates.ENEMY_TURN
                     else:
