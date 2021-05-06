@@ -14,6 +14,7 @@ from components.stairs import Stairs
 import numpy as np
 import game_constants
 from item_generation.item_generation import generate_weapon, generate_armor
+import time
 
 class GameMap:
     def __init__(self, message_log, dungeon_level=1):
@@ -32,6 +33,7 @@ class GameMap:
     # Generates a usable game map out of rooms and the hallways connecting them
     # This algorithm will need to be refined in the future, and reworked for the city maps
     def make_map(self, player, entities):
+        start_time = time.time()
         rooms = []
         num_rooms = 0
 
@@ -44,7 +46,7 @@ class GameMap:
         # Then fill it with stuff and keep going
         for r in range(game_constants.max_rooms):
             w = randint(game_constants.room_min_size, game_constants.room_max_size)
-            h = randint(game_constants.room_min_size, game_constants.room_max_size)    
+            h = randint(game_constants.room_min_size, game_constants.room_max_size) 
 
             x = randint(0, game_constants.map_width - w - 1)
             y = randint(0, game_constants.map_height - h - 1)
@@ -62,7 +64,6 @@ class GameMap:
                 if num_rooms == 0:
                     player.x = new_x
                     player.y = new_y
-                    print("Placing player at {}, {}".format(player.x, player.y))
                     libtcod.mouse_move(player.x, player.y)
                 else:
                     (prev_x, prev_y) = rooms[num_rooms - 1].center()
@@ -82,6 +83,8 @@ class GameMap:
         stairs_entity = Entity(center_of_last_room_x, center_of_last_room_y, ">", libtcod.white,"Stairs Down", blocks=True, render_order=RenderOrder.ACTOR, 
                 message_log=self.log, state=AIStates.INANIMATE, components=stairs_components)
         entities.append(stairs_entity)
+
+        print("Map generated in {} seconds".format(time.time() - start_time))
     
     # checks to see if a given x,y coordinate is blocked
     def is_blocked(self, x, y):

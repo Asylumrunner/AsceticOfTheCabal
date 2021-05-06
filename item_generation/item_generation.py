@@ -13,9 +13,9 @@ import pprint
 def generate_armor(quality_prob, effect_prob, x, y, log):
     #pick a base item from base_items using the appropriate probability weights
     item_base = armor[random.choices(list(armor.keys()), armor_weights)[0]].copy()
-    print(item_base)
     if 'kwargs' not in item_base:
         item_base['kwargs'] = {}
+
 
     # If the item base has any qualities (why the fuck am I calling them equip abilities that is deeply confusing), add them to the item
     if 'equip_abilities' not in item_base:
@@ -31,19 +31,25 @@ def generate_armor(quality_prob, effect_prob, x, y, log):
 
     # randomly determine if the item will get a quality, which is randomly chose and applied to the item
     if random.random() <= quality_prob:
-        while True:
+        tries = 5
+        while tries > 0:
             quality = qualities[random.choices(list(qualities.keys()), quality_weights)[0]].copy()
             if item_base['type'] in quality['targets']:
+                apply_quality(item_base, quality)
                 break
-        apply_quality(item_base, quality)
+            else:
+                tries -= 1
 
     # randomly determine if the item will get an on-use ability, which is randomly chosen and applied to the item
     if random.random() <= effect_prob:
-        while True:
+        tries = 5
+        while tries > 0:
             effect = effects[random.choices(list(effects.keys()), effect_weights)[0]].copy()
             if item_base['type'] in effect['targets']:
+                apply_effect(item_base, effect)
                 break
-        apply_effect(item_base, effect)
+            else:
+                tries -= 1
 
     # set the item's name to reflect any qualities or on-use abilities it has
     format_name(item_base)
