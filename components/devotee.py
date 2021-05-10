@@ -1,4 +1,5 @@
 from enum import Enum
+from utilities.csv_reader import read_csv_to_dict
 #from god_abilities import abilities
 
 class CabalGods(Enum):
@@ -9,14 +10,18 @@ class CabalGods(Enum):
     PARAGONOTH = 5
     MISTER_VIVISECT = 6
     CHRYSANTHEMUM_OF_THE_COLDEST_COLD = 7
+    THE_RED_RAVEN_PRINCE = 8
 
 # A class used to hold Devotion, the resource used to cast Cabal spells
 # Still very much under construction as the Cabal systems are implemented
 class Devotee:
-    def __init__(self, max_devotion, god=CabalGods.MERCURIAL_CALAMITY):
+    def __init__(self, max_devotion, god=CabalGods.THE_RED_RAVEN_PRINCE):
         self.max_devotion = max_devotion
         self.curr_devotion = max_devotion
         self.god = god
+
+        god_data = read_csv_to_dict('./data/cabal.csv')
+        self.god_info = god_data[god]
     
     #add the given modifier to current devotion, using 0 and max_devotion as bounds
     def modify_devotion(self, devotion):
