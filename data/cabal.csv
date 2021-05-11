@@ -1,0 +1,9 @@
+index,name,subtitle,buff_text,passive_text,active_text,active_cost
+1,Mercurial Calamity,Cabal God of the Hunger That Shall Consume All,Consumable item effects,"Starvation - When you use a consumable, you use all of it at once",Wave of Consumption - Usher forth a wave of spiders from your stomach,10
+2,Xalan Nore,Cabal God Which Pierces The Veil And Shows Life And Death Are One,Melee damage,Facade of Mortality - Every single character in the game is Undead,Impermanence of Life - Drop to 0 Health. You are immortal for 5 turns.,10
+3,Oblivion,Cabal God Screaming The Ten Quadrillion Names Of Every Number That Will Ever Happen In Sequence,Sight distance,Calculable Incalculability - See the strings of reality,The Calculus of Things Greater Than Divine - Add a room of your choice to the next floor,10
+4,Legionous Parabellica,Cabal God of Seven,Consumable item uses,"Transcendent Heptagonium - Incoming blessed damage is nullified, outgoing blessed damage is doubled",The Bringer of Seven - Replace your current gun with The Bringer of the Seven,10
+5,Paragonoth,Cabal God Who Abhors All Currency of the Mortal Plane,Health,Inimical To Coinhandlers - Every shopkeeper in the game is hostile,Purity of Destruction - Consume all of your money for a one-time damage buff,10
+6,Mister Vivisect,Cabal God of Things Born of Reality Configured In Such A Way As To Become Fundamentally Unreal,Ranged damage,Fleshmonger - Mister Vivisect grants you a friend,Stitch The Flesh - Consume a corpse to summon or enhance a Fleshmonger,10
+7,Chrysanthemum of the Coldest Cold,Cabal God Who Is Shaper of Shapes,Armor,,,10
+8,The Red Raven Prince,Cabal God Who Ushers In A New Age,Enchanted item odds,A Known Enemy - The Prince whispers the name of your adversary in your ear,Undivine Retribution - Strike against every enemy in sight,10

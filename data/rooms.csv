@@ -1,0 +1,9 @@
+key,min_floor,max_floor,minor_enemies,med_enemies,major_enemies,boss,shopkeeper,neutrals,item_spawn,shrine,environment
+1,1,10,0,0,0,0,0,1,1,0,0
+2,1,10,0,0,0,0,1,0,0,0,0
+3,1,10,0,1,0,0,0,0,0,0,0
+4,1,10,1,0,0,0,0,0,0,0,0
+5,1,10,1,0,0,0,0,1,0,0,0
+6,1,10,2,0,0,0,0,1,1,0,0
+7,2,10,2,1,0,0,0,0,1,0,0
+8,2,10,3,0,0,0,0,0,0,0,0
