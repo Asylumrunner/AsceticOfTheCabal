@@ -191,9 +191,25 @@ items = {
 
 floors = {
     (1, 2, 3): {
-        'enemies': {
-            'names': ['Citizen', 'Godspawn', 'Troll', 'Eye of the Divine', 'Jeff Shopkeep'],
-            'distribution': [0.49, 0.01, 0.2, 0.1, 0.2]
+        'minor_enemies': {
+            'names': ['Troll'],
+            'distribution': [1]
+        },
+        'med_enemies': {
+            'names': ['Godspawn'],
+            'distribution': [1]
+        },
+        'major_enemies': {
+            'names': [],
+            'distribution': []
+        },
+        'shopkeeper': {
+            'names': ['Jeff Shopkeep'],
+            'distribution': [1]
+        },
+        'neutrals': {
+            'names': ['Citizen', 'Eye of the Divine'],
+            'distribution': [0.5, 0.5]
         },
         'colors': {
             'dark_wall': libtcod.dark_grey,
@@ -205,9 +221,25 @@ floors = {
         'effect_prob': 0.1
     },
     (4, 5, 6): {
-        'enemies': {
-            'names': ['Orc', 'Troll'],
-            'distribution': [0.7, 0.3]
+        'minor_enemies': {
+            'names': ['Troll'],
+            'distribution': [1]
+        },
+        'med_enemies': {
+            'names': ['Godspawn'],
+            'distribution': [1]
+        },
+        'major_enemies': {
+            'names': [],
+            'distribution': []
+        },
+        'shopkeeper': {
+            'names': ['Jeff Shopkeep'],
+            'distribution': [1]
+        },
+        'neutrals': {
+            'names': ['Citizen', 'Eye of the Divine'],
+            'distribution': [0.5, 0.5]
         },
         'colors': {
             'dark_wall': libtcod.darker_grey,
@@ -219,9 +251,25 @@ floors = {
         'effect_prob': 0.2
     },
     (7, 8, 9): {
-        'enemies': {
-            'names': ['Orc', 'Troll'],
-            'distribution': [0.7, 0.3]
+        'minor_enemies': {
+            'names': ['Troll'],
+            'distribution': [1]
+        },
+        'med_enemies': {
+            'names': ['Godspawn'],
+            'distribution': [1]
+        },
+        'major_enemies': {
+            'names': [],
+            'distribution': []
+        },
+        'shopkeeper': {
+            'names': ['Jeff Shopkeep'],
+            'distribution': [1]
+        },
+        'neutrals': {
+            'names': ['Citizen', 'Eye of the Divine'],
+            'distribution': [0.5, 0.5]
         },
         'colors': {
             'dark_wall': libtcod.darker_grey,
@@ -233,9 +281,25 @@ floors = {
         'effect_prob': 0.30
     },
     (10, 11): {
-        'enemies': {
-            'names': ['Orc', 'Troll'],
-            'distribution': [0.7, 0.3]
+        'minor_enemies': {
+            'names': ['Troll'],
+            'distribution': [1]
+        },
+        'med_enemies': {
+            'names': ['Godspawn'],
+            'distribution': [1]
+        },
+        'major_enemies': {
+            'names': [],
+            'distribution': []
+        },
+        'shopkeeper': {
+            'names': ['Jeff Shopkeep'],
+            'distribution': [1]
+        },
+        'neutrals': {
+            'names': ['Citizen', 'Eye of the Divine'],
+            'distribution': [0.5, 0.5]
         },
         'colors': {
             'dark_wall': libtcod.darker_grey,
@@ -247,9 +311,25 @@ floors = {
         'effect_prob': 0.5
     },
     (12,): {
-        'enemies': {
-            'names': ['Orc', 'Troll'],
-            'distribution': [0.7, 0.3]
+        'minor_enemies': {
+            'names': ['Troll'],
+            'distribution': [1]
+        },
+        'med_enemies': {
+            'names': ['Godspawn'],
+            'distribution': [1]
+        },
+        'major_enemies': {
+            'names': [],
+            'distribution': []
+        },
+        'shopkeeper': {
+            'names': ['Jeff Shopkeep'],
+            'distribution': [1]
+        },
+        'neutrals': {
+            'names': ['Citizen', 'Eye of the Divine'],
+            'distribution': [0.5, 0.5]
         },
         'colors': {
             'dark_wall': libtcod.darker_grey,

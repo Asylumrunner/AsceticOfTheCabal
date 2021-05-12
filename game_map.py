@@ -80,7 +80,7 @@ class GameMap:
                     else:
                         self.create_v_tunnel(prev_y, new_y, prev_x)
                         self.create_h_tunnel(prev_x, new_x, new_y)
-                self.place_entities(new_room, entities)
+                self.populate_room(new_room, entities)
                 rooms.append(new_room)
                 num_rooms += 1
 
@@ -159,25 +159,54 @@ class GameMap:
     def populate_room(self, room, entities):
         room_to_select = self.room_options[random.choice(list(self.room_options))]
         
-        for i in range(room_to_select['minor_enemies']):
-            print(i)
+        for i in range(int(room_to_select['minor_enemies'])):
+            x = randint(room.x1 + 1, room.x2 -1)
+            y = randint(room.y1 +1, room.y2 -1)
 
-        for i in range(room_to_select['med_enemies']):
-            print(i)
+            if not any([entity for entity in entities if entity.x == x and entity.y == y]):
+                entities.append(self.spawn_character(x, y, np.random.choice(self.floor_dict['minor_enemies']['names'], 1, self.floor_dict['minor_enemies']['distribution'])[0]))
 
-        for i in range(room_to_select['major_enemies']):
-            print(i)
 
-        for i in range(room_to_select['shopkeeper']):
-            print(i)
+        for i in range(int(room_to_select['med_enemies'])):
+            x = randint(room.x1 + 1, room.x2 -1)
+            y = randint(room.y1 +1, room.y2 -1)
 
-        for i in range(room_to_select['neutrals']):
-            print(i)
+            if not any([entity for entity in entities if entity.x == x and entity.y == y]):
+                entities.append(self.spawn_character(x, y, np.random.choice(self.floor_dict['med_enemies']['names'], 1, self.floor_dict['med_enemies']['distribution'])[0]))
 
-        for i in range(room_to_select['item_spawn']):
-            print(i)
-        
-        return True
+
+        for i in range(int(room_to_select['major_enemies'])):
+            x = randint(room.x1 + 1, room.x2 -1)
+            y = randint(room.y1 +1, room.y2 -1)
+
+            if not any([entity for entity in entities if entity.x == x and entity.y == y]):
+                entities.append(self.spawn_character(x, y, np.random.choice(self.floor_dict['major_enemies']['names'], 1, self.floor_dict['major_enemies']['distribution'])[0]))
+
+
+        for i in range(int(room_to_select['shopkeeper'])):
+            x = randint(room.x1 + 1, room.x2 -1)
+            y = randint(room.y1 +1, room.y2 -1)
+
+            if not any([entity for entity in entities if entity.x == x and entity.y == y]):
+                entities.append(self.spawn_character(x, y, np.random.choice(self.floor_dict['shopkeeper']['names'], 1, self.floor_dict['shopkeeper']['distribution'])[0]))
+
+        for i in range(int(room_to_select['neutrals'])):
+            x = randint(room.x1 + 1, room.x2 -1)
+            y = randint(room.y1 +1, room.y2 -1)
+
+            if not any([entity for entity in entities if entity.x == x and entity.y == y]):
+                entities.append(self.spawn_character(x, y, np.random.choice(self.floor_dict['neutrals']['names'], 1, self.floor_dict['neutrals']['distribution'])[0]))
+
+        for i in range(int(room_to_select['item_spawn'])):
+            x = randint(room.x1 + 1, room.x2 -1)
+            y = randint(room.y1 +1, room.y2 -1)
+
+            if not any([entity for entity in entities if entity.x == x and entity.y == y]):
+                weapon_or_armor = randint(0, 1)
+                if weapon_or_armor == 0:
+                    entities.append(generate_weapon(self.floor_dict['quality_prob'], self.floor_dict['effect_prob'], x, y, self.log))
+                else:
+                    entities.append(generate_armor(self.floor_dict['quality_prob'], self.floor_dict['effect_prob'], x, y, self.log))
 
     # Returns the game_constants data for the current floor
     def get_floor_info(self):
