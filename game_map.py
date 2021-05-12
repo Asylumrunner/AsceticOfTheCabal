@@ -16,6 +16,7 @@ import game_constants
 from item_generation.item_generation import generate_weapon, generate_armor
 from utilities.csv_reader import read_csv_to_dict
 import time
+import random
 
 class GameMap:
     def __init__(self, message_log, dungeon_level=1):
@@ -24,10 +25,10 @@ class GameMap:
         self.tiles = self.initialize_tiles()
         self.dungeon_level = dungeon_level
         self.log = message_log
+        self.floor_dict = self.get_floor_info()
 
         all_rooms = read_csv_to_dict("./data/rooms.csv")
-        self.room_options = {key: data for (key, data) in all_rooms.items() if data['min_floor'] <= self.dungeon_level and data['max_floor'] >= self.dungeon_level}
-        print(self.room_options)
+        self.room_options = {key: data for (key, data) in all_rooms.items() if int(data['min_floor']) <= self.dungeon_level and int(data['max_floor']) >= self.dungeon_level}
 
     # Intialize the map with a nested array of tiles
     def initialize_tiles(self):
@@ -131,15 +132,16 @@ class GameMap:
 
     # Generates a random selection of NPCs and items based on the probabilities of the floor
     def place_entities(self, room, entities):
+        self.populate_room(room, entities)
         number_of_monsters = randint(0, game_constants.max_monsters_per_room)
-        floor_dict = self.get_floor_info()
+        
 
         for i in range(number_of_monsters):
             x = randint(room.x1 + 1, room.x2 -1)
             y = randint(room.y1 +1, room.y2 -1)
 
             if not any([entity for entity in entities if entity.x == x and entity.y == y]):
-                entities.append(self.spawn_character(x, y, np.random.choice(floor_dict['enemies']['names'], 1, floor_dict['enemies']['distribution'])[0]))
+                entities.append(self.spawn_character(x, y, np.random.choice(self.floor_dict['enemies']['names'], 1, self.floor_dict['enemies']['distribution'])[0]))
         
         number_of_items = randint(0, game_constants.max_items_per_room)
 
@@ -150,11 +152,31 @@ class GameMap:
             if not any([entity for entity in entities if entity.x == x and entity.y == y]):
                 weapon_or_armor = randint(0, 1)
                 if weapon_or_armor == 0:
-                    entities.append(generate_weapon(floor_dict['quality_prob'], floor_dict['effect_prob'], x, y, self.log))
+                    entities.append(generate_weapon(self.floor_dict['quality_prob'], self.floor_dict['effect_prob'], x, y, self.log))
                 else:
-                    entities.append(generate_armor(floor_dict['quality_prob'], floor_dict['effect_prob'], x, y, self.log))
+                    entities.append(generate_armor(self.floor_dict['quality_prob'], self.floor_dict['effect_prob'], x, y, self.log))
 
     def populate_room(self, room, entities):
+        room_to_select = self.room_options[random.choice(list(self.room_options))]
+        
+        for i in range(room_to_select['minor_enemies']):
+            print(i)
+
+        for i in range(room_to_select['med_enemies']):
+            print(i)
+
+        for i in range(room_to_select['major_enemies']):
+            print(i)
+
+        for i in range(room_to_select['shopkeeper']):
+            print(i)
+
+        for i in range(room_to_select['neutrals']):
+            print(i)
+
+        for i in range(room_to_select['item_spawn']):
+            print(i)
+        
         return True
 
     # Returns the game_constants data for the current floor
