@@ -21,7 +21,7 @@ class Devotee:
         self.god = god
 
         god_data = read_csv_to_dict('./data/cabal.csv')
-        self.god_info = god_data[god]
+        self.god_info = god_data[str(god.value)]
     
     #add the given modifier to current devotion, using 0 and max_devotion as bounds
     def modify_devotion(self, devotion):

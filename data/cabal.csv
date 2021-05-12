@@ -1,4 +1,4 @@
-index,name,subtitle,buff_text,passive_text,active_text,active_cost
+key,name,subtitle,buff_text,passive_text,active_text,active_cost
 1,Mercurial Calamity,Cabal God of the Hunger That Shall Consume All,Consumable item effects,"Starvation - When you use a consumable, you use all of it at once",Wave of Consumption - Usher forth a wave of spiders from your stomach,10
 2,Xalan Nore,Cabal God Which Pierces The Veil And Shows Life And Death Are One,Melee damage,Facade of Mortality - Every single character in the game is Undead,Impermanence of Life - Drop to 0 Health. You are immortal for 5 turns.,10
 3,Oblivion,Cabal God Screaming The Ten Quadrillion Names Of Every Number That Will Ever Happen In Sequence,Sight distance,Calculable Incalculability - See the strings of reality,The Calculus of Things Greater Than Divine - Add a room of your choice to the next floor,10

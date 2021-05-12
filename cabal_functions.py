@@ -1,5 +1,6 @@
 
-def Undivine_Retribution() :
+def Undivine_Retribution():
+    return True
 
 
 cabal_functions_dict = {

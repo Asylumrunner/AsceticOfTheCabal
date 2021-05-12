@@ -14,6 +14,7 @@ from components.stairs import Stairs
 import numpy as np
 import game_constants
 from item_generation.item_generation import generate_weapon, generate_armor
+from utilities.csv_reader import read_csv_to_dict
 import time
 
 class GameMap:
@@ -23,6 +24,10 @@ class GameMap:
         self.tiles = self.initialize_tiles()
         self.dungeon_level = dungeon_level
         self.log = message_log
+
+        all_rooms = read_csv_to_dict("./data/rooms.csv")
+        self.room_options = {key: data for (key, data) in all_rooms.items() if data['min_floor'] <= self.dungeon_level and data['max_floor'] >= self.dungeon_level}
+        print(self.room_options)
 
     # Intialize the map with a nested array of tiles
     def initialize_tiles(self):
@@ -148,6 +153,9 @@ class GameMap:
                     entities.append(generate_weapon(floor_dict['quality_prob'], floor_dict['effect_prob'], x, y, self.log))
                 else:
                     entities.append(generate_armor(floor_dict['quality_prob'], floor_dict['effect_prob'], x, y, self.log))
+
+    def populate_room(self, room, entities):
+        return True
 
     # Returns the game_constants data for the current floor
     def get_floor_info(self):
