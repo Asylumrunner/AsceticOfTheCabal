@@ -72,7 +72,7 @@ def dialogue_menu(con, dialogue_target):
 # Creates a menu for the currently equipped gear of the player
 def equipped_menu(con, inventory):
     listed_options = [key + ": " + (inventory.equipped[key].name if inventory.equipped[key] else "None") for key in inventory.equipped]
-    menu(con, "Equipped Gear", "All gear currently equipped on the Ascetic", listed_options, 85)
+    menu(con, "Equipped Gear", "All gear currently equipped on the Ascetic. Press associated key to unequip", listed_options, 85)
 
 # Creates a menu for when the player chooses to inspect an NPC or item
 def inspect_menu(con, inspect_target):

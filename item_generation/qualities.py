@@ -3,9 +3,7 @@
 class Armor:
     def __init__(self, **kwargs):
         self.armor_value = kwargs['armor'] if 'armor' in kwargs else 0
-        print("Armor initialized with an armor value of {}".format(self.armor_value))
     def equip(self, *args, **kwargs):
-        print("Equip called on the Armor attribute")
         if "player" in kwargs:
             kwargs['player'].get_component("Fighter").change_defense(self.armor_value)
     def unequip(self, *args, **kwargs):
@@ -16,8 +14,6 @@ class MaxHealthUp:
     def __init__(self, **kwargs):
         self.health_buff = kwargs["health_up"] if "health_up" in kwargs else 0
     def equip(self, *args, **kwargs):
-        print("Equip called on the MaxHealthUp attribute")
-        print(kwargs)
         if "player" in kwargs:
             kwargs['player'].get_component("Fighter").change_max_hp(self.health_buff)
     def unequip(self, *args, **kwargs):

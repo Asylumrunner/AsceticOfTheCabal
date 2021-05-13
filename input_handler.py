@@ -1,5 +1,6 @@
 import tcod as libtcod
 from game_states import GameStates
+from components.item import ItemType
 
 # A collection of conditionals which exist to take in an input from the player (either keyboard or mouse) and extrapolate those into a game state
 
@@ -95,11 +96,16 @@ def handle_player_inv_key(key):
     return {}
 
 def handle_player_equ_key(key):
+    index = key.c - ord('a')
+
     if key.vk == libtcod.KEY_ENTER and key.lalt:
         return {'action': 'fullscreen'}
 
     elif key.vk == libtcod.KEY_ESCAPE:
         return {'action': 'exit'}
+    
+    elif index >= 0 and index < 7:
+        return {'action': 'unequip', 'slot': ItemType(index+1)}
     
     return {}
 

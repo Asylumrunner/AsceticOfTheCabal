@@ -112,11 +112,9 @@ class Fighter:
     # changes the defense to a given number
     def change_defense(self, defense_value):
         self.defense = defense_value
-        print("Current defense of {} is {}".format(self.owner.name, self.defense))
     
     # modify your max HP with a given number, NOT changing current HP
     def change_max_hp(self, hp_modification):
         self.max_hp += hp_modification
-        print("Current maximum HP of {} is {}".format(self.owner.name, self.max_hp))
 
     #TODO: Fighters that drop an inventory should drop all their shit too

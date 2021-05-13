@@ -60,6 +60,17 @@ class Inventory:
         except Exception as e:
             print("Equipping exception: {}".format(e))
 
+    def unequip_slot(self, slot_name):
+        if not self.slot_filled(slot_name.name):
+            return False
+        else:
+            equipped_item = self.get_slot(slot_name.name)
+            equipped_item.get_component("Item").unequip(player=self.owner)
+            self.owner.log.add_message(Message("Unequipped {0}".format(equipped_item.name), libtcod.green))
+            self.items.append(equipped_item)
+            self.equipped[slot_name.name] = None
+            return True
+
     # returns true if there is a not-None item in the slot
     def slot_filled(self, slot_name):
         return True if slot_name in self.equipped and self.equipped[slot_name] != None else False
