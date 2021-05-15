@@ -8,6 +8,7 @@ from components.fighter import Fighter
 from components.item import Item
 from components.character import Character
 from components.shop import Shop
+from components.status_container import StatusContainer
 from render_functions import RenderOrder
 from game_states import AIStates
 from components.stairs import Stairs
@@ -125,7 +126,8 @@ class GameMap:
             "Fighter": Fighter(hp = monster_data['hp'], defense = monster_data['defense'], power = monster_data['power'], money = monster_data['money'], abilities=monster_data['abilities']),
             "Character": Character(monster_data['description'], monster_data['conv']) if 'conv' in monster_data else None,
             "AI": BasicMonster(),
-            "Shop": Shop(game_constants.shops[monster_data['shop']], monster_data['shop_description'], self.log) if 'shop' in monster_data else None
+            "Shop": Shop(game_constants.shops[monster_data['shop']], monster_data['shop_description'], self.log) if 'shop' in monster_data else None,
+            "StatusContainer": StatusContainer()
         }
         return Entity(x, y, monster_data['icon'], monster_data['color'], monster_data['name'], 
                 blocks=True, render_order=RenderOrder.ACTOR, message_log=self.log, state = monster_data['state'], components=monster_components)
