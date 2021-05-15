@@ -3,7 +3,7 @@ from entity import Entity
 from tile import Tile
 from rect import Rect
 from random import randint
-from components.ai import BasicMonster
+from components.ai import BasicMonster, Coward
 from components.fighter import Fighter
 from components.item import Item
 from components.character import Character

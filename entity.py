@@ -64,8 +64,6 @@ class Entity:
 
         return math.sqrt(dx ** 2 + dy ** 2)
 
-    # TODO: TBH I don't remember what move_towards and distance_to are used for. Might be remnants from the tutorial?
-
     # an implementation of astar movement for an entity. This feels like it shouldn't be here TBH
     def move_astar(self, target, entities, game_map):
         fov_map = libtcod.map.Map(game_map.width, game_map.height)
