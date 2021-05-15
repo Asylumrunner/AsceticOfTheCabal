@@ -40,9 +40,36 @@ class Coward:
         
         return toughest_friend
 
+class Scavenger:
+    def take_turn(self, target, fov_map, game_map, entities):
+        monster = self.owner
+
+        corpse = self.find_nearest_corpse(entities)
+
+        if libtcod.map_is_in_fov(fov_map, monster.x, monster.y):
+            if monster.distance_to(target) >= 2:
+                monster.move_astar(target, entities, game_map)
+            elif target.get_component("Fighter").hp > 0:
+                monster.get_component("Fighter").attack(target)
+        elif corpse and monster.distance_to(corpse) >= 2:
+            monster.move_astar(corpse, entities, game_map)
+    
+    def find_nearest_corpse(self, entities):
+        nearest_corpse = None
+        min_distance = 10000000
+
+        for entity in [entity for entity in entities if 'remains' in entity.name]:
+            distance = entity.distance_to(entity)
+            if distance < min_distance:
+                nearest_corpse = entity
+                min_distance = distance
+        
+        return nearest_corpse
+
 ai_dictionary = {
     'Basic': BasicMonster,
-    'Coward': Coward
+    'Coward': Coward,
+    'Scavenger': Scavenger
 }
 
 #TODO: Entities should have a concept of their friends. When their friends are fleeing, they should switch from friendly to hostile

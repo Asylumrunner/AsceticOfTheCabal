@@ -105,7 +105,7 @@ npcs = {
         'description': 'A hulking mass, humanoid, but resembling the God of this City. One of its children',
         'money': 0,
         'abilities': ['hematic'],
-        'ai': 'Basic'
+        'ai': 'Scavenger'
     },
     'Jeff Shopkeep': {
         'icon': 'S',
