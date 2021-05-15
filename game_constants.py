@@ -49,7 +49,8 @@ npcs = {
         'power': 3,
         'state': AIStates.FRIENDLY,
         'description': 'A lumbering green orc, with jagged teeth and a dim expression',
-        'money': 10
+        'money': 10,
+        'abilities': []
     },
     'Troll': {
         'icon': 'T',
@@ -60,7 +61,8 @@ npcs = {
         'power': 4,
         'state': AIStates.HOSTILE,
         'description': 'A massive troll, standing two men tall. Brandishing a large club',
-        'money': 30
+        'money': 30,
+        'abilities': []
     },
     'Eye of the Divine': {
         'icon': libtcod.CHAR_FEMALE,
@@ -72,7 +74,8 @@ npcs = {
         'state': AIStates.FRIENDLY,
         'description': 'A tall, gaunt figure in a dark robe, with a mask of a single eye. Looks unhuman',
         'money': 100,
-        'conv': '1'
+        'conv': '1',
+        'abilities': ['heal']
     },
     'Citizen': {
         'icon': 'a',
@@ -84,7 +87,8 @@ npcs = {
         'state': AIStates.FRIENDLY,
         'description': 'A human inhabitant of this city. Looks tired and dissheveled',
         'money': 10,
-        'conv': 2
+        'conv': 2,
+        'abilities': []
     },
     'Godspawn': {
         'icon': 'G',
@@ -95,7 +99,8 @@ npcs = {
         'power': 7,
         'state': AIStates.HOSTILE,
         'description': 'A hulking mass, humanoid, but resembling the God of this City. One of its children',
-        'money': 0
+        'money': 0,
+        'abilities': ['hematic']
     },
     'Jeff Shopkeep': {
         'icon': 'S',
@@ -109,7 +114,8 @@ npcs = {
         'shop_description': "Fuck you buy my garbage",
         'money': 10,
         'conv': 5,
-        'shop': 'Default'
+        'shop': 'Default',
+        'abilities': []
     }
 }
 

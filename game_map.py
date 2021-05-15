@@ -122,7 +122,7 @@ class GameMap:
     def spawn_character(self, x, y, name):
         monster_data = game_constants.npcs[name]
         monster_components = {
-            "Fighter": Fighter(hp = monster_data['hp'], defense = monster_data['defense'], power = monster_data['power'], money = monster_data['money']),
+            "Fighter": Fighter(hp = monster_data['hp'], defense = monster_data['defense'], power = monster_data['power'], money = monster_data['money'], abilities=monster_data['abilities']),
             "Character": Character(monster_data['description'], monster_data['conv']) if 'conv' in monster_data else None,
             "AI": BasicMonster(),
             "Shop": Shop(game_constants.shops[monster_data['shop']], monster_data['shop_description'], self.log) if 'shop' in monster_data else None

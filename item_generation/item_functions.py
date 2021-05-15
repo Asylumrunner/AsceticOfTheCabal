@@ -32,7 +32,7 @@ def heal(*args, **kwargs):
     if entity.get_component("Fighter").hp < entity.get_component("Fighter").max_hp:
         entity.get_component("Fighter").hp = min(entity.get_component("Fighter").max_hp, entity.get_component("Fighter").hp + amount)
     if entity.log:
-        entity.log.add_message(Message('Healed {0} damage'.format(amount), libtcod.white))
+        entity.log.add_message(Message('{} healed {} damage'.format(entity.name, amount), libtcod.white))
 
 def hematic(*args, **kwargs):
     entity = args[0]

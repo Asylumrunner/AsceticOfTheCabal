@@ -4,16 +4,19 @@ from render_functions import RenderOrder
 from game_states import AIStates
 from entity import Entity
 from components.money import Money
+from item_generation.item_functions import effects, item_function_dict
 
 # A beefy boy of a class, representing anything that can fight
 
 class Fighter:
-    def __init__(self, hp, defense, power, money=0):
+    def __init__(self, hp, defense, power, money=0, abilities=[]):
         self.max_hp = hp
         self.hp = hp
         self.defense = defense
         self.power = power
         self.money = money
+
+        self.abilities = [item_function_dict[ability] for ability in abilities]
     
     # Decrement HP by the given amount
     def take_damage(self, damage):
@@ -35,6 +38,10 @@ class Fighter:
         # if you don't have any weapons, just punchem
         else:
             damage = self.power - target.get_component("Fighter").get_defense()
+        
+        #Activate any abilities the entity has (if any)
+        for ability in self.abilities:
+            ability(self.owner, target, amount=damage)
 
         # if you successfully dealt any damage, inflict that damage on the target, and write a UI message
         if damage > 0:
