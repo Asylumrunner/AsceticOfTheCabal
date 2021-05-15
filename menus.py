@@ -1,6 +1,6 @@
 import tcod as libtcod
 import game_constants
-from inspect_functions import inspect_entity
+from inspect_functions import inspect_entity, inspect_player_status
 
 #A set of functions designed to assist with drawing various menus (inventory, dialogue, etc)
 
@@ -97,6 +97,10 @@ def shopping_menu(con, shopkeeper):
 
 def restart_menu(con):
     menu(con, 'YOU ARE DEAD', 'CONTINUE OR PERISH', ['New Game', 'Quit'], 24, True, border=game_constants.death_border)
+
+def status_menu(con, player):
+    status = inspect_player_status(player)
+    menu(con, "THE ASCETIC", "Vigilant Disciple of the Abandoned Gods of the Cabal", status, 72, False, border=game_constants.status_border)
 
 # Draws the main menu of the game on boot
 def main_menu(con, background_image):

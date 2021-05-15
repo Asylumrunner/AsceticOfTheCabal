@@ -23,6 +23,8 @@ def handle_keys(key, game_state):
         return handle_player_insp_key(key)
     elif game_state == GameStates.SHOPPING:
         return handle_player_shop_key(key)
+    elif game_state == GameStates.STATUS:
+        return handle_player_status_key(key)
     return {}
 
 def handle_player_turn_key(key):
@@ -53,6 +55,8 @@ def handle_player_turn_key(key):
         return {'action': 'inventory'}
     elif key_char == 'p':
         return {'action': 'equipped'}
+    elif key_char == 'o':
+        return {'action': 'status'}
 
     if key.vk == libtcod.KEY_ENTER and key.lalt:
         return {'action': 'fullscreen'}
@@ -158,6 +162,17 @@ def handle_player_shop_key(key):
 
     if index >= 0:
         return {'action': 'buy', 'shop_option': index}
+
+    if key.vk == libtcod.KEY_ENTER and key.lalt:
+        return {'action': 'fullscreen'}
+
+    elif key.vk == libtcod.KEY_ESCAPE:
+        return {'action': 'exit'}
+    
+    return {}
+
+def handle_player_status_key(key):
+    index = key.c - ord('a')
 
     if key.vk == libtcod.KEY_ENTER and key.lalt:
         return {'action': 'fullscreen'}

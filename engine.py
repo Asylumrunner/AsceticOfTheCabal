@@ -66,7 +66,7 @@ class Engine():
         }
 
         player = Entity(int(game_constants.screen_width/2), int(game_constants.screen_height/2), '@',
-        libtcod.white, "Player", True, RenderOrder.ACTOR, message_log=self.message_log, state=AIStates.INANIMATE, components=player_components)
+        libtcod.white, "Ascetic", True, RenderOrder.ACTOR, message_log=self.message_log, state=AIStates.INANIMATE, components=player_components)
 
         player.get_component("Inventory").equip_item(generate_starting_pistol(self.message_log))
         return player
@@ -262,9 +262,13 @@ class Engine():
             # If the player is buying something, they make the purchase
             elif action == 'buy' and shop_option is not None:
                 target.get_component("Shop").purchase(shop_option, self.player)
+
+            elif action == 'status':
+                self.previous_game_state = self.game_state
+                self.game_state = GameStates.STATUS
                 
             # Exit the game
-            if action == 'exit' and (self.game_state in [GameStates.INVENTORY_OPEN, GameStates.DIALOGUE, GameStates.EQUIPPED_OPEN, GameStates.SHOPPING, GameStates.INSPECT_OPEN]):
+            if action == 'exit' and (self.game_state in [GameStates.INVENTORY_OPEN, GameStates.DIALOGUE, GameStates.EQUIPPED_OPEN, GameStates.SHOPPING, GameStates.INSPECT_OPEN, GameStates.STATUS]):
                 self.game_state = self.previous_game_state
             elif action == 'exit':
                 return True

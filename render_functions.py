@@ -1,7 +1,7 @@
 import tcod as libtcod
 from enum import Enum
 from game_states import GameStates
-from menus import inventory_menu, dialogue_menu, equipped_menu, inspect_menu, shopping_menu, restart_menu
+from menus import inventory_menu, dialogue_menu, equipped_menu, inspect_menu, shopping_menu, restart_menu, status_menu
 import game_constants
 
 class RenderOrder(Enum):
@@ -115,6 +115,8 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
         inspect_menu(con, target)
     elif game_state == GameStates.PLAYER_DEAD:
         restart_menu(con)
+    elif game_state == GameStates.STATUS:
+        status_menu(con, player)
 
 # Removes every entity in the game from the screen
 def clear_all(con, entities):

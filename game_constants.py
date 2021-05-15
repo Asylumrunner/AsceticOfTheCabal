@@ -365,3 +365,9 @@ death_border = {
     'side': 'X',
     'corner': 'X'
 }
+
+status_border = {
+    'top_and_bottom': '=',
+    'side': '|',
+    'corner': 'O'
+}

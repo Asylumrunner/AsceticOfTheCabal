@@ -67,3 +67,34 @@ def inspect_entity(entity):
         description_text = inspect_item(entity, description_text)
 
     return list(description_text.values())
+
+def inspect_player_status(player):
+    description_text = OrderedDict()
+
+    fighter = player.get_component("Fighter")
+    inventory = player.get_component("Inventory")
+    devotee = player.get_component("Devotee")
+    statuses = player.get_component("StatusContainer")
+
+    description_text['health'] = "{} of {} HP".format(fighter.hp, fighter.max_hp)
+    description_text['defense'] = "{} Defense".format(fighter.get_defense())
+    description_text['money'] = "${} in wallet".format(fighter.money)
+    status_list = statuses.get_statuses()
+    description_text['statuses'] = "Currently {}".format(", ".join(status_list)) if status_list else "No status effects"
+    
+    description_text['gap_1'] = "        ---        "
+
+    description_text ['unarmed_power'] = "Unarmed attacks deal {} damage".format(fighter.power)
+    description_text ['armed_power'] = "Melee attacks deal {} damage".format(fighter.get_modified_strength())
+
+    description_text['gap_2'] = "        ---        "
+
+    description_text['devotion'] = "{} of {} Devotion".format(devotee.curr_devotion, devotee.max_devotion)
+    description_text['god'] = "Devoted to {}".format(devotee.get_god().name)
+
+    description_text['gap_3'] = "        ---        "
+
+    description_text['capacity'] = "{} of {} inventory slots filled".format(len(inventory.items), inventory.capacity)
+
+    return list(description_text.values())
+

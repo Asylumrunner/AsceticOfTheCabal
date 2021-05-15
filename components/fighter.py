@@ -117,6 +117,13 @@ class Fighter:
             return self.defense + self.owner.get_component("Inventory").calculate_armor()
         else:
             return self.defense
+    
+    def get_modified_strength(self):
+        if self.owner.has_component("Inventory"):
+            eq_weapon = self.owner.get_component("Inventory").get_slot("MELEE")
+            return eq_weapon.get_component("Item").weapon.strength if eq_weapon and eq_weapon.get_component("Item").weapon != None else self.power
+        else:
+            return self.power
 
     # changes the defense to a given number
     def change_defense(self, defense_value):
