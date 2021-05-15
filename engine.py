@@ -264,7 +264,7 @@ class Engine():
                 target.get_component("Shop").purchase(shop_option, self.player)
                 
             # Exit the game
-            if action == 'exit' and (self.game_state in [GameStates.INVENTORY_OPEN, GameStates.DIALOGUE, GameStates.EQUIPPED_OPEN, GameStates.SHOPPING]):
+            if action == 'exit' and (self.game_state in [GameStates.INVENTORY_OPEN, GameStates.DIALOGUE, GameStates.EQUIPPED_OPEN, GameStates.SHOPPING, GameStates.INSPECT_OPEN]):
                 self.game_state = self.previous_game_state
             elif action == 'exit':
                 return True

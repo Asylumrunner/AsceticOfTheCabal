@@ -79,7 +79,7 @@ def equipped_menu(con, inventory):
 # Creates a menu for when the player chooses to inspect an NPC or item
 def inspect_menu(con, inspect_target):
     inspect_details = inspect_entity(inspect_target)
-    menu(con, "Inspected Entity: {}".format(inspect_target.name), "Description should go here", inspect_details, 85, False)
+    menu(con, "Inspected Entity: {}".format(inspect_target.name), "", inspect_details, 85, False)
     #add a call to draw_picture here
 
 # Draws a menu for item descriptions

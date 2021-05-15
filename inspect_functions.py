@@ -29,6 +29,8 @@ def inspect_fighter(entity, desc):
         description_text['hurt'] = "It's bloodied with wounds of battle"
     elif fighter.hp/fighter.max_hp > 0:
         description_text['hurt'] = "It's on death's door"
+    elif fighter.hp == 0:
+        description_text['hurt'] = "It lies on the ground, dead"
     
     return description_text
 
@@ -57,7 +59,7 @@ def inspect_entity(entity):
     description_text = OrderedDict()
 
     if entity.has_component("Fighter"):
-        description_text['description'] = npcs[entity.name]['description']
+        description_text['description'] = npcs[entity.base_name]['description']
         description_text = inspect_fighter(entity, description_text)
         description_text['hostile'] = "It does not appear hostile to you" if entity.state == AIStates.FRIENDLY else "It looks hostile"
     elif entity.has_component("Item"):
