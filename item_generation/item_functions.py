@@ -24,7 +24,7 @@ effects = {
         'kwargs': {}
     },
     'Avaricial': {
-        'description': "with a slight magnetic pull, drawing the coinpurse from your satchel",
+        'description': " with a slight magnetic pull, drawing the coinpurse from your satchel",
         "name": " of Avarice",
         "arrangement": "suffix",
         "targets": [5, 6],

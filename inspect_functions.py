@@ -35,10 +35,11 @@ def inspect_fighter(entity, desc):
     return description_text
 
 
-#TODO: The name of an item is randomly generated, so looking up based on the item name as a key causes an exception
 def inspect_item(entity, desc):
     description_text = desc
     item = entity.get_component("Item")
+
+    description_text['description'] = item.description
 
     if item.item_type == ItemType.BODY.value:
         description_text['item_type'] = "It looks like it's worn on the Body"
@@ -63,7 +64,6 @@ def inspect_entity(entity):
         description_text = inspect_fighter(entity, description_text)
         description_text['hostile'] = "It does not appear hostile to you" if entity.state == AIStates.FRIENDLY else "It looks hostile"
     elif entity.has_component("Item"):
-        description_text['description'] = items[entity.name]['description']
         description_text = inspect_item(entity, description_text)
 
     return list(description_text.values())

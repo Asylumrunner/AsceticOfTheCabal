@@ -15,13 +15,14 @@ class ItemType(Enum):
 # This gets _preeeeeetty abstracted_
 
 class Item:
-    def __init__(self, use_function=None, uses=-99, item_type=ItemType.NONE, equip_effects=None, strength=0, defense=0, price=0, **kwargs):
+    def __init__(self, use_function=None, uses=-99, item_type=ItemType.NONE, equip_effects=None, strength=0, defense=0, price=0, description="", **kwargs):
         self.use_function = use_function
         self.uses = uses
         self.function_kwargs = kwargs
         self.item_type = item_type
         self.equip_effects = equip_effects
         self.price = price
+        self.description = description
 
         if strength != 0:
             ammo = kwargs['ammo'] if 'ammo' in kwargs else 0

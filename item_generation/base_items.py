@@ -5,7 +5,7 @@ import tcod as libtcod
 weapons = {
     "Sword": {
         'name': '{}Sword{}',
-        'description': 'A {} longsword{}',
+        'description': 'A {}longsword{}',
         'uses': -99,
         'type': 5,
         'strength': 5,
@@ -15,7 +15,7 @@ weapons = {
     },
     "Axe": {
         'name': '{}Axe{}',
-        'description': 'A hefty {} axe{}',
+        'description': 'A hefty {}axe{}',
         'uses': -99,
         'type': 5,
         'strength': 10,
@@ -25,7 +25,7 @@ weapons = {
     },
     "Knife": {
         'name': '{}Knife{}',
-        'description': 'A serrated  {} knife{}',
+        'description': 'A serrated {}knife{}',
         'uses': -99,
         'type': 5,
         'strength': 3,
@@ -58,7 +58,7 @@ weapon_weights = [2, 1, 3]
 armor = {
     "Hat": {
         'name': 'Hat',
-        'description': 'A slightly-worn cap',
+        'description': 'A slightly-worn {}cap{}',
         'uses': -99,
         'type': 1,
         'defense': 3,
