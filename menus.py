@@ -15,6 +15,8 @@ def menu(con, title, text, options, width, selectable=True, image=None, border=N
     # border = the border used to draw the menu
     # first_option = this will be how I circumvent menu height issues, buy allowing the menu to render the list of options from a starting point
 
+    # TODO: I should add in some settings to customize the color of the menu
+
     if border == None:
         border = game_constants.default_border
 
@@ -92,6 +94,9 @@ def shopping_menu(con, shopkeeper):
     choices = ["{} (${})".format(item.name, item.get_component('Item').get_cost()) for item in shopkeeper.get_component("Shop").get_items()]
     shopkeeper_text = shopkeeper.get_component("Shop").description
     menu(con, shopkeeper.name, shopkeeper_text, choices, 85, True, None, game_constants.shop_border)
+
+def restart_menu(con):
+    menu(con, 'YOU ARE DEAD', 'CONTINUE OR PERISH', ['New Game', 'Quit'], 24, True, border=game_constants.death_border)
 
 # Draws the main menu of the game on boot
 def main_menu(con, background_image):

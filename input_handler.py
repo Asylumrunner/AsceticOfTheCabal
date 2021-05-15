@@ -69,15 +69,15 @@ def handle_player_turn_key(key):
 
 def handle_player_dead_key(key):
     key_char = chr(key.c)
-
-    if key_char == 'i':
-        return {'action': 'inventory'}
     
     if key.vk == libtcod.KEY_ENTER and key.lalt:
         return {'action': 'fullscreen'}
 
-    elif key.vk == libtcod.KEY_ESCAPE:
+    elif key.vk == libtcod.KEY_ESCAPE or key_char == 'b':
         return {'action': 'exit'}
+    
+    elif key_char == 'a':
+        return {'action': 'restart'}
     
     return {}
 

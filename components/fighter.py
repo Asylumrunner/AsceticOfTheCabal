@@ -94,7 +94,8 @@ class Fighter:
 
         # make the corpse intangible, remove its AI, move it to the bottom of the render order, and change it name to a corpse
         self.owner.blocks = False
-        del self.owner.components['AI']
+        if self.owner.has_component('AI'):
+            del self.owner.components['AI']
         self.owner.render_order = RenderOrder.CORPSE
         self.owner.name = 'remains of {0}'.format(self.owner.name.capitalize())
 

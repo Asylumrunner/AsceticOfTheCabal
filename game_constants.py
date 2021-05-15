@@ -359,3 +359,9 @@ shop_border = {
     'side': '|',
     'corner': '$'
 }
+
+death_border = {
+    'top_and_bottom': 'X',
+    'side': 'X',
+    'corner': 'X'
+}

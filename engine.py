@@ -31,6 +31,14 @@ class Engine():
         self.con = libtcod.console.Console(game_constants.screen_width, game_constants.screen_height)
         self.panel = libtcod.console.Console(game_constants.screen_width, game_constants.panel_height)
 
+        # Create references for the player input
+        self.key = libtcod.Key()
+        self.mouse = libtcod.Mouse()
+
+        self.initialize_game()
+
+    # Initializes a lot of run-specific items. Kept outside of init because it has to be re-run on a restart
+    def initialize_game(self):
         # Create and initialize the Message Log
         self.message_log = MessageLog()
 
@@ -42,10 +50,6 @@ class Engine():
 
         self.player_target = None
 
-        # Create references for the player input
-        self.key = libtcod.Key()
-        self.mouse = libtcod.Mouse()
-
         # Establish the Game State
         self.game_state = GameStates.PLAYERS_TURN
         self.previous_game_state = GameStates.PLAYERS_TURN
@@ -55,7 +59,7 @@ class Engine():
     # This can and probably should be moved to another file
     def initialize_player(self):
         player_components = {
-            "Fighter": Fighter(hp=3000, defense=2, power=5),
+            "Fighter": Fighter(hp=30, defense=2, power=5),
             "Inventory": Inventory(26),
             "Devotee": Devotee(100),
             "StatusContainer": StatusContainer()
@@ -142,7 +146,6 @@ class Engine():
             # Interpret the input into a game action
             input = handle_keys(self.key, self.game_state)
             action = input.get('action')
-
 
             inventory_item = input.get('inventory_item') if 'inventory_item' in input else None
             dialogue_option = input.get('dialogue_option') if 'dialogue_option' in input else None
@@ -287,6 +290,10 @@ class Engine():
                     self.game_state = GameStates.PLAYERS_TURN
 
             # TODO: need a check somewhere around here to tick condition clocks, and then to apply conditions
+
+            if action == 'restart':
+                libtcod.console_clear(self.con)
+                self.initialize_game()
 
 if __name__ == '__main__':
     engine = Engine()
