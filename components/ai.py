@@ -33,14 +33,17 @@ class Coward:
         max_toughness = -1
 
         for entity in [entity for entity in entities if entity.has_component("Fighter") and entity != target and entity != self.owner]:
-            print(entity.name)
             entity_toughness = entity.get_component("Fighter").hp + (2 * entity.get_component("Fighter").power)
             if entity_toughness > max_toughness or (entity_toughness == max_toughness and self.owner.distance_to(toughest_friend) > self.owner.distance_to(entity)):
                 toughest_friend = entity
                 max_toughness = entity_toughness
         
         return toughest_friend
-        
+
+ai_dictionary = {
+    'Basic': BasicMonster,
+    'Coward': Coward
+}
 
 #TODO: Entities should have a concept of their friends. When their friends are fleeing, they should switch from friendly to hostile
 # Also, Hostile should only render them hostile against their enemies

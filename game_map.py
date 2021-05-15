@@ -3,7 +3,7 @@ from entity import Entity
 from tile import Tile
 from rect import Rect
 from random import randint
-from components.ai import BasicMonster, Coward
+from components.ai import ai_dictionary
 from components.fighter import Fighter
 from components.item import Item
 from components.character import Character
@@ -125,7 +125,7 @@ class GameMap:
         monster_components = {
             "Fighter": Fighter(hp = monster_data['hp'], defense = monster_data['defense'], power = monster_data['power'], money = monster_data['money'], abilities=monster_data['abilities']),
             "Character": Character(monster_data['description'], monster_data['conv']) if 'conv' in monster_data else None,
-            "AI": BasicMonster(),
+            "AI": ai_dictionary[monster_data['ai']](),
             "Shop": Shop(game_constants.shops[monster_data['shop']], monster_data['shop_description'], self.log) if 'shop' in monster_data else None,
             "StatusContainer": StatusContainer()
         }
