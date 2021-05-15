@@ -22,6 +22,14 @@ effects = {
         "targets": [5,6],
         "hit_effect": ["hematic"],
         'kwargs': {}
+    },
+    'Avaricial': {
+        'description': "with a slight magnetic pull, drawing the coinpurse from your satchel",
+        "name": " of Avarice",
+        "arrangement": "suffix",
+        "targets": [5, 6],
+        "hit_effect": ["avaricial"],
+        'kwargs': {}
     }
 }
 
@@ -44,10 +52,22 @@ def hematic(*args, **kwargs):
     if blood > 0:
         entity.log.add_message(Message('Drained {} blood from the wielder to deal {} damage to {}'.format(blood, blood*2, target.name)))
     
+def avaricial(*args, **kwargs):
+    entity = args[0]
+    target = args[1]
+    money_drawn = random.randint(0, 5)
+    if(entity.get_component("Fighter").money >= money_drawn):
+        entity.get_component("Fighter").money -= money_drawn
+        target.get_component("Fighter").take_damage(money_drawn * 2)
+
+        if money_drawn > 0:
+            entity.log.add_message(Message('Drained {} dollars from the wielder to deal {} damage to {}'.format(money_drawn, money_drawn*2, target.name)))
+    
 
 item_function_dict = {
     "heal": heal,
-    "hematic": hematic
+    "hematic": hematic,
+    "avaricial": avaricial
 }
 
-effect_weights = [1, 1]
+effect_weights = [1, 1, 1]

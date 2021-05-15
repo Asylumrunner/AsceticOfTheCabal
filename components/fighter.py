@@ -108,6 +108,7 @@ class Fighter:
     def pick_up_money(self, money_obj):
         if money_obj.has_component("Money"):
             self.money += money_obj.get_component("Money").value
+            self.owner.log.add_message(Message("Picked up ${}".format(money_obj.get_component("Money").value), libtcod.green))
     
     # gets the total defensive value (inherit defense + armor) of a character
     def get_defense(self):
