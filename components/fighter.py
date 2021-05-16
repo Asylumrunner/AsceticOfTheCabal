@@ -21,6 +21,10 @@ class Fighter:
     # Decrement HP by the given amount
     def take_damage(self, damage):
         self.hp -= damage
+
+    # Return current healthiness as a percentage
+    def get_health_percentage(self):
+        return self.hp/self.max_hp
     
     # The basic logic for inflicting damage on another target
     def attack(self, target):

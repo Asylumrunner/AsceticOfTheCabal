@@ -43,6 +43,7 @@ class Coward:
 class Scavenger:
     def __init__(self):
         self.corpse = None
+    
     def take_turn(self, target, fov_map, game_map, entities):
         monster = self.owner
 
@@ -50,7 +51,7 @@ class Scavenger:
             corpse = self.find_nearest_corpse(entities)
 
         if libtcod.map_is_in_fov(fov_map, monster.x, monster.y):
-            if monster.distance_to(target) >= 2:
+            if monster.distance_to(target) >= 2 and target.get_component("Fighter").get_health_percentage() < 0.5:
                 monster.move_astar(target, entities, game_map)
             elif target.get_component("Fighter").hp > 0:
                 monster.get_component("Fighter").attack(target)
