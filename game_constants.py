@@ -105,7 +105,7 @@ npcs = {
         'description': 'A hulking mass, humanoid, but resembling the God of this City. One of its children',
         'money': 0,
         'abilities': ['hematic'],
-        'ai': 'Scavenger'
+        'ai': 'Basic'
     },
     'Jeff Shopkeep': {
         'icon': 'S',
@@ -122,6 +122,19 @@ npcs = {
         'shop': 'Default',
         'abilities': [],
         'ai': 'Coward'
+    },
+    'Gravemite': {
+        'icon': 'g',
+        'color': libtcod.grey,
+        'name': 'Gravemite',
+        'hp': 4,
+        'defense': 0,
+        'power': 3,
+        'state': AIStates.HOSTILE,
+        'description': 'A ghoulish hunched-over humanoid with pale skin and caked-on blood around its mouth',
+        'money': 0,
+        'abilities': [],
+        'ai': 'Scavenger'
     }
 }
 
@@ -204,8 +217,8 @@ items = {
 floors = {
     (1, 2, 3): {
         'minor_enemies': {
-            'names': ['Troll'],
-            'distribution': [1]
+            'names': ['Troll', 'Gravemite'],
+            'distribution': [0.25, 0.75]
         },
         'med_enemies': {
             'names': ['Godspawn'],
@@ -234,8 +247,8 @@ floors = {
     },
     (4, 5, 6): {
         'minor_enemies': {
-            'names': ['Troll'],
-            'distribution': [1]
+            'names': ['Troll', 'Gravemite'],
+            'distribution': [1, 1]
         },
         'med_enemies': {
             'names': ['Godspawn'],
@@ -264,8 +277,8 @@ floors = {
     },
     (7, 8, 9): {
         'minor_enemies': {
-            'names': ['Troll'],
-            'distribution': [1]
+            'names': ['Troll', 'Gravemite'],
+            'distribution': [0.75, 0.25]
         },
         'med_enemies': {
             'names': ['Godspawn'],
