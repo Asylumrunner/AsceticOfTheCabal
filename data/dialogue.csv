@@ -5,3 +5,6 @@ key,utterance,choice_1,goto_1,choice_2,goto_2,choice_3,goto_3,choice_4,goto_4,ch
 4,GUARDS! GUARDS! HERETIC!,,,,,,,,,,
 5,Come buy my shit you nerd,I would love to buy your shit,SHOP,"Nah, that's lame",6,,,,,,
 6,Your loss weirdo,,,,,,,,,,
+7,"Howdy, citizen. Stay out of trouble now.","Yes sir, officer",8,Death to false Gods,9,,,,,,
+8,Have a lovely evening,,,,,,,,,,
+9,I'm putting you under arrest for Blasphemy,,,,,,,,,,

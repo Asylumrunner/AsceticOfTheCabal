@@ -135,6 +135,20 @@ npcs = {
         'money': 0,
         'abilities': [],
         'ai': 'Scavenger'
+    },
+    'Police Officer': {
+        'icon': 'C',
+        'color': libtcod.light_blue,
+        'name': 'Police Officer',
+        'hp': 12,
+        'defense': 1,
+        'power': 4,
+        'state': AIStates.FRIENDLY,
+        'description': 'A unformed police officer with a baton, wearing a shining badge and the sigil of the City God',
+        'money': 10,
+        'abilities': [],
+        'ai': 'Basic',
+        'conv': 7
     }
 }
 
@@ -217,8 +231,8 @@ items = {
 floors = {
     (1, 2, 3): {
         'minor_enemies': {
-            'names': ['Troll', 'Gravemite'],
-            'distribution': [0.25, 0.75]
+            'names': ['Troll', 'Gravemite', 'Police Officer'],
+            'distribution': [0.25, 0.25, 0.5]
         },
         'med_enemies': {
             'names': ['Godspawn'],

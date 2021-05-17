@@ -1,4 +1,5 @@
 import tcod as libtcod
+from random import randint
 
 # A hold-all file for the various NPC behaviors, all of which are encapsulated within their own class
 # Each behavior implements take_turn, describing what it should do when its turn comes around
@@ -49,12 +50,20 @@ class Scavenger:
 
         if not self.corpse:
             corpse = self.find_nearest_corpse(entities)
+            if self.corpse:
+                print("CORPSE SELECTED: {}".format(corpse.name))
 
         if libtcod.map_is_in_fov(fov_map, monster.x, monster.y):
             if monster.distance_to(target) >= 2 and target.get_component("Fighter").get_health_percentage() < 0.5:
                 monster.move_astar(target, entities, game_map)
-            elif target.get_component("Fighter").hp > 0:
+            elif monster.distance_to(target) < 2 and target.get_component("Fighter").get_health_percentage() < 0.5:
                 monster.get_component("Fighter").attack(target)
+            elif self.corpse and monster.distance_to(self.corpse) >= 2:
+                monster.move_astar(self.corpse, entities, game_map)
+            else:
+                x = monster.x + randint(-1, 1)
+                y = monster.y + randint(-1, 1)
+                monster.move_towards(x, y, game_map, entities)
         elif self.corpse and monster.distance_to(self.corpse) >= 2:
             monster.move_astar(self.corpse, entities, game_map)
     
