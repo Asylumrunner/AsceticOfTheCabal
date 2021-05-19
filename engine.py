@@ -123,6 +123,11 @@ class Engine():
             elif game_type == 'from_save':
                 self.player, self.entities, self.game_map, self.message_log, self.game_state = load_game()
                 self.fov_map = initialize_fov(self.game_map)
+
+                for entity in self.entities:
+                    if entity.get_log() != self.message_log:
+                        entity.log = self.message_log
+                        
                 return True
 
     def main(self):

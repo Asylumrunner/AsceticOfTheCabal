@@ -80,7 +80,6 @@ class Inventory:
         return self.equipped[slot_name]
 
     # iterate through every item equipped, check if it's armor, and if so, add it's armor value to a running sum that is then set as the character's defense
-    # this feels codependent on Fighter in a way I don't _love_?
     def calculate_armor(self):
         armor_value = 0
         for slot, item in self.equipped.items():

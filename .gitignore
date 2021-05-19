@@ -105,3 +105,8 @@ venv.bak/
 
 #VSCode
 .vscode
+
+#Savegames
+savegame.bak
+savegame.dat
+savegame.dir

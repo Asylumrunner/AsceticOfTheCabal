@@ -28,7 +28,9 @@ class Entity:
         # Names of entities can be changed by various effects. This serves as a constant record of an entity's name should it be changed
         self.base_name = name
 
-    
+    def get_log(self):
+        return self.log
+
     def get_components(self):
         return self.components
     
