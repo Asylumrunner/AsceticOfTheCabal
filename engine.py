@@ -16,6 +16,7 @@ from game_messages import MessageLog, Message
 from save import save_game, load_game
 from aiming_functions import draw_line
 from item_generation.item_generation import generate_starting_pistol
+from status_functions import status_mapping
 import game_constants
 
 #TODO: Update comments
@@ -296,8 +297,15 @@ class Engine():
                         entity.get_component("AI").take_turn(self.player, self.fov_map, self.game_map, self.entities)
                         if self.cull_dead():
                             self.game_state = GameStates.PLAYER_DEAD
+                    if entity.has_component("StatusContainer"):
+                        entity.get_component("StatusContainer").tick_clocks()
+                        for status in entity.get_component("StatusContainer").get_statuses():
+                            status_mapping[status](entity, self.entities)
 
                 if self.game_state != GameStates.PLAYER_DEAD:
+                    self.player.get_component("StatusContainer").tick_clocks()
+                    for status in self.player.get_component("StatusContainer").get_statuses():
+                        status_mapping[status](self.player, self.entities)
                     self.game_state = GameStates.PLAYERS_TURN
 
             # TODO: need a check somewhere around here to tick condition clocks, and then to apply conditions

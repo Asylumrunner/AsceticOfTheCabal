@@ -89,7 +89,8 @@ def generate_weapon(quality_prob, effect_prob, x, y, log):
         apply_quality(item_base, quality)
 
     # randomly determine if the item will get an on-use ability, which is randomly chosen and applied to the item
-    if random.random() <= effect_prob:
+    #if random.random() <= effect_prob:
+    if True:
         while True:
             effect = effects[random.choices(list(effects.keys()), effect_weights)[0]].copy()
             if item_base['type'] in effect['targets']:

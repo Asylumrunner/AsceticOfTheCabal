@@ -5,6 +5,7 @@ from menus import inventory_menu, dialogue_menu, equipped_menu, inspect_menu, sh
 import game_constants
 
 class RenderOrder(Enum):
+    LIQUID = 0
     CORPSE = 1
     ITEM = 2
     ACTOR = 3

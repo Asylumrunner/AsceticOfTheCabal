@@ -30,6 +30,16 @@ effects = {
         "targets": [5, 6],
         "hit_effect": ["avaricial"],
         'kwargs': {}
+    },
+    'Shredding': {
+        'description': " covered in barbs that look like they could dig in deep into flesh",
+        "name": " of Shredding",
+        "arrangement": "suffix",
+        "targets": [5],
+        "hit_effect": ["shredding"],
+        "kwargs": {
+            'amount': 5
+        }
     }
 }
 
@@ -63,11 +73,19 @@ def avaricial(*args, **kwargs):
         if money_drawn > 0:
             entity.log.add_message(Message('Drained {} dollars from the wielder to deal {} damage to {}'.format(money_drawn, money_drawn*2, target.name)))
     
+def shredding(*args, **kwargs):
+    entity = args[0]
+    target = args[1]
+
+    if target.has_component("StatusContainer"):
+        target.get_component("StatusContainer").inflict_status('bleeding', kwargs['amount'])
+        entity.log.add_message(Message('Barbs dig into {}, causing it to bleed'.format(target.name)))
 
 item_function_dict = {
     "heal": heal,
     "hematic": hematic,
-    "avaricial": avaricial
+    "avaricial": avaricial,
+    "shredding": shredding
 }
 
-effect_weights = [1, 1, 1]
+effect_weights = [1, 1, 1, 100]

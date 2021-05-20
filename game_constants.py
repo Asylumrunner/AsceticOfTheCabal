@@ -152,6 +152,37 @@ npcs = {
     }
 }
 
+fluids = {
+    'blood': {
+        'name': 'pool of blood',
+        'color': libtcod.dark_red,
+        'conductive': True,
+        'statuses': [],
+        'time': 0
+    },
+    'water': {
+        'name': 'water',
+        'color': libtcod.light_blue,
+        'conductive': True,
+        'statuses': [],
+        'time': 0
+    },
+    'godblood': {
+        'name': 'pool of godblood',
+        'color': libtcod.purple,
+        'conductive': False,
+        'statuses': [],
+        'time': 0
+    },
+    'poison_waste': {
+        'name': 'puddle of poisonous slime',
+        'color': libtcod.green,
+        'conductive': False,
+        'statuses': ['posioned'],
+        'time': 5
+    }
+}
+
 shops = {
     'Default': [
         {

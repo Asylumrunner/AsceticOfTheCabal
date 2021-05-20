@@ -2,7 +2,7 @@
 # potentially inflicting a status effect upon the thing that goes through it
 # ex. Blood, Poison Goop, Water
 class Fluid():
-    def __init__(conductive=True, statuses=[], time=0):
+    def __init__(self, conductive=True, statuses=[], time=0):
         self.conductive = conductive
         self.statuses = statuses
         self.time = time

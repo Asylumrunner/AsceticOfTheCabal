@@ -39,10 +39,14 @@ class StatusContainer:
     #NOTE: I get the feeling this will bite me in the ass later. tick_clocks needs to happen before any every-turn statuses
     #like poison or bleed
     def tick_clocks(self):
-        for status, clock in self.status_clocks:
+        statuses_to_clear = []
+        for status, clock in self.status_clocks.items():
             if not self.status_bools[status]:
-                del self.status_clocks[status]
+                statuses_to_clear.append(status)
             elif clock == 1:
-                del self.status_clocks[status]
+                statuses_to_clear.append(status)
             else:
                 self.status_clocks[status] = clock - 1
+        
+        for status in statuses_to_clear:
+            del self.status_clocks[status]
