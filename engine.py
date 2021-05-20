@@ -226,6 +226,8 @@ class Engine():
                 if stairs_candidates:
                     self.build_map(stairs_candidates[0].get_component("Stairs").floor)
                     libtcod.console_clear(self.con)
+            
+            # Save the game
             elif action == 'save':
                 save_game(self.player, self.entities, self.game_map, self.message_log, self.game_state)
 
