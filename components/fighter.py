@@ -4,17 +4,19 @@ from render_functions import RenderOrder
 from game_states import AIStates
 from entity import Entity
 from components.money import Money
+from components.ai import Factions
 from item_generation.item_functions import effects, item_function_dict
 
 # A beefy boy of a class, representing anything that can fight
 
 class Fighter:
-    def __init__(self, hp, defense, power, money=0, abilities=[]):
+    def __init__(self, hp, defense, power, money=0, factions=[Factions.LONER], abilities=[]):
         self.max_hp = hp
         self.hp = hp
         self.defense = defense
         self.power = power
         self.money = money
+        self.factions = factions
 
         self.abilities = [item_function_dict[ability] for ability in abilities]
     

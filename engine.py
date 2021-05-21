@@ -11,6 +11,7 @@ from components.inventory import Inventory
 from components.fighter import Fighter
 from components.devotee import Devotee
 from components.status_container import StatusContainer
+from components.ai import Factions
 from menus import main_menu
 from game_messages import MessageLog, Message
 from save import save_game, load_game
@@ -60,7 +61,7 @@ class Engine():
     # This can and probably should be moved to another file
     def initialize_player(self):
         player_components = {
-            "Fighter": Fighter(hp=300, defense=2, power=5),
+            "Fighter": Fighter(hp=300, defense=2, power=5, factions=[Factions.PLAYER]),
             "Inventory": Inventory(26),
             "Devotee": Devotee(100),
             "StatusContainer": StatusContainer()

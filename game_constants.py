@@ -51,7 +51,11 @@ npcs = {
         'description': 'A lumbering green orc, with jagged teeth and a dim expression',
         'money': 10,
         'abilities': [],
-        'ai': 'Basic'
+        'ai': 'Basic',
+        'factions': [4],
+        'allies': [3, 4],
+        'enemies': [],
+        'blood': "blood"
     },
     'Troll': {
         'icon': 'T',
@@ -64,7 +68,11 @@ npcs = {
         'description': 'A massive troll, standing two men tall. Brandishing a large club',
         'money': 30,
         'abilities': [],
-        'ai': 'Basic'
+        'ai': 'Basic',
+        'factions': [],
+        'allies': [],
+        'enemies': [],
+        'blood': "blood"
     },
     'Eye of the Divine': {
         'icon': libtcod.CHAR_FEMALE,
@@ -78,7 +86,11 @@ npcs = {
         'money': 100,
         'conv': '1',
         'abilities': ['heal'],
-        'ai': 'Basic'
+        'ai': 'Basic',
+        'factions': [],
+        'allies': [],
+        'enemies': [],
+        'blood': "godblood"
     },
     'Citizen': {
         'icon': 'a',
@@ -92,7 +104,11 @@ npcs = {
         'money': 10,
         'conv': 2,
         'abilities': [],
-        'ai': 'Coward'
+        'ai': 'Coward',
+        'factions': [],
+        'allies': [],
+        'enemies': [],
+        'blood': "blood"
     },
     'Godspawn': {
         'icon': 'G',
@@ -105,7 +121,11 @@ npcs = {
         'description': 'A hulking mass, humanoid, but resembling the God of this City. One of its children',
         'money': 0,
         'abilities': ['hematic'],
-        'ai': 'Basic'
+        'ai': 'Basic',
+        'factions': [],
+        'allies': [],
+        'enemies': [],
+        'blood': "godblood"
     },
     'Jeff Shopkeep': {
         'icon': 'S',
@@ -121,7 +141,11 @@ npcs = {
         'conv': 5,
         'shop': 'Default',
         'abilities': [],
-        'ai': 'Coward'
+        'ai': 'Coward',
+        'factions': [],
+        'allies': [],
+        'enemies': [],
+        'blood': "blood"
     },
     'Gravemite': {
         'icon': 'g',
@@ -134,7 +158,11 @@ npcs = {
         'description': 'A ghoulish hunched-over humanoid with pale skin and caked-on blood around its mouth',
         'money': 0,
         'abilities': [],
-        'ai': 'Scavenger'
+        'ai': 'Scavenger',
+        'factions': [],
+        'allies': [],
+        'enemies': [],
+        'blood': "blood"
     },
     'Police Officer': {
         'icon': 'C',
@@ -148,7 +176,11 @@ npcs = {
         'money': 10,
         'abilities': [],
         'ai': 'Basic',
-        'conv': 7
+        'conv': 7,
+        'factions': [],
+        'allies': [],
+        'enemies': [],
+        'blood': "blood"
     }
 }
 

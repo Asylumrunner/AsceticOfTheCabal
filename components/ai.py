@@ -1,10 +1,26 @@
 import tcod as libtcod
 from random import randint
+from enum import Enum
 
 # A hold-all file for the various NPC behaviors, all of which are encapsulated within their own class
 # Each behavior implements take_turn, describing what it should do when its turn comes around
 
+# All player and non-player characters have a Faction, which is used to map the relationships between
+# entities on the game map. This will determine who attacks who, who comes to whose aid, etc
+class Factions(Enum):
+    LONER = 0
+    PLAYER = 1
+    HERETICS = 2
+    CITIZENS = 3
+    MONSTERS = 4
+    DIVINE = 5
+    WILD_ANIMALS = 6
+
 class BasicMonster:
+    def __init__(self, allies=[], enemies=[]):
+        self.allies = allies
+        self.enemies = enemies
+
     def take_turn(self, target, fov_map, game_map, entities):
         monster = self.owner
         
@@ -18,6 +34,10 @@ class BasicMonster:
         #TODO: Monsters can't make ranged attacks, need to determine a monster's range and implement that
 
 class Coward:
+    def __init__(self, allies=[], enemies=[]):
+        self.allies = allies
+        self.enemies = enemies
+
     def take_turn(self, target, fov_map, game_map, entities):
         monster = self.owner
 
@@ -42,8 +62,10 @@ class Coward:
         return toughest_friend
 
 class Scavenger:
-    def __init__(self):
+    def __init__(self, allies=[], enemies=[]):
         self.corpse = None
+        self.allies = allies
+        self.enemies = enemies
     
     def take_turn(self, target, fov_map, game_map, entities):
         monster = self.owner
