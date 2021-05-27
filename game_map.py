@@ -89,6 +89,7 @@ class GameMap:
         stairs_components = { "Stairs": Stairs(self.dungeon_level + 1) }
         stairs_entity = Entity(center_of_last_room_x, center_of_last_room_y, ">", libtcod.white,"Stairs Down", blocks=True, render_order=RenderOrder.ACTOR, 
                 message_log=self.log, state=AIStates.INANIMATE, components=stairs_components)
+        self.tiles[center_of_last_room_x][center_of_last_room_y].add_entity(stairs_entity)
         entities.append(stairs_entity)
 
         print("Map generated in {} seconds".format(time.time() - start_time))
@@ -129,8 +130,10 @@ class GameMap:
             "Shop": Shop(game_constants.shops[monster_data['shop']], monster_data['shop_description'], self.log) if 'shop' in monster_data else None,
             "StatusContainer": StatusContainer()
         }
-        return Entity(x, y, monster_data['icon'], monster_data['color'], monster_data['name'], 
+        character = Entity(x, y, monster_data['icon'], monster_data['color'], monster_data['name'], 
                 blocks=True, render_order=RenderOrder.ACTOR, message_log=self.log, state = monster_data['state'], components=monster_components)
+        self.tiles[x][y].add_entity(character)
+        return character
 
     # Generates a random selection of NPCs and items based on the probabilities of the floor
     def place_entities(self, room, entities):
@@ -206,10 +209,35 @@ class GameMap:
             if not any([entity for entity in entities if entity.x == x and entity.y == y]):
                 weapon_or_armor = randint(0, 1)
                 if weapon_or_armor == 0:
-                    entities.append(generate_weapon(self.floor_dict['quality_prob'], self.floor_dict['effect_prob'], x, y, self.log))
+                    weapon = generate_weapon(self.floor_dict['quality_prob'], self.floor_dict['effect_prob'], x, y, self.log)
+                    self.tiles[x][y].add_entity(weapon)
+                    entities.append(weapon)
                 else:
-                    entities.append(generate_armor(self.floor_dict['quality_prob'], self.floor_dict['effect_prob'], x, y, self.log))
+                    armor = generate_armor(self.floor_dict['quality_prob'], self.floor_dict['effect_prob'], x, y, self.log)
+                    self.tiles[x][y].add_entity(armor)
+                    entities.append(armor)
 
     # Returns the game_constants data for the current floor
     def get_floor_info(self):
         return [game_constants.floors[key] for key in game_constants.floors if self.dungeon_level in key][0]
+
+    # Upates a map tile with the location of a new entity
+    def add_entity_to_map(self, entity, x, y):
+        self.tiles[x][y].add_entity(entity)
+
+    # Removes an entity from the given map tile
+    def remove_entity_from_map(self, entity, x, y):
+        self.tiles[x][y].remove_entity(entity)
+
+    # Updates the map's record of where a given entity is
+    def move_entity_on_map(self, entity, old_x, old_y, new_x, new_y):
+        self.tiles[old_x][old_y].remove_entity(entity)
+        self.tiles[new_x][new_y].add_entity(entity)
+
+    # Iterates through the map computing dijkstra map values for the purpose of computation
+    # Maps to compute determines precisely what maps to iterate through, leaving it empty does all of them
+    def compute_dijkstra_maps(self, entities, maps_to_compute=[]):
+        # The initial pass through the map to compute 0-cells for maps
+        # Iterating through the entities list for this will 
+        for entity in entities:
+            if entity.name 

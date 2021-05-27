@@ -88,4 +88,4 @@ item_function_dict = {
     "shredding": shredding
 }
 
-effect_weights = [1, 1, 1, 100]
+effect_weights = [1, 1, 1, 1]

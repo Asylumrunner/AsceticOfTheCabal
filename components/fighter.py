@@ -139,4 +139,19 @@ class Fighter:
     def change_max_hp(self, hp_modification):
         self.max_hp += hp_modification
 
+    # adds faction to factions list if it isn't already there
+    def add_faction(self, faction):
+        if Factions(faction) not in self.factions:
+            self.factions.append(Factions(faction))
+        print("{} factions are now {}".format(self.owner.name, self.factions))
+    
+    # removes faction from faction list. Throws exception if it isn't there
+    def remove_faction(self, faction):
+        if Factions(faction) not in self.factions:
+            raise ValueError("Faction {} not in factions list for {}".format(faction, self.owner.name))
+        else:
+            self.factions.remove(Factions(faction))
+            print("{} factions are now {}".format(self.owner.name, self.factions))
+
+
     #TODO: Fighters that drop an inventory should drop all their shit too
