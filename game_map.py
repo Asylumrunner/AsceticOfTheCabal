@@ -240,4 +240,4 @@ class GameMap:
         # The initial pass through the map to compute 0-cells for maps
         # Iterating through the entities list for this will 
         for entity in entities:
-            if entity.name 
+            print(entity.name)

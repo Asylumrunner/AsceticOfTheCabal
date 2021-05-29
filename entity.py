@@ -98,9 +98,3 @@ class Entity:
         
         libtcod.path_delete(my_path)
 
-# check to see if the place an Entity would move is blocked. Used for movement. Might be useless if those are useless
-def get_blocking_entities_at_location(entities, destination_x, destination_y):
-    for entity in entities:
-        if entity.blocks and entity.x == destination_x and entity.y == destination_y:
-            return entity
-    return None

@@ -1,9 +1,10 @@
 import tcod as libtcod
-
+import game_constants
 from entity import Entity, get_blocking_entities_at_location
 from input_handler import handle_keys, get_shoot_target
 from render_functions import render_all, clear_all, RenderOrder
 from game_map import GameMap
+from entities import Entities
 from fov_functions import initialize_fov, recompute_fov
 from game_states import GameStates, AIStates
 from components.item import ItemType
@@ -18,9 +19,6 @@ from save import save_game, load_game
 from aiming_functions import draw_line
 from item_generation.item_generation import generate_starting_pistol
 from status_functions import status_mapping
-import game_constants
-
-#TODO: Update comments
 
 class Engine():
     def __init__(self):
@@ -76,7 +74,8 @@ class Engine():
     # Generates a game map and initializes the FOV map of it
     def build_map(self, level=1):
         self.game_map = GameMap(self.message_log, level)
-        self.entities = [self.player]
+        self.entities = Entities(self.game_map)
+        self.entities.insert_entity(self.player)
         self.game_map.make_map(self.player, self.entities)
 
         self.fov_recompute = True
@@ -90,13 +89,13 @@ class Engine():
         # Finds every entity in the game world with 0 or less health and kills them
         # Returns true if it kills the player, otherwise false
         player_killed = False
-        dead_entities = [entity for entity in self.entities if entity.has_component("Fighter") and not entity.get_component("Fighter").isAlive() and entity.char != '%']
+        dead_entities =  self.entities.get_sublist(lambda x: x.has_component("Fighter") and not x.get_component("Fighter").isAlive() and x.char != '%')
 
         if dead_entities:
             for dead_entity in dead_entities:
                 drop = dead_entity.get_component("Fighter").die()
                 if drop:
-                    self.entities.append(drop)
+                    self.entities.insert_entity(drop)
                 if dead_entity == self.player:
                     player_killed = True
         return player_killed
@@ -125,11 +124,7 @@ class Engine():
             elif game_type == 'from_save':
                 self.player, self.entities, self.game_map, self.message_log, self.game_state = load_game()
                 self.fov_map = initialize_fov(self.game_map)
-
-                for entity in self.entities:
-                    if entity.get_log() != self.message_log:
-                        entity.log = self.message_log
-                        
+                self.entities.set_log_all(self.message_log)
                 return True
 
     def main(self):
@@ -166,17 +161,18 @@ class Engine():
                 destination_x = self.player.x + dx
                 destination_y = self.player.y + dy
 
+                # TODO: This is where you hid the noclip check. Fix this for release
                 #if not self.game_map.is_blocked(destination_x, destination_y):
                 if True:
                     # If they're not about to walk into a wall, check for enemies at the destination
-                    target = get_blocking_entities_at_location(self.entities, destination_x, destination_y)
-                    if target and target.state == AIStates.HOSTILE:
+                    target = self.entities.get_sublist(lambda ent: ent.x==destination_x and ent.y==destination_y and ent.blocks)
+                    if target and target[0].state == AIStates.HOSTILE:
                         # If there are enemies, attack them
-                        self.player.get_component("Fighter").attack(target)
+                        self.player.get_component("Fighter").attack(target[0])
                         self.game_state = GameStates.ENEMY_TURN
-                    elif target and target.state == AIStates.FRIENDLY:
+                    elif target and target[0].state == AIStates.FRIENDLY:
                         self.previous_game_state = self.game_state
-                        self.player_target = target
+                        self.player_target = target[0]
                         self.game_state = GameStates.DIALOGUE
                     else:
                         # If there are not enemies, move and mark FOV for recomputation
@@ -186,12 +182,12 @@ class Engine():
             
             # If the player grabs something, check if there is an object at their feet, and either have them pick it up (if it's an Item) or add it to their wallet (if it's money)
             elif action == 'grab' and self.game_state == GameStates.PLAYERS_TURN:
-                for item in [entity for entity in self.entities if (entity.has_component("Item") or entity.has_component("Money")) and entity.x == self.player.x and entity.y == self.player.y]:
+                for item in self.entities.get_sublist(lambda entity: (entity.has_component("Item") or entity.has_component("Money")) and entity.x == self.player.x and entity.y == self.player.y):
                     if item.has_component("Money"):
                         self.player.get_component("Fighter").pick_up_money(item)
                     else:
                         self.player.get_component("Inventory").add_item(item)
-                    self.entities.remove(item)
+                    self.entities.remove_entity(item)
                     self.game_state = GameStates.ENEMY_TURN
 
             # Open up the inventory menu
@@ -224,7 +220,7 @@ class Engine():
 
             # if the player attempts to go down some stairs, make sure they're on stairs, then build a new map and clear the console
             elif action == 'go_down' and self.game_state == GameStates.PLAYERS_TURN:
-                stairs_candidates = [entity for entity in self.entities if entity.x==self.player.x and entity.y==self.player.y and entity.has_component("Stairs")]
+                stairs_candidates = self.entities.get_sublist(lambda entity: entity.x==self.player.x and entity.y==self.player.y and entity.has_component("Stairs"))
                 if stairs_candidates:
                     self.build_map(stairs_candidates[0].get_component("Stairs").floor)
                     libtcod.console_clear(self.con)
