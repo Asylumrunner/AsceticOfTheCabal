@@ -142,9 +142,6 @@ class Engine():
             self.fov_recompute = False
             libtcod.console_flush()
 
-            # Populate the game map with characters
-            clear_all(self.con, self.entities)
-
             # Interpret the input into a game action
             input = handle_keys(self.key, self.game_state)
             action = input.get('action')
