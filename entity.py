@@ -61,7 +61,7 @@ class Entity:
         dx = int(round(dx / distance))
         dy = int(round(dy / distance))
 
-        if not (game_map.is_blocked(self.x + dx, self.y + dy) or get_blocking_entities_at_location(entities, self.x + dx, self.y + dy)):
+        if not (game_map.is_blocked(self.x + dx, self.y + dy) or entities.get_sublist(lambda entity: entity.x == self.x+dx and entity.y == self.y+dy and entity.blocks)):
             self.move(dx, dy)
     
     # checks the distance towards a target
@@ -79,7 +79,7 @@ class Entity:
             for x1 in range(game_map.width):
                 libtcod.map_set_properties(fov_map, x1, y1, not game_map.tiles[x1][y1].block_sight, not game_map.tiles[x1][y1].blocked)
             
-        for entity in entities:
+        for entity in entities.get_entity_set():
             if entity.blocks and entity != self and entity != target:
                 libtcod.map_set_properties(fov_map, entity.x, entity.y, True, False)
         

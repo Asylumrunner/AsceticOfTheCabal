@@ -14,7 +14,7 @@ class RenderOrder(Enum):
 def get_names_under_mouse(mouse, entities, fov_map):
     (x, y) = (mouse.cx, mouse.cy)
 
-    names = entities.get_sublist(lambda entity: entity.x == x and entity.y == y and libtcod.map_is_in_fov(fov_map, entity.x, entity.y))
+    names = [entity.name for entity in entities.get_sublist(lambda entity: entity.x == x and entity.y == y and libtcod.map_is_in_fov(fov_map, entity.x, entity.y))]
     names = ', '.join(names)
 
     return names.capitalize()
@@ -66,7 +66,7 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
                         libtcod.console_put_char(con, x, y, libtcod.CHAR_BLOCK1, libtcod.BKGND_NONE)
     
     #We then sort every entity by render order. Entities later in the render order will appear on top of things earlier
-    entities_in_render_order = sorted(entities, key= lambda x: x.render_order.value)
+    entities_in_render_order = sorted(entities.get_entity_set(), key= lambda x: x.render_order.value)
 
     #then, we draw every entity on the map
     for entity in entities_in_render_order:
@@ -120,8 +120,9 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
         status_menu(con, player)
 
 # Removes every entity in the game from the screen
+# TODO: I think this is the source of my weird flicker glitch
 def clear_all(con, entities):
-    for entity in entities:
+    for entity in entities.get_entity_set():
         clear_entity(con, entity)
 
 # Draws a character portrait. This... needs some work

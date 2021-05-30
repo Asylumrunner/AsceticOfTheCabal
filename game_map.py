@@ -90,7 +90,7 @@ class GameMap:
         stairs_entity = Entity(center_of_last_room_x, center_of_last_room_y, ">", libtcod.white,"Stairs Down", blocks=True, render_order=RenderOrder.ACTOR, 
                 message_log=self.log, state=AIStates.INANIMATE, components=stairs_components)
         self.tiles[center_of_last_room_x][center_of_last_room_y].add_entity(stairs_entity)
-        entities.append(stairs_entity)
+        entities.insert_entity(stairs_entity)
 
         print("Map generated in {} seconds".format(time.time() - start_time))
     
@@ -130,10 +130,8 @@ class GameMap:
             "Shop": Shop(game_constants.shops[monster_data['shop']], monster_data['shop_description'], self.log) if 'shop' in monster_data else None,
             "StatusContainer": StatusContainer()
         }
-        character = Entity(x, y, monster_data['icon'], monster_data['color'], monster_data['name'], 
+        return Entity(x, y, monster_data['icon'], monster_data['color'], monster_data['name'], 
                 blocks=True, render_order=RenderOrder.ACTOR, message_log=self.log, state = monster_data['state'], components=monster_components)
-        self.tiles[x][y].add_entity(character)
-        return character
 
     # Generates a random selection of NPCs and items based on the probabilities of the floor
     def place_entities(self, room, entities):
@@ -145,8 +143,8 @@ class GameMap:
             x = randint(room.x1 + 1, room.x2 -1)
             y = randint(room.y1 +1, room.y2 -1)
 
-            if not any([entity for entity in entities if entity.x == x and entity.y == y]):
-                entities.append(self.spawn_character(x, y, np.random.choice(self.floor_dict['enemies']['names'], 1, self.floor_dict['enemies']['distribution'])[0]))
+            if not any(entities.get_sublist(lambda entity: entity.x == x and entity.y == y)):
+                entities.insert_entity(self.spawn_character(x, y, np.random.choice(self.floor_dict['enemies']['names'], 1, self.floor_dict['enemies']['distribution'])[0]))
         
         number_of_items = randint(0, game_constants.max_items_per_room)
 
@@ -154,12 +152,12 @@ class GameMap:
             x = randint(room.x1 + 1, room.x2 -1)
             y = randint(room.y1 + 1, room.y2 -1)
 
-            if not any([entity for entity in entities if entity.x == x and entity.y == y]):
+            if not any(entities.get_sublist(lambda entity: entity.x == x and entity.y == y)):
                 weapon_or_armor = randint(0, 1)
                 if weapon_or_armor == 0:
-                    entities.append(generate_weapon(self.floor_dict['quality_prob'], self.floor_dict['effect_prob'], x, y, self.log))
+                    entities.insert_entity(generate_weapon(self.floor_dict['quality_prob'], self.floor_dict['effect_prob'], x, y, self.log))
                 else:
-                    entities.append(generate_armor(self.floor_dict['quality_prob'], self.floor_dict['effect_prob'], x, y, self.log))
+                    entities.insert_entity(generate_armor(self.floor_dict['quality_prob'], self.floor_dict['effect_prob'], x, y, self.log))
 
     def populate_room(self, room, entities):
         room_to_select = self.room_options[random.choice(list(self.room_options))]
@@ -168,54 +166,52 @@ class GameMap:
             x = randint(room.x1 + 1, room.x2 -1)
             y = randint(room.y1 +1, room.y2 -1)
 
-            if not any([entity for entity in entities if entity.x == x and entity.y == y]):
-                entities.append(self.spawn_character(x, y, np.random.choice(self.floor_dict['minor_enemies']['names'], 1, self.floor_dict['minor_enemies']['distribution'])[0]))
+            if not any(entities.get_sublist(lambda entity: entity.x == x and entity.y == y)):
+                entities.insert_entity(self.spawn_character(x, y, np.random.choice(self.floor_dict['minor_enemies']['names'], 1, self.floor_dict['minor_enemies']['distribution'])[0]))
 
 
         for i in range(int(room_to_select['med_enemies'])):
             x = randint(room.x1 + 1, room.x2 -1)
             y = randint(room.y1 +1, room.y2 -1)
 
-            if not any([entity for entity in entities if entity.x == x and entity.y == y]):
-                entities.append(self.spawn_character(x, y, np.random.choice(self.floor_dict['med_enemies']['names'], 1, self.floor_dict['med_enemies']['distribution'])[0]))
+            if not any(entities.get_sublist(lambda entity: entity.x == x and entity.y == y)):
+                entities.insert_entity(self.spawn_character(x, y, np.random.choice(self.floor_dict['med_enemies']['names'], 1, self.floor_dict['med_enemies']['distribution'])[0]))
 
 
         for i in range(int(room_to_select['major_enemies'])):
             x = randint(room.x1 + 1, room.x2 -1)
             y = randint(room.y1 +1, room.y2 -1)
 
-            if not any([entity for entity in entities if entity.x == x and entity.y == y]):
-                entities.append(self.spawn_character(x, y, np.random.choice(self.floor_dict['major_enemies']['names'], 1, self.floor_dict['major_enemies']['distribution'])[0]))
+            if not any(entities.get_sublist(lambda entity: entity.x == x and entity.y == y)):
+                entities.insert_entity(self.spawn_character(x, y, np.random.choice(self.floor_dict['major_enemies']['names'], 1, self.floor_dict['major_enemies']['distribution'])[0]))
 
 
         for i in range(int(room_to_select['shopkeeper'])):
             x = randint(room.x1 + 1, room.x2 -1)
             y = randint(room.y1 +1, room.y2 -1)
 
-            if not any([entity for entity in entities if entity.x == x and entity.y == y]):
-                entities.append(self.spawn_character(x, y, np.random.choice(self.floor_dict['shopkeeper']['names'], 1, self.floor_dict['shopkeeper']['distribution'])[0]))
+            if not any(entities.get_sublist(lambda entity: entity.x == x and entity.y == y)):
+                entities.insert_entity(self.spawn_character(x, y, np.random.choice(self.floor_dict['shopkeeper']['names'], 1, self.floor_dict['shopkeeper']['distribution'])[0]))
 
         for i in range(int(room_to_select['neutrals'])):
             x = randint(room.x1 + 1, room.x2 -1)
             y = randint(room.y1 +1, room.y2 -1)
 
-            if not any([entity for entity in entities if entity.x == x and entity.y == y]):
-                entities.append(self.spawn_character(x, y, np.random.choice(self.floor_dict['neutrals']['names'], 1, self.floor_dict['neutrals']['distribution'])[0]))
+            if not any(entities.get_sublist(lambda entity: entity.x == x and entity.y == y)):
+                entities.insert_entity(self.spawn_character(x, y, np.random.choice(self.floor_dict['neutrals']['names'], 1, self.floor_dict['neutrals']['distribution'])[0]))
 
         for i in range(int(room_to_select['item_spawn'])):
             x = randint(room.x1 + 1, room.x2 -1)
             y = randint(room.y1 +1, room.y2 -1)
 
-            if not any([entity for entity in entities if entity.x == x and entity.y == y]):
+            if not any(entities.get_sublist(lambda entity: entity.x == x and entity.y == y)):
                 weapon_or_armor = randint(0, 1)
                 if weapon_or_armor == 0:
                     weapon = generate_weapon(self.floor_dict['quality_prob'], self.floor_dict['effect_prob'], x, y, self.log)
-                    self.tiles[x][y].add_entity(weapon)
-                    entities.append(weapon)
+                    entities.insert_entity(weapon)
                 else:
                     armor = generate_armor(self.floor_dict['quality_prob'], self.floor_dict['effect_prob'], x, y, self.log)
-                    self.tiles[x][y].add_entity(armor)
-                    entities.append(armor)
+                    entities.insert_entity(armor)
 
     # Returns the game_constants data for the current floor
     def get_floor_info(self):
@@ -239,5 +235,8 @@ class GameMap:
     def compute_dijkstra_maps(self, entities, maps_to_compute=[]):
         # The initial pass through the map to compute 0-cells for maps
         # Iterating through the entities list for this will 
-        for entity in entities:
+        for entity in entities.get_entity_set():
             print(entity.name)
+
+    def get_tile(self, x, y):
+        return self.tiles[x][y]

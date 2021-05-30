@@ -1,6 +1,6 @@
 import tcod as libtcod
 import game_constants
-from entity import Entity, get_blocking_entities_at_location
+from entity import Entity
 from input_handler import handle_keys, get_shoot_target
 from render_functions import render_all, clear_all, RenderOrder
 from game_map import GameMap
@@ -165,14 +165,15 @@ class Engine():
                 #if not self.game_map.is_blocked(destination_x, destination_y):
                 if True:
                     # If they're not about to walk into a wall, check for enemies at the destination
-                    target = self.entities.get_sublist(lambda ent: ent.x==destination_x and ent.y==destination_y and ent.blocks)
-                    if target and target[0].state == AIStates.HOSTILE:
+                    potential_collision_list = self.entities.get_sublist(lambda ent: ent.x==destination_x and ent.y==destination_y and ent.blocks)
+                    target = potential_collision_list[0] if potential_collision_list else None
+                    if target and target.state == AIStates.HOSTILE:
                         # If there are enemies, attack them
-                        self.player.get_component("Fighter").attack(target[0])
+                        self.player.get_component("Fighter").attack(target)
                         self.game_state = GameStates.ENEMY_TURN
-                    elif target and target[0].state == AIStates.FRIENDLY:
+                    elif target and target.state == AIStates.FRIENDLY:
                         self.previous_game_state = self.game_state
-                        self.player_target = target[0]
+                        self.player_target = target
                         self.game_state = GameStates.DIALOGUE
                     else:
                         # If there are not enemies, move and mark FOV for recomputation
@@ -289,7 +290,7 @@ class Engine():
 
             # when it's the AI's turn, find every entity that has AI and move it (if it's hostile)
             if self.game_state == GameStates.ENEMY_TURN:
-                for entity in self.entities:
+                for entity in self.entities.get_entity_set():
                     if entity.has_component("AI") and entity.state == AIStates.HOSTILE:
                         entity.get_component("AI").take_turn(self.player, self.fov_map, self.game_map, self.entities)
                         if self.cull_dead():
@@ -297,12 +298,12 @@ class Engine():
                     if entity.has_component("StatusContainer"):
                         entity.get_component("StatusContainer").tick_clocks()
                         for status in entity.get_component("StatusContainer").get_statuses():
-                            status_mapping[status](entity, self.entities)
+                            status_mapping[status](entity, self.entities, self.game_map)
 
                 if self.game_state != GameStates.PLAYER_DEAD:
                     self.player.get_component("StatusContainer").tick_clocks()
                     for status in self.player.get_component("StatusContainer").get_statuses():
-                        status_mapping[status](self.player, self.entities)
+                        status_mapping[status](self.player, self.entities, self.game_map)
                     self.game_state = GameStates.PLAYERS_TURN
 
             # TODO: need a check somewhere around here to tick condition clocks, and then to apply conditions

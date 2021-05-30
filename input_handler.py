@@ -186,7 +186,7 @@ def handle_player_status_key(key):
 def get_shoot_target(mouse, entities, fov_map, fighters_only=True):
     (x, y) = (mouse.cx, mouse.cy)
 
-    target = [entity for entity in entities if entity.x == x and entity.y == y and libtcod.map_is_in_fov(fov_map, entity.x, entity.y) and (entity.has_component("Fighter") or not fighters_only)]
+    target = entities.get_sublist(lambda entity: entity.x == x and entity.y == y and libtcod.map_is_in_fov(fov_map, entity.x, entity.y) and (entity.has_component("Fighter") or not fighters_only))
     
     if(len(target) > 0):
         return target[0]

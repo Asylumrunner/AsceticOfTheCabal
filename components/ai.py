@@ -53,7 +53,7 @@ class Coward:
         toughest_friend = None
         max_toughness = -1
 
-        for entity in [entity for entity in entities if entity.has_component("Fighter") and entity != target and entity != self.owner]:
+        for entity in entities.get_sublist(lambda entity: entity.has_component("Fighter") and entity != target and entity != self.owner):
             entity_toughness = entity.get_component("Fighter").hp + (2 * entity.get_component("Fighter").power)
             if entity_toughness > max_toughness or (entity_toughness == max_toughness and self.owner.distance_to(toughest_friend) > self.owner.distance_to(entity)):
                 toughest_friend = entity
@@ -93,7 +93,7 @@ class Scavenger:
         nearest_corpse = None
         min_distance = 10000000
 
-        for entity in [entity for entity in entities if 'remains' in entity.name]:
+        for entity in entities.get_sublist(lambda entity: 'remains' in entity.name):
             distance = entity.distance_to(entity)
             if distance < min_distance and distance < 50:
                 nearest_corpse = entity
