@@ -231,6 +231,7 @@ class GameMap:
         self.tiles[old_x][old_y].remove_entity(entity)
         self.tiles[new_x][new_y].add_entity(entity)
 
+    # Iterates through the map computing dijkstra map values for the purpose of rapid pathfinding
     def compute_dijkstra_map(self, goals, name):
         start_time = time.time()
 
@@ -258,46 +259,7 @@ class GameMap:
 
         print("Dijkstra maps generated in {} seconds".format(time.time() - start_time))
 
-    # Iterates through the map computing dijkstra map values for the purpose of computation
-    # Maps to compute determines precisely what maps to iterate through, leaving it empty does all of them
-    """ def compute_dijkstra_maps(self, entities, maps_to_compute=[]):
-        start_time = time.time()
-        # The initial pass through the map to compute 0-cells for maps
-        # Iterating through the entities list for this will
-
-        self.reset_dijkstra_map_values()
-
-        for entity in entities.get_entity_set():
-            if entity.name == "Stairs Down":
-                self.tiles[entity.x][entity.y].set_dijkstra_map_value('stairs', 0)
-        
-        iterations = 0
-        while True:
-            change_made = False
-
-            for x in range(self.width):
-                for y in range(self.height):
-                    if not self.tiles[x][y].blocked:
-                        adjacent_tile_values = [
-                            self.tiles[x][y-1].get_dijkstra_map_values() if y > 0 else {},
-                            self.tiles[x+1][y].get_dijkstra_map_values() if x < self.width else {},
-                            self.tiles[x][y+1].get_dijkstra_map_values() if y < self.height else {},
-                            self.tiles[x-1][y].get_dijkstra_map_values() if x > 0 else {}
-                        ]
-
-                        best_stairs = min([dict['stairs'] for dict in adjacent_tile_values if 'stairs' in dict]) + 1
-
-                        if best_stairs < self.tiles[x][y].get_dijkstra_map_value('stairs'):
-                            self.tiles[x][y].set_dijkstra_map_value('stairs', best_stairs)
-                            change_made = True
-
-            iterations += 1
-
-            if not change_made:
-                break
-
-        print("Dijkstra maps generated in {} seconds and in {} iterations".format(time.time() - start_time, iterations))
- """
+ 
     def reset_dijkstra_map_values(self, name):
         for column in self.tiles:
             for tile in column:
