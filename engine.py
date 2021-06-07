@@ -51,11 +51,10 @@ class Engine():
         self.player_target = None
 
         # Establish the Game State
+        self.game_map.compute_dijkstra_map([self.player], 'player')
         self.game_state = GameStates.PLAYERS_TURN
         self.previous_game_state = GameStates.PLAYERS_TURN
         self.game_running = True
-
-        self.game_map.compute_dijkstra_maps(self.entities)
         
     # Creates the player object, with all associated defaults
     # This can and probably should be moved to another file
@@ -178,6 +177,7 @@ class Engine():
                         # If there are not enemies, move and mark FOV for recomputation
                         self.player.move(dx, dy, self.game_map)
                         self.fov_recompute = True
+                        self.game_map.compute_dijkstra_map([self.player], 'player')
                         self.game_state = GameStates.ENEMY_TURN
             
             # If the player grabs something, check if there is an object at their feet, and either have them pick it up (if it's an Item) or add it to their wallet (if it's money)

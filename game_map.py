@@ -91,6 +91,7 @@ class GameMap:
                 message_log=self.log, state=AIStates.INANIMATE, components=stairs_components)
         self.tiles[center_of_last_room_x][center_of_last_room_y].add_entity(stairs_entity)
         entities.insert_entity(stairs_entity)
+        self.compute_dijkstra_map([stairs_entity], "stairs")
 
         print("Map generated in {} seconds".format(time.time() - start_time))
     
@@ -227,13 +228,39 @@ class GameMap:
 
     # Updates the map's record of where a given entity is
     def move_entity_on_map(self, entity, old_x, old_y, new_x, new_y):
-        print("Called with {}, moving from ({}, {}) to ({}, {})".format(entity.name, old_x, old_y, new_x, new_y))
         self.tiles[old_x][old_y].remove_entity(entity)
         self.tiles[new_x][new_y].add_entity(entity)
 
+    def compute_dijkstra_map(self, goals, name):
+        start_time = time.time()
+
+        self.reset_dijkstra_map_values(name)
+
+        tiles_to_check = set([(goal.x, goal.y) for goal in goals])
+        weight = -1
+        while tiles_to_check:
+            weight += 1
+            default_neighbors_found = set()
+            for coord in tiles_to_check:
+                self.tiles[coord[0]][coord[1]].set_dijkstra_map_value(name, weight)
+                if coord[0] > 0 and self.tiles[coord[0]-1][coord[1]].get_dijkstra_map_value(name) == 0:
+                    default_neighbors_found.add((coord[0]-1, coord[1]))
+                if coord[0] < self.width and self.tiles[coord[0]+1][coord[1]].get_dijkstra_map_value(name) == 0:
+                    default_neighbors_found.add((coord[0]+1, coord[1]))
+                if coord[1] > 0 and self.tiles[coord[0]][coord[1]-1].get_dijkstra_map_value(name) == 0:
+                    default_neighbors_found.add((coord[0], coord[1]-1))
+                if coord[1] < self.height and self.tiles[coord[0]][coord[1]+1].get_dijkstra_map_value(name) == 0:
+                    default_neighbors_found.add((coord[0], coord[1]+1))
+            tiles_to_check = default_neighbors_found
+        
+        for entity in goals:
+            self.tiles[entity.x][entity.y].set_dijkstra_map_value(name, 0)
+
+        print("Dijkstra maps generated in {} seconds".format(time.time() - start_time))
+
     # Iterates through the map computing dijkstra map values for the purpose of computation
     # Maps to compute determines precisely what maps to iterate through, leaving it empty does all of them
-    def compute_dijkstra_maps(self, entities, maps_to_compute=[]):
+    """ def compute_dijkstra_maps(self, entities, maps_to_compute=[]):
         start_time = time.time()
         # The initial pass through the map to compute 0-cells for maps
         # Iterating through the entities list for this will
@@ -270,13 +297,14 @@ class GameMap:
                 break
 
         print("Dijkstra maps generated in {} seconds and in {} iterations".format(time.time() - start_time, iterations))
-
-    def reset_dijkstra_map_values(self):
+ """
+    def reset_dijkstra_map_values(self, name):
         for column in self.tiles:
             for tile in column:
-                tile.set_dijkstra_map_values({
-                    'stairs': 9999999
-                })
+                if tile.blocked :
+                    tile.set_dijkstra_map_value(name, -1)
+                else:
+                    tile.set_dijkstra_map_value(name, 0)
     
     def get_tile(self, x, y):
         return self.tiles[x][y]

@@ -12,9 +12,7 @@ class Tile:
 
         self.entities_contained = set()
 
-        self.dijkstra_map_values = {
-            'stairs': 9999999
-        }
+        self.dijkstra_map_values = {}
 
     def get_entities(self):
         return self.entities_contained
