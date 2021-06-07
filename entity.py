@@ -43,7 +43,8 @@ class Entity:
         return self.components[component_name] if component_name in self.components else None
         
     # moves the entity a certain number of spaces (actually moving on the game map will be handled when the map re-renders)
-    def move(self, x, y):
+    def move(self, x, y, game_map):
+        game_map.move_entity_on_map(self, self.x, self.y, self.x + x, self.y + y)
         self.x += x
         self.y += y
     
@@ -62,7 +63,7 @@ class Entity:
         dy = int(round(dy / distance))
 
         if not (game_map.is_blocked(self.x + dx, self.y + dy) or entities.get_sublist(lambda entity: entity.x == self.x+dx and entity.y == self.y+dy and entity.blocks)):
-            self.move(dx, dy)
+            self.move(dx, dy, game_map)
     
     # checks the distance towards a target
     def distance_to(self, other):
@@ -90,6 +91,7 @@ class Entity:
         if not libtcod.path_is_empty(my_path) and libtcod.path_size(my_path) < 25:
             x, y = libtcod.path_walk(my_path, True)
             if x or y:
+                game_map.move_entity_on_map(self, self.x, self.y, x, y)
                 self.x = x
                 self.y = y
         

@@ -13,7 +13,6 @@ class Tile:
         self.entities_contained = set()
 
         self.dijkstra_map_values = {
-            'player': 9999999,
             'stairs': 9999999
         }
 
@@ -25,3 +24,15 @@ class Tile:
         
     def remove_entity(self, entity):
         self.entities_contained.discard(entity)
+    
+    def set_dijkstra_map_value(self, key, value):
+        self.dijkstra_map_values[key] = value
+
+    def get_dijkstra_map_value(self, key):
+        return self.dijkstra_map_values[key]
+    
+    def get_dijkstra_map_values(self):
+        return self.dijkstra_map_values
+
+    def set_dijkstra_map_values(self, values):
+        self.dijkstra_map_values = values

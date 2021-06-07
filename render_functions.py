@@ -91,8 +91,9 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
     render_bar(panel, 1, 2, game_constants.bar_width, 'DEVOTION', player.get_component("Devotee").curr_devotion, player.get_component("Devotee").max_devotion, libtcod.light_blue, libtcod.darker_blue)
     libtcod.console_print_ex(panel, 1, 4, libtcod.BKGND_NONE, libtcod.LEFT, "Level {}".format(game_map.dungeon_level))
     #libtcod.console_print_ex(panel, 1, 5, libtcod.BKGND_NONE, libtcod.LEFT, "({}, {})".format(player.x, player.y))
-    #libtcod.console_print_ex(panel, 1, 6, libtcod.BKGND_NONE, libtcod.LEFT, "({}, {})".format(mouse.cx, mouse.cy))
+    libtcod.console_print_ex(panel, 1, 6, libtcod.BKGND_NONE, libtcod.LEFT, "{}".format(game_map.tiles[mouse.cx][mouse.cy].get_dijkstra_map_values()))
     libtcod.console_print_ex(panel, 1, 5, libtcod.BKGND_NONE, libtcod.LEFT,' '.join(player.get_component("StatusContainer").get_statuses()))
+    libtcod.console_print_ex(panel, 1, 7, libtcod.BKGND_NONE, libtcod.LEFT, "{}".format(game_map.tiles[mouse.cx][mouse.cy].get_entities()))
 
     # This bit prints out a list of everything currently under the mouse
     libtcod.console_set_default_foreground(panel, libtcod.light_grey)

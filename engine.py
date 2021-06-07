@@ -54,6 +54,8 @@ class Engine():
         self.game_state = GameStates.PLAYERS_TURN
         self.previous_game_state = GameStates.PLAYERS_TURN
         self.game_running = True
+
+        self.game_map.compute_dijkstra_maps(self.entities)
         
     # Creates the player object, with all associated defaults
     # This can and probably should be moved to another file
@@ -75,8 +77,8 @@ class Engine():
     def build_map(self, level=1):
         self.game_map = GameMap(self.message_log, level)
         self.entities = Entities(self.game_map)
-        self.entities.insert_entity(self.player)
         self.game_map.make_map(self.player, self.entities)
+        self.entities.insert_entity(self.player)
 
         self.fov_recompute = True
         self.fov_map = initialize_fov(self.game_map)
@@ -174,7 +176,7 @@ class Engine():
                         self.game_state = GameStates.DIALOGUE
                     else:
                         # If there are not enemies, move and mark FOV for recomputation
-                        self.player.move(dx, dy)
+                        self.player.move(dx, dy, self.game_map)
                         self.fov_recompute = True
                         self.game_state = GameStates.ENEMY_TURN
             
