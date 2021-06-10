@@ -18,6 +18,7 @@ from item_generation.item_generation import generate_weapon, generate_armor
 from utilities.csv_reader import read_csv_to_dict
 import time
 import random
+from math import floor
 
 class GameMap:
     def __init__(self, message_log, dungeon_level=1):
@@ -232,7 +233,7 @@ class GameMap:
         self.tiles[new_x][new_y].add_entity(entity)
 
     # Iterates through the map computing dijkstra map values for the purpose of rapid pathfinding
-    def compute_dijkstra_map(self, goals, name):
+    def compute_dijkstra_map(self, goals, name, flee=False):
         start_time = time.time()
 
         self.reset_dijkstra_map_values(name)
@@ -259,6 +260,41 @@ class GameMap:
 
         print("Dijkstra maps generated in {} seconds".format(time.time() - start_time))
 
+        # If flee is set to true, then once we generate the map, we immediately generate another Dijkstra map
+        # using an inverted method, which will generate a map that can be used to intelligently _flee_ the goals
+
+        # Note that this uses the traditional, slow method for generating a Dijkstra map. The reversal method,
+        # creating a Dijkstra map from a Dijkstra map, is more difficult to generate from a single stack-based
+        # pass like the original map is made
+
+        #TODO: Can you do this in one pass with a queue? Hypothesize
+        start_time = time.time()
+        if flee:
+            for row in self.tiles:
+                for tile in row:
+                    tile.set_dijkstra_map_value(name+'_flee', floor(tile.get_dijkstra_map_value(name) * -1.2))
+            
+            change_made = True
+            while change_made:
+                change_made = False
+                for x in range(self.width):
+                    for y in range(self.height):
+                        tile = self.tiles[x][y]
+                        candidate_val = 1000000
+                        if not tile.blocked:
+                            if x > 0:
+                                candidate_val = min(candidate_val, self.tiles[x-1][y].get_dijkstra_map_value(name+'_flee'))
+                            if x < self.width:
+                                candidate_val = min(candidate_val, self.tiles[x+1][y].get_dijkstra_map_value(name+'_flee'))
+                            if y > 0:
+                                candidate_val = min(candidate_val, self.tiles[x][y-1].get_dijkstra_map_value(name+'_flee'))
+                            if y < self.height:
+                                candidate_val = min(candidate_val, self.tiles[x][y+1].get_dijkstra_map_value(name+'_flee'))
+                            if candidate_val != 1000000 and candidate_val + 2 <= tile.get_dijkstra_map_value(name+'_flee'):
+                                change_made = True
+                                tile.set_dijkstra_map_value(name+'_flee', candidate_val+1)
+
+        print("Flee maps generated in {} seconds".format(time.time() - start_time))
  
     def reset_dijkstra_map_values(self, name):
         for column in self.tiles:
