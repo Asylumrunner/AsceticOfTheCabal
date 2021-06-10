@@ -239,6 +239,7 @@ class GameMap:
         self.reset_dijkstra_map_values(name)
 
         tiles_to_check = set([(goal.x, goal.y) for goal in goals])
+        minimum_points = set()
         weight = -1
         while tiles_to_check:
             weight += 1
@@ -253,6 +254,8 @@ class GameMap:
                     default_neighbors_found.add((coord[0], coord[1]-1))
                 if coord[1] < self.height and self.tiles[coord[0]][coord[1]+1].get_dijkstra_map_value(name) == 0:
                     default_neighbors_found.add((coord[0], coord[1]+1))
+            if not default_neighbors_found:
+                maximum_points = tiles_to_check
             tiles_to_check = default_neighbors_found
         
         for entity in goals:
@@ -268,24 +271,15 @@ class GameMap:
                 for tile in row:
                     tile.set_dijkstra_map_value(name+'_flee', floor(tile.get_dijkstra_map_value(name) * -1.2))
 
-            lowest_value = 100
-            minimum_points = set()
             checked = []
             for x in range(self.width):
                 checked.append([])
                 for y in range(self.height):
-                    val = self.tiles[x][y].get_dijkstra_map_value(name+'_flee')
-                    if val == lowest_value:
-                        minimum_points.add((x, y))
-                    elif val < lowest_value:
-                        lowest_value = val
-                        minimum_points = {(x, y)}
                     checked[x].append(False)
-
             print("Min points found in {}".format(time.time() - start_time))
             
-            tiles_to_check = set(minimum_points)
-            weight = lowest_value
+            tiles_to_check = set(maximum_points)
+            weight = floor(weight * -1.2)
             while tiles_to_check:
                 weight += 1
                 default_neighbors_found = set()
