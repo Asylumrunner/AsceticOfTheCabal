@@ -258,42 +258,51 @@ class GameMap:
         for entity in goals:
             self.tiles[entity.x][entity.y].set_dijkstra_map_value(name, 0)
 
-        print("Dijkstra maps generated in {} seconds".format(time.time() - start_time))
+        print("Dijkstra maps generated in {} seconds for {}".format(time.time() - start_time, name))
 
         # If flee is set to true, then once we generate the map, we immediately generate another Dijkstra map
         # using an inverted method, which will generate a map that can be used to intelligently _flee_ the goals
-
-        # Note that this uses the traditional, slow method for generating a Dijkstra map. The reversal method,
-        # creating a Dijkstra map from a Dijkstra map, is more difficult to generate from a single stack-based
-        # pass like the original map is made
-
-        #TODO: Can you do this in one pass with a queue? Hypothesize
         start_time = time.time()
         if flee:
             for row in self.tiles:
                 for tile in row:
                     tile.set_dijkstra_map_value(name+'_flee', floor(tile.get_dijkstra_map_value(name) * -1.2))
-            
-            change_made = True
-            while change_made:
-                change_made = False
-                for x in range(self.width):
-                    for y in range(self.height):
-                        tile = self.tiles[x][y]
-                        candidate_val = 1000000
-                        if not tile.blocked:
-                            if x > 0:
-                                candidate_val = min(candidate_val, self.tiles[x-1][y].get_dijkstra_map_value(name+'_flee'))
-                            if x < self.width:
-                                candidate_val = min(candidate_val, self.tiles[x+1][y].get_dijkstra_map_value(name+'_flee'))
-                            if y > 0:
-                                candidate_val = min(candidate_val, self.tiles[x][y-1].get_dijkstra_map_value(name+'_flee'))
-                            if y < self.height:
-                                candidate_val = min(candidate_val, self.tiles[x][y+1].get_dijkstra_map_value(name+'_flee'))
-                            if candidate_val != 1000000 and candidate_val + 2 <= tile.get_dijkstra_map_value(name+'_flee'):
-                                change_made = True
-                                tile.set_dijkstra_map_value(name+'_flee', candidate_val+1)
 
+            lowest_value = 100
+            minimum_points = set()
+            checked = []
+            for x in range(self.width):
+                checked.append([])
+                for y in range(self.height):
+                    val = self.tiles[x][y].get_dijkstra_map_value(name+'_flee')
+                    if val == lowest_value:
+                        minimum_points.add((x, y))
+                    elif val < lowest_value:
+                        lowest_value = val
+                        minimum_points = {(x, y)}
+                    checked[x].append(False)
+
+            print("Min points found in {}".format(time.time() - start_time))
+            
+            tiles_to_check = set(minimum_points)
+            weight = lowest_value
+            while tiles_to_check:
+                weight += 1
+                default_neighbors_found = set()
+                for coord in tiles_to_check:
+                    checked[coord[0]][coord[1]] = True
+                    if self.tiles[coord[0]][coord[1]].get_dijkstra_map_value(name+'_flee') > weight:
+                        self.tiles[coord[0]][coord[1]].set_dijkstra_map_value(name, weight)
+                    if coord[0] > 0 and not self.tiles[coord[0]-1][coord[1]].blocked and not checked[coord[0]-1][coord[1]]:
+                        default_neighbors_found.add((coord[0]-1, coord[1]))
+                    if coord[0] < self.width and not self.tiles[coord[0]+1][coord[1]].blocked and not checked[coord[0]+1][coord[1]]:
+                        default_neighbors_found.add((coord[0]+1, coord[1]))
+                    if coord[1] > 0 and not self.tiles[coord[0]][coord[1]-1].blocked and not checked[coord[0]][coord[1]-1]:
+                        default_neighbors_found.add((coord[0], coord[1]-1))
+                    if coord[1] < self.height and not self.tiles[coord[0]][coord[1]+1].blocked and not checked[coord[0]][coord[1]+1]:
+                        default_neighbors_found.add((coord[0], coord[1]+1))
+                tiles_to_check = default_neighbors_found
+    
         print("Flee maps generated in {} seconds".format(time.time() - start_time))
  
     def reset_dijkstra_map_values(self, name):
