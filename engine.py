@@ -52,6 +52,7 @@ class Engine():
 
         # Establish the Game State
         self.game_map.compute_dijkstra_map([self.player], 'player', True)
+        self.game_map.compute_dijkstra_map(self.entities.get_sublist(lambda x: x.name != "Ascetic"), "enemies")
         self.game_state = GameStates.PLAYERS_TURN
         self.previous_game_state = GameStates.PLAYERS_TURN
         self.game_running = True
@@ -303,6 +304,7 @@ class Engine():
                     self.player.get_component("StatusContainer").tick_clocks()
                     for status in self.player.get_component("StatusContainer").get_statuses():
                         status_mapping[status](self.player, self.entities, self.game_map)
+                    self.game_map.compute_dijkstra_map(self.entities.get_sublist(lambda x: x.name != "Ascetic"), "enemies")
                     self.game_state = GameStates.PLAYERS_TURN
 
             # TODO: need a check somewhere around here to tick condition clocks, and then to apply conditions

@@ -286,7 +286,7 @@ class GameMap:
                 for coord in tiles_to_check:
                     checked[coord[0]][coord[1]] = True
                     if self.tiles[coord[0]][coord[1]].get_dijkstra_map_value(name+'_flee') > weight:
-                        self.tiles[coord[0]][coord[1]].set_dijkstra_map_value(name, weight)
+                        self.tiles[coord[0]][coord[1]].set_dijkstra_map_value(name+'_flee', weight)
                     if coord[0] > 0 and not self.tiles[coord[0]-1][coord[1]].blocked and not checked[coord[0]-1][coord[1]]:
                         default_neighbors_found.add((coord[0]-1, coord[1]))
                     if coord[0] < self.width and not self.tiles[coord[0]+1][coord[1]].blocked and not checked[coord[0]+1][coord[1]]:
