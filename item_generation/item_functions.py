@@ -7,9 +7,11 @@ from game_messages import Message
 effects = {
     'Healing': {
         'description': " with a warm glow about it that makes you feel calm",
+        'potion_color': libtcod.light_green,
+        'potion_color_name': 'light green ',
         "name": " of Healing",
         "arrangement": "suffix",
-        "targets": [5,6],
+        "targets": [0,5,6],
         "hit_effect": ['heal'],
         'kwargs': {
             'amount': 5

@@ -1,4 +1,4 @@
-from .base_items import weapons, armor, weapon_weights, armor_weights, starting_pistol
+from .base_items import weapons, armor, potions, weapon_weights, armor_weights, potion_weights, starting_pistol
 from .qualities  import qualities, quality_weights, item_equip_dict
 from .item_functions import item_function_dict, effects, effect_weights
 from components.item import Item
@@ -109,10 +109,16 @@ def generate_weapon(quality_prob, effect_prob, x, y, log):
     return item
 
 def generate_potion(x, y, log):
-    # currently a bit neutered, only generates this one specific potion
-    item_base = game_constants.items['Healing Potion'].copy()
-    print(item_base)
-    apply_effect(item_base, effects['Healing'])
+    item_base = potions[random.choices(list(potions.keys()), potion_weights)[0]].copy()
+    
+    while True:
+            effect = effects[random.choices(list(effects.keys()), effect_weights)[0]].copy()
+            if item_base['type'] in effect['targets']:
+                break
+    apply_effect(item_base, effect)
+
+    format_potion(item_base, effect)
+    
     components = {
         "Item": Item(use_function=item_base['functions'], uses=item_base['uses'], item_type=item_base['type'], equip_effects=item_base['equip_abilities'], strength=item_base['strength'], defense=0, price = item_base['price'], description = item_base['description'], **item_base['kwargs'])
     }
@@ -137,6 +143,11 @@ def format_name(item):
     # compound together all details of an item into a complete description and name
     item['name'] = item['name'].format(item['quality_name'] if 'quality_name' in item else '', item['effect_name'] if 'effect_name' in item else '')
     item['description'] = item['description'].format(item['quality_description'] if 'quality_description' in item else '', item['effect_description'] if 'effect_description' in item else '')
+
+def format_potion(item, effect):
+    item['name'] = item['name'].format(item['effect_name'])
+    item['description'] = item['description'].format(effect['potion_color_name'])
+    item['color'] = effect['potion_color'] if 'potion_color' in effect else item['color']
 
 def generate_starting_pistol(log):
     # sort of a weird one, this function puts together the Ascetic's Pistol that every run begins with

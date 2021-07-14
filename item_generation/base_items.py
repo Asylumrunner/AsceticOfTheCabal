@@ -69,3 +69,34 @@ armor = {
 }
 
 armor_weights = [1]
+
+potions = {
+    'Potion': {
+        'icon': '!',
+        'color': libtcod.red,
+        'description': "A vial of mysterious {}liquid",
+        'name': 'Potion{}',
+        'uses': 1,
+        'type': 0,
+        'strength': 0,
+        'price': 10,
+        'equip_abilities': [],
+        'functions': [],
+        'kwargs': {}
+    },
+    'Big Potion': {
+        'icon': '?',
+        'color': libtcod.red,
+        'description': 'A large phial of mysterious {}liquid',
+        'name': 'Big Potion{}',
+        'uses': 3,
+        'type': 0,
+        'strength': 0,
+        'price': 25,
+        'equip_abilities': [],
+        'functions': [],
+        'kwargs': {}
+    }
+}
+
+potion_weights = [4, 1]
