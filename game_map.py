@@ -311,3 +311,11 @@ class GameMap:
     
     def get_tile(self, x, y):
         return self.tiles[x][y]
+    
+    def get_adjacent_tiles(self, x, y):
+        adjacent_tiles = []
+        adjacent_tiles.append(self.tiles[x][y-1] if y > 0 else None)
+        adjacent_tiles.append(self.tiles[x+1][y] if x < self.wifth else None)
+        adjacent_tiles.append(self.tiles[x][y+1] if y < self.height else None)
+        adjacent_tiles.append(self.tiles[x-1][y] if x > 0 else None)
+        return adjacent_tiles

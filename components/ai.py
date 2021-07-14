@@ -26,7 +26,7 @@ class BasicMonster:
         
         #if the monster is in view, move towards the player using A*. If the player is in range, attack them
         if libtcod.map_is_in_fov(fov_map, monster.x, monster.y):
-            if monster.distance_to(target) >= 2:
+            if game_map.get_tile(monster.x, monster.y).get_dijkstra_map_value('player') >= 2:
                 monster.move_astar(target, entities, game_map)
             elif target.get_component("Fighter").hp > 0:
                 monster.get_component("Fighter").attack(target)
