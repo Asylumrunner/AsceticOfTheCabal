@@ -51,7 +51,10 @@ class Item:
     # Use the item one time, calling every use function and passing in the function_kwargs set at init as well as any args given now
     # if the item has limited uses, tick those uses down one and return if it needs to be destroyed
     def use(self, *args):
+        print("in use")
+        print(self.use_function)
         for function in self.use_function:
+            print("about to call function")
             function(*args, **self.function_kwargs)
         
         if self.uses != -99:

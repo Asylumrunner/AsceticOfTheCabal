@@ -270,7 +270,10 @@ items = {
         'name': 'Healing Potion',
         'uses': 1,
         'type': 0,
-        'functions': ['heal'],
+        'strength': 0,
+        'price': 10,
+        'equip_abilities': [],
+        'functions': [],
         'kwargs': {
             'amount': 30
         }

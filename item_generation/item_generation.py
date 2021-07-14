@@ -5,6 +5,7 @@ from components.item import Item
 from entity import Entity
 from render_functions import RenderOrder
 from game_states import AIStates
+import game_constants
 import random
 import pprint
 
@@ -104,6 +105,17 @@ def generate_weapon(quality_prob, effect_prob, x, y, log):
         "Item": Item(use_function=item_base['functions'], uses=item_base['uses'], item_type=item_base['type'], equip_effects=item_base['equip_abilities'], strength=item_base['strength'], defense=0, price = item_base['price'], description = item_base['description'], **item_base['kwargs'])
     }
 
+    item = Entity(x, y, item_base['icon'], item_base['color'], item_base['name'], blocks=False, render_order=RenderOrder.ITEM, message_log=log, state=AIStates.INANIMATE, components=components)
+    return item
+
+def generate_potion(x, y, log):
+    # currently a bit neutered, only generates this one specific potion
+    item_base = game_constants.items['Healing Potion'].copy()
+    print(item_base)
+    apply_effect(item_base, effects['Healing'])
+    components = {
+        "Item": Item(use_function=item_base['functions'], uses=item_base['uses'], item_type=item_base['type'], equip_effects=item_base['equip_abilities'], strength=item_base['strength'], defense=0, price = item_base['price'], description = item_base['description'], **item_base['kwargs'])
+    }
     item = Entity(x, y, item_base['icon'], item_base['color'], item_base['name'], blocks=False, render_order=RenderOrder.ITEM, message_log=log, state=AIStates.INANIMATE, components=components)
     return item
 

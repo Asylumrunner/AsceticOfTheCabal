@@ -14,7 +14,7 @@ from game_states import AIStates
 from components.stairs import Stairs
 import numpy as np
 import game_constants
-from item_generation.item_generation import generate_weapon, generate_armor
+from item_generation.item_generation import generate_weapon, generate_armor, generate_potion
 from utilities.csv_reader import read_csv_to_dict
 import time
 import random
@@ -207,13 +207,16 @@ class GameMap:
             y = randint(room.y1 +1, room.y2 -1)
 
             if not any(entities.get_sublist(lambda entity: entity.x == x and entity.y == y)):
-                weapon_or_armor = randint(0, 1)
+                weapon_or_armor = randint(0, 2)
                 if weapon_or_armor == 0:
                     weapon = generate_weapon(self.floor_dict['quality_prob'], self.floor_dict['effect_prob'], x, y, self.log)
                     entities.insert_entity(weapon)
-                else:
+                elif weapon_or_armor == 1:
                     armor = generate_armor(self.floor_dict['quality_prob'], self.floor_dict['effect_prob'], x, y, self.log)
                     entities.insert_entity(armor)
+                else:
+                    entities.insert_entity(generate_potion(x, y, self.log))
+            
 
     # Returns the game_constants data for the current floor
     def get_floor_info(self):
@@ -239,7 +242,6 @@ class GameMap:
         self.reset_dijkstra_map_values(name)
 
         tiles_to_check = set([(goal.x, goal.y) for goal in goals])
-        minimum_points = set()
         weight = -1
         while tiles_to_check:
             weight += 1

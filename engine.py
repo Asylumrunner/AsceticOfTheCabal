@@ -207,9 +207,10 @@ class Engine():
             # if the player has selected an inventory item to use, get the item object, and equip it if it's vgear, or use it if it's a consumable (like a potion) 
             elif inventory_item is not None and self.previous_game_state != GameStates.PLAYER_DEAD and inventory_item < len(self.player.get_component("Inventory").items):
                 item_entity = self.player.get_component("Inventory").items[inventory_item]
-                if item_entity.get_component("Item").item_type != ItemType.NONE:
+                if ItemType(item_entity.get_component("Item").item_type) != ItemType.NONE:
                     self.player.get_component("Inventory").equip_item(item_entity)
                 else:
+                    print("In the else")
                     if item_entity.get_component("Item").use(self.player):
                         self.player.get_component("Inventory").remove_item(item_entity)
             
