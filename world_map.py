@@ -38,10 +38,12 @@ class GameMap:
         
         #3. Delete spaces by randomly selecting candidates out of deletion_candidates, then enqueuing their neighbors
         spaces_to_delete = ceil((world_size * world_size) * (1 - ws_percentage))
-        #print("Deleting {} spaces".format(spaces_to_delete))
-        for _ in range(spaces_to_delete):
+        print("Deleting {0} spaces out of {1}, conforming to world fill percentage of {2}".format(spaces_to_delete, (world_size * world_size), ws_percentage))
+        for x in range(spaces_to_delete):
+            print("Performing deletion {0}".format(x))
             space_selected = choice(deletion_candidates)
             world_map[space_selected[0]][space_selected[1]] = False
+            deletion_candidates.remove(space_selected)
 
             if space_selected[0] > 0 and world_map[space_selected[0]-1][space_selected[1]]:
                 deletion_candidates.append((space_selected[0]-1, space_selected[1]))
@@ -55,7 +57,7 @@ class GameMap:
             if space_selected[1] < world_size-1 and world_map[space_selected[0]][space_selected[1]+1]:
                 deletion_candidates.append((space_selected[0], space_selected[1]+1))
 
-        #self.print_map(world_map, "trimmed_map.txt")
+        self.print_map(world_map, "trimmed_map.txt")
         
         #4. Check for islands, picking the largest contiguous landmass
         unidentified_land = []
@@ -121,7 +123,7 @@ class GameMap:
                 for space in new_island["spaces"]:
                     world_map[space[0]][space[1]] = False
         
-        #self.print_map(world_map, "final_map.txt")
+        self.print_map(world_map, "final_map.txt")
 
     def print_map(self, world_map, file_name):
         # Helper function that produces a file of the map in progress to check & debug
