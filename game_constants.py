@@ -17,6 +17,9 @@ inventory_width = 50
 map_width = screen_width
 map_height = panel_y-1
 
+size_world = 100
+world_size_percentage = 0.5
+
 room_max_size = 10
 room_min_size = 6
 max_rooms = 30
