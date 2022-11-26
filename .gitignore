@@ -110,3 +110,8 @@ venv.bak/
 savegame.bak
 savegame.dat
 savegame.dir 
+
+#Debug log files
+initial_map.txt
+final_map.txt
+trimmed_map.txt
