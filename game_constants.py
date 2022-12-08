@@ -17,8 +17,10 @@ inventory_width = 50
 map_width = screen_width
 map_height = panel_y-1
 
-size_world = 100
-world_size_percentage = 0.5
+size_world = 10
+world_size_percentage = 0.6
+initial_block_size = 3
+number_of_neighborhoods = 3
 
 room_max_size = 10
 room_min_size = 6
