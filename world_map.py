@@ -21,6 +21,7 @@ TODOS:
 class GameMap:
     def __init__(self, message_log):
         self.log = message_log
+        self.world_map = None
 
     def generate_map(self):
         self.construct_blocks()
@@ -35,6 +36,7 @@ class GameMap:
         world_fill_percentage = game_constants.world_size_percentage
 
         filled_spaces = []
+
         #1. Instantiate an empty grid of blocks, then fill with the initial blob
         world_map = [[0 for x in range(world_size)] for y in range(world_size)]
         center_fill_count = world_size - initial_block_size
@@ -66,6 +68,7 @@ class GameMap:
                 world_map[new_space[0]][new_space[1]] = 1
                 filled_spaces.append(new_space)
                 #print("From space {}, got random selector {} and created space {}".format(space_to_build_upon, direction_to_build, new_space))
+        self.print_map(world_map, "initial_map.txt")
     
         #3. Identify spaces on the boundaries of the created land-mass, identifying what kind of edge they are for later population
         for x in range(world_size):
@@ -74,186 +77,44 @@ class GameMap:
                     bit_flags = 0
 
                     # Check each neighbor and, if it exists, flip the corresponding flag bit
-                    if (x+1, y) in filled_spaces:
-                        bit_flags += 1
-                    if (x-1, y) in filled_spaces:
+                    if (x+1, y) in filled_spaces: # Below
                         bit_flags += 2
-                    if (x, y+1) in filled_spaces:
+                    if (x-1, y) in filled_spaces: # Above
                         bit_flags += 4
-                    if (x, y-1) in filled_spaces:
+                    if (x, y+1) in filled_spaces: # Right
                         bit_flags += 8
-                    if (x+1, y+1) in filled_spaces:
+                    if (x, y-1) in filled_spaces: # Left
                         bit_flags += 16
-                    if (x+1, y-1) in filled_spaces:
-                        bit_flags += 32
-                    if (x-1, y+1) in filled_spaces:
-                        bit_flags += 64
-                    if (x-1, y-1) in filled_spaces:
-                        bit_flags += 128
                     
-                    print("point {} represented by binary bit flags {}".format((x, y), format(bit_flags, '#010b')))
+                    #print("point {} represented by binary bit flags {}".format((x, y), format(bit_flags, '#010b')))
                     world_map[x][y] = bit_flags + 1 if bit_flags != 0 else 0
-                    
-        self.print_edge_map(world_map, "initial_map.txt")
-
-    # TODO: This don't scale at _all_ lmao
-    def build_city_limits(self):
-        world_size = game_constants.size_world
-        ws_percentage = game_constants.world_size_percentage
-        #1. Instantiate a square world of N x N, where n=size_world
-        world_map = [[True for x in range(world_size)] for y in range(world_size)]
-
-        self.print_map(world_map, "inital_map.txt")
-
-        #2. Create a deletion candidates list of tuples, featuring every edge space (and corners twice)
-        deletion_candidates = []
-        for n in range(world_size):
-            deletion_candidates.append((n,0))
-            deletion_candidates.append((0, n))
-            deletion_candidates.append((world_size-1, world_size-1-n))
-            deletion_candidates.append((world_size-1-n, world_size-1))
         
-        #3. Delete spaces by randomly selecting candidates out of deletion_candidates, then enqueuing their neighbors
-        spaces_to_delete = ceil((world_size * world_size) * (1 - ws_percentage))
-        #print("Deleting {0} spaces out of {1}, conforming to world fill percentage of {2}".format(spaces_to_delete, (world_size * world_size), ws_percentage))
-        for x in range(spaces_to_delete):
-            #print("Performing deletion {0}".format(x))
-            space_selected = choice(deletion_candidates)
-            world_map[space_selected[0]][space_selected[1]] = False
-            deletion_candidates.remove(space_selected)
-
-            if space_selected[0] > 0 and world_map[space_selected[0]-1][space_selected[1]]:
-                deletion_candidates.append((space_selected[0]-1, space_selected[1]))
-
-            if space_selected[0] < world_size-1 and world_map[space_selected[0]+1][space_selected[1]]:
-                deletion_candidates.append((space_selected[0]+1, space_selected[1]))
-
-            if space_selected[1] > 0 and world_map[space_selected[0]][space_selected[1]-1]:
-                deletion_candidates.append((space_selected[0], space_selected[1]-1))
-
-            if space_selected[1] < world_size-1 and world_map[space_selected[0]][space_selected[1]+1]:
-                deletion_candidates.append((space_selected[0], space_selected[1]+1))
-
-        self.print_map(world_map, "trimmed_map.txt")
-        
-        #4. Check for islands, picking the largest contiguous landmass
-        unidentified_land = []
-        identification_queue = []
-        for x in range(world_size):
-            for y in range(world_size):
-                if world_map[x][y]:
-                    unidentified_land.append((x, y))
-        #print("Size of all valid land currently = {}".format(len(unidentified_land)))
-
-        best_island = {
-            "size": -1,
-            "spaces": []
-        }
-
-        while unidentified_land:
-            new_island = {
-                "size": 0,
-                "spaces": []
-            }
-
-            identification_queue.append(unidentified_land.pop(0))
-
-            #print("Checking new island")
-            while identification_queue:
-                space_selected = identification_queue.pop(0)
-                #print("Adding space {} to island".format(space_selected))
-
-                new_island["size"] += 1
-                new_island["spaces"].append(space_selected)
-
-                if space_selected[0] > 0 and (space_selected[0]-1, space_selected[1]) in unidentified_land:
-                    identification_queue.append((space_selected[0]-1, space_selected[1]))
-                    unidentified_land.remove((space_selected[0]-1, space_selected[1]))
-                    #print("Adding {} to identification queue [0]".format((space_selected[0]-1, space_selected[1])))
-                
-                if space_selected[0] < world_size-1 and (space_selected[0]+1, space_selected[1]) in unidentified_land:
-                    identification_queue.append((space_selected[0]+1, space_selected[1]))
-                    unidentified_land.remove((space_selected[0]+1, space_selected[1]))
-                    #print("Adding {} to identification queue [1]".format((space_selected[0]+1, space_selected[1])))
-                
-                if space_selected[1] > 0 and (space_selected[0], space_selected[1]-1) in unidentified_land:
-                    identification_queue.append((space_selected[0], space_selected[1]-1))
-                    unidentified_land.remove((space_selected[0], space_selected[1]-1))
-                    #print("Adding {} to identification queue [2]".format((space_selected[0], space_selected[1]-1)))
-                
-                if space_selected[1] < world_size-1 and (space_selected[0], space_selected[1]+1) in unidentified_land:
-                    identification_queue.append((space_selected[0], space_selected[1]+1))
-                    unidentified_land.remove((space_selected[0], space_selected[1]+1))
-                    #print("Adding {} to identification queue [3]".format((space_selected[0], space_selected[1]+1)))
-                
-                #print("New size of unexplored land: {}".format(len(unidentified_land)))
-                #print("Current size of discovery queue: {}".format(len(identification_queue)))
-            
-            #print("Size of complete island: {}".format(new_island["size"]))
-            if new_island["size"] > best_island["size"]:
-                #print("New island's size of {0} beats old best of {1}, replacing best island".format(new_island["size"], best_island["size"]))
-                for space in best_island["spaces"]:
-                    world_map[space[0]][space[1]] = False
-                best_island = new_island
-            
-            else:
-                for space in new_island["spaces"]:
-                    world_map[space[0]][space[1]] = False
-        
-        self.print_map(world_map, "final_map.txt")
-        return world_map
-    
-    def define_neighborhoods(self, world_map):
-        #1. Generate N random "home" points for N neighborhoods
-        num_neighborhoods = game_constants.number_of_neighborhoods
-        world_size = game_constants.size_world
+        #4. Identify neighborhood cores
         neighborhood_cores = []
-
-        while len(neighborhood_cores) < num_neighborhoods:
-            candidate = (randrange(0, world_size),randrange(0, world_size))
-            if world_map[candidate[0]][candidate[1]]:
-                conflicting_cores = [core for core in neighborhood_cores if dist(core, candidate) <= 4]
-                if not conflicting_cores:
-                    neighborhood_cores.append(candidate)
-
-        print("Cores placed at {}".format(neighborhood_cores))
-
-        #2. Create N sets which will contain the points located in each neighborhood
-        neighborhoods = [{"core": core, "points": [], "gates": []} for core in neighborhood_cores]
-
-        #3. Calculate the closest core to each space on the world map, and assign that point to the neighborhood associated with that point
+        while len(neighborhood_cores) < game_constants.number_of_neighborhoods:
+            potential_core = choice(filled_spaces)
+            if potential_core not in neighborhood_cores:
+                neighborhood_cores.append(potential_core)
+        
+        #5. Repopulate the world map with block objects
         for x in range(world_size):
             for y in range(world_size):
-                if world_map[x][y]:
-                    closest_core = -1
-                    closest_core_distance = 100000000
-                    for n in range(num_neighborhoods):
-                        core_distance = dist((x,y), neighborhoods[n]["core"])
-                        if core_distance < closest_core_distance:
-                            closest_core = n
-                            closest_core_distance = core_distance
-                    neighborhoods[closest_core]["points"].append((x,y))
+                space_code = world_map[x][y]
+                neighborhood_code = []
+                if space_code != 0:
+                    closest_neighborhood_core = []
+                    closest_core_distance = 100
+                    for index in range(len(neighborhood_cores)):
+                        dist_to_core = dist((x, y), neighborhood_cores[index])
+                        if dist_to_core == closest_core_distance:
+                            closest_neighborhood_core.append(neighborhood_cores[index])
+                        elif dist_to_core < closest_core_distance:
+                            closest_core_distance = dist_to_core
+                            closest_neighborhood_core = [neighborhood_cores[index]]
+                    neighborhood_code = closest_neighborhood_core
+                
+                world_map[x][y] = Block(space_code, neighborhood_code)
 
-        #4. Mark spaces in each neighborhood as transition points to their adjacent neighborhoods by draing a line between cores
-        for core_index in range(num_neighborhoods):
-            other_core_index = core_index + 1
-            while other_core_index < len(neighborhood_cores):
-                line = self.bresenham_line(world_map, neighborhood_cores[core_index], neighborhood_cores[other_core_index])
-                for n in range(len(line)-1):
-                    if line[n] in neighborhoods[core_index]["points"] and line[n+1] in neighborhoods[other_core_index]["points"]:
-                        neighborhoods[core_index]["gates"].append({
-                            "point": line[n],
-                            "destination": other_core_index
-                        })
-                        neighborhoods[other_core_index]["gates"].append({
-                            "point": line[n+1],
-                            "destination": core_index
-                        })
-                other_core_index += 1
-
-        self.print_neighborhood_map(world_map, neighborhoods, "neighborhood_map.txt")
-
-        #6. Divide neighborhoods into individual world map objects, locally normalizing their coordinate systems
 
     def print_map(self, world_map, file_name):
         # Helper function that produces a file of the map in progress to check & debug
@@ -365,20 +226,13 @@ class GameMap:
         if start != pt1:
             line.reverse()
 
-        return line
-                
+        return 
+        
+class Block:
+    def __init__(self, code=0, neighborhood=0):
+        self.block_type_code = code
+        self.neighborhood = neighborhood
 
-                
-
-
-
-            
-            
-
-    
-
-
-
-            
-
-
+        # TODO: Select a template from the template files and save its values here
+        
+        # TODO: With the template and the neighborhood, populate the template with stuff
